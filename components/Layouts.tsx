@@ -14,11 +14,8 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
       <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-navy rounded-lg flex items-center justify-center text-primary font-bold text-xl">
-              M
-            </div>
-            <span className="text-xl font-bold text-navy tracking-tight">MIMCE</span>
+          <Link to="/" className="flex items-center">
+            <img src="/mimce_logo.png" alt="MIMCE Logo" className="h-10" />
           </Link>
 
           {/* Desktop Nav */}
@@ -66,9 +63,8 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand Col */}
           <div className="col-span-1 md:col-span-2 space-y-6">
-             <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-primary rounded flex items-center justify-center text-navy font-bold">M</div>
-                <span className="text-white font-bold text-lg">MIMCE</span>
+             <div className="flex items-center">
+                <img src="/mimce_logo.png" alt="MIMCE Logo" className="h-8 brightness-0 invert" />
              </div>
              <p className="max-w-sm text-sm leading-relaxed">
                MIMCE, mühendislik öğrencileri ve profesyonelleri eğitimler ve etkinliklerle buluşturur.
@@ -128,7 +124,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
       {/* Sidebar */}
       <aside className="w-64 bg-navy flex flex-col text-gray-300">
         <div className="h-16 flex items-center px-6 border-b border-gray-800">
-          <span className="text-white font-bold tracking-tight">MIMCE Admin Portal</span>
+          <img src="/mimce_logo.png" alt="MIMCE Logo" className="h-8 brightness-0 invert" />
         </div>
 
         <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
