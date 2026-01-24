@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
-import { getEvents, addEvent } from '../../services/mockData';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../../services/supabase';
 import { Event } from '../../types';
 import { Plus, X, Calendar, MapPin, Clock } from 'lucide-react';
 
 const Events: React.FC = () => {
-  const [events, setEvents] = useState<Event[]>(getEvents());
+  const [events, setEvents] = useState<Event[]>([]);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const { data } = await supabase
+        .from('events')
+        .select('*')
+        .order('date', { ascending: false });
+      if (data) setEvents(data);
+    };
+    fetchEvents();
+  }, []);
   
   // Form State
   const [formData, setFormData] = useState({
@@ -22,7 +33,7 @@ const Events: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Validate
     if (!formData.title || !formData.date) {
@@ -41,13 +52,15 @@ const Events: React.FC = () => {
       image: 'https://picsum.photos/400/250?random=' + Date.now()
     };
 
-    addEvent(newEvent);
-    setEvents(getEvents()); // Refresh list
-    setIsSheetOpen(false);
-    // Reset form
-    setFormData({
-      title: '', date: '', time: '', location: '', status: 'Taslak', description: ''
-    });
+    const { error } = await supabase.from('events').insert([newEvent]);
+    if (!error) {
+      setEvents([newEvent, ...events]);
+      setIsSheetOpen(false);
+      // Reset form
+      setFormData({
+        title: '', date: '', time: '', location: '', status: 'Taslak', description: ''
+      });
+    }
   };
 
   return (
