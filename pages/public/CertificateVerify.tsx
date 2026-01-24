@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { verifyCertificateNo } from '../../services/mockData';
+import { supabase } from '../../services/supabase';
 import { Certificate } from '../../types';
 import { CheckCircle, XCircle, Search } from 'lucide-react';
 
@@ -7,13 +7,18 @@ const CertificateVerify: React.FC = () => {
   const [certNo, setCertNo] = useState('');
   const [result, setResult] = useState<{ status: 'idle' | 'valid' | 'invalid', data?: Certificate }>({ status: 'idle' });
 
-  const handleVerify = (e: React.FormEvent) => {
+  const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!certNo.trim()) return;
 
-    const cert = verifyCertificateNo(certNo);
-    if (cert) {
-      setResult({ status: 'valid', data: cert });
+    const { data } = await supabase
+      .from('certificates')
+      .select('*')
+      .eq('certificateNo', certNo.toUpperCase())
+      .single();
+
+    if (data) {
+      setResult({ status: 'valid', data });
     } else {
       setResult({ status: 'invalid' });
     }
@@ -30,7 +35,7 @@ const CertificateVerify: React.FC = () => {
             <h2 className="text-3xl font-bold text-white mb-4">Sertifika<br/>Doğrulama</h2>
             <div className="w-16 h-1 bg-primary mb-6 mx-auto md:mx-0"></div>
             <p className="text-gray-300 leading-relaxed">
-              MIMCE tarafından verilen sertifikaların orijinalliğini kontrol edin. Güvenilir ve şeffaf eğitim geçmişi.
+              MİMCE tarafından verilen sertifikaların orijinalliğini kontrol edin. Güvenilir ve şeffaf eğitim geçmişi.
             </p>
           </div>
         </div>
