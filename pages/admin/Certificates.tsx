@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
-import { getCertificates } from '../../services/mockData';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../../services/supabase';
+import { Certificate } from '../../types';
 import { Search, MoreVertical, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Certificates: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const data = getCertificates();
+  const [data, setData] = useState<Certificate[]>([]);
+
+  useEffect(() => {
+    const fetchCertificates = async () => {
+      const { data: certs } = await supabase
+        .from('certificates')
+        .select('*')
+        .order('issueDate', { ascending: false });
+      if (certs) setData(certs);
+    };
+    fetchCertificates();
+  }, []);
   
   const filtered = data.filter(c => 
     c.certificateNo.toLowerCase().includes(searchTerm.toLowerCase()) || 
