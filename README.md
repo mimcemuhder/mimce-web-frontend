@@ -1,129 +1,475 @@
-# MİMCE Web Frontend
+<div align="center">
+  <img src="public/mimce_admin_logo.svg" alt="MİMCE Logo" width="200" />
+  
+  # MİMCE Web Frontend
+  
+  **Modern Mühendislik Platformu - React & TypeScript ile Geliştirilmiş**
+  
+  [![React](https://img.shields.io/badge/React-19.2.3-61DAFB?logo=react)](https://react.dev/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.8.2-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+  [![Vite](https://img.shields.io/badge/Vite-6.2.0-646CFF?logo=vite)](https://vitejs.dev/)
+  [![Supabase](https://img.shields.io/badge/Supabase-2.91.1-3ECF8E?logo=supabase)](https://supabase.com/)
+</div>
 
-MİMCE (Mühendislik Platformu) için modern ve responsive web uygulaması. React, TypeScript ve Vite ile geliştirilmiştir.
+---
 
-## 🚀 Teknolojiler
+## 📖 Hakkında
 
-- **React 19.2.3** - UI framework
-- **TypeScript 5.8.2** - Type safety
-- **Vite 6.2.0** - Build tool ve dev server
+MİMCE (Mühendislik Platformu) için geliştirilmiş modern, responsive ve kullanıcı dostu web uygulaması. Mühendislik öğrencileri ve profesyonelleri için eğitim, etkinlik ve sertifika yönetim sistemi sunar.
+
+### ✨ Temel Özellikler
+
+- 🎨 **Modern UI/UX**: Tailwind CSS ile tasarlanmış responsive arayüz
+- 🔐 **Güvenli Authentication**: Supabase Auth ile admin paneli koruması
+- 📊 **Gerçek Zamanlı Veri**: Supabase ile canlı veri yönetimi
+- 🚀 **Hızlı Performans**: Vite ile optimize edilmiş build süreci
+- 📱 **Mobile First**: Tüm cihazlarda mükemmel deneyim
+- 🎯 **Type Safety**: TypeScript ile tip güvenliği
+
+---
+
+## 🚀 Teknoloji Stack
+
+### Frontend Framework
+- **React 19.2.3** - Modern UI framework
+- **TypeScript 5.8.2** - Type-safe development
+- **Vite 6.2.0** - Next-generation build tool
+
+### Routing & State
 - **React Router DOM 7.13.0** - Client-side routing
+- **HashRouter** - GitHub Pages uyumlu routing
+
+### Styling
 - **Tailwind CSS** - Utility-first CSS framework
-- **Lucide React** - Icon library
+- **Lucide React** - Modern icon library
+
+### Backend & Database
+- **Supabase 2.91.1** - Backend as a Service
+  - PostgreSQL database
+  - Authentication
+  - Storage (görsel yükleme)
+  - Row Level Security (RLS)
+
+---
 
 ## 📁 Proje Yapısı
 
 ```
 mimce-web-frontend/
 ├── components/
-│   └── Layouts.tsx          # PublicLayout ve AdminLayout bileşenleri
+│   ├── Layouts.tsx              # PublicLayout ve AdminLayout
+│   └── ProtectedRoute.tsx        # Authentication guard
 ├── pages/
 │   ├── public/
-│   │   ├── Home.tsx          # Ana sayfa
-│   │   ├── Trainings.tsx     # Eğitimler listesi
-│   │   └── CertificateVerify.tsx  # Sertifika doğrulama
+│   │   ├── Home.tsx              # Ana sayfa (hero, stats, events)
+│   │   ├── Trainings.tsx         # Eğitimler listesi ve filtreleme
+│   │   └── CertificateVerify.tsx # Sertifika doğrulama sistemi
 │   └── admin/
-│       ├── Dashboard.tsx     # Admin dashboard
-│       ├── Certificates.tsx  # Sertifika yönetimi
-│       └── Events.tsx         # Etkinlik yönetimi
+│       ├── Login.tsx             # Admin giriş sayfası
+│       ├── Dashboard.tsx         # KPI dashboard ve aktiviteler
+│       ├── Certificates.tsx      # Sertifika yönetimi
+│       ├── Events.tsx            # Etkinlik yönetimi (CRUD)
+│       └── Trainings.tsx         # Eğitim yönetimi (CRUD + görsel yükleme)
 ├── services/
-│   └── mockData.ts           # Mock data ve CRUD fonksiyonları
-├── types.ts                  # TypeScript type tanımları
-├── App.tsx                   # Ana routing yapısı
-├── index.tsx                 # React entry point
-└── index.html                # HTML template
-
+│   ├── supabase.ts              # Supabase client konfigürasyonu
+│   ├── supabaseTest.ts          # Bağlantı testi utilities
+│   └── createAdmin.ts           # Default admin oluşturma
+├── public/
+│   ├── mimce_logo.svg           # Public sayfalar için logo
+│   └── mimce_admin_logo.svg     # Admin paneli için logo
+├── types.ts                      # TypeScript type tanımları
+├── App.tsx                       # Ana routing yapısı
+├── index.tsx                     # React entry point
+└── index.html                    # HTML template
 ```
+
+---
 
 ## 🎯 Özellikler
 
-### Public Sayfalar
-- **Ana Sayfa**: Hero section, istatistikler, hedef kitle kartları, yaklaşan etkinlikler
-- **Eğitimler**: Filtrelenebilir eğitim listesi (Öğrenciler, Profesyoneller, Atölyeler, Webinarlar)
-- **Sertifika Doğrulama**: Sertifika numarası ile doğrulama sistemi
+### 🌐 Public Sayfalar
 
-### Admin Paneli
-- **Dashboard**: KPI kartları, son aktiviteler, hızlı işlemler
-- **Sertifikalar Yönetimi**: Sertifika listesi, arama, filtreleme
-- **Etkinlikler Yönetimi**: Etkinlik oluşturma, düzenleme, silme
+#### Ana Sayfa (`/`)
+- **Hero Section**: Etkileyici başlık ve CTA butonları
+- **İstatistikler**: Eğitilen mühendis, etkinlik ve iş ortağı sayıları
+- **Biz Kimiz**: Platform tanıtımı
+- **Hedef Kitle Kartları**: Öğrenciler ve Profesyoneller için özel bölümler
+- **Yaklaşan Etkinlikler**: Son 3 yayında etkinlik (Supabase'den)
+
+#### Eğitimler (`/egitimler`)
+- **Filtreleme**: Tümü, Öğrenciler, Profesyoneller, Atölyeler, Webinarlar
+- **Arama**: Eğitim başlığına göre arama
+- **Grid Layout**: Responsive kart görünümü
+- **Gerçek Zamanlı Veri**: Supabase'den canlı eğitim listesi
+
+#### Sertifika Doğrulama (`/sertifika-dogrulama`)
+- **İki Kolonlu Tasarım**: Sol tarafta bilgi, sağda form
+- **Sertifika Sorgulama**: Sertifika numarası ile doğrulama
+- **Sonuç Gösterimi**: Başarılı/Başarısız durum mesajları
+- **Detay Bilgileri**: Alıcı, eğitim ve tarih bilgileri
+
+### 🔐 Admin Paneli
+
+#### Dashboard (`/admin`)
+- **KPI Kartları**: 
+  - Toplam Üye sayısı
+  - Aktif Eğitim sayısı
+  - Yaklaşan Etkinlik sayısı
+  - Verilen Sertifika sayısı
+- **Son Aktiviteler**: Gerçek zamanlı aktivite akışı
+- **Hızlı İşlemler**: 
+  - Yeni Eğitim Ekle
+  - Sertifika Oluştur
+  - Gönüllülere E-posta
+- **Sistem Durumu**: Servis durumu göstergesi
+
+#### Sertifikalar Yönetimi (`/admin/sertifikalar`)
+- **Tablo Görünümü**: Tüm sertifikaların listesi
+- **Arama**: Sertifika no ve alıcı adına göre
+- **Filtreleme**: Kategori bazlı filtreler
+- **Pagination**: Sayfalama desteği
+
+#### Etkinlikler Yönetimi (`/admin/etkinlikler`)
+- **Grid Görünümü**: Etkinlik kartları
+- **CRUD İşlemleri**: 
+  - Yeni etkinlik oluşturma
+  - Etkinlik düzenleme
+  - Etkinlik silme
+- **Side Sheet Form**: Modern form deneyimi
+- **Durum Yönetimi**: Yayında, Taslak, İptal
+
+#### Eğitimler Yönetimi (`/admin/egitimler`)
+- **Görsel Yükleme**: Supabase Storage entegrasyonu
+- **Dosya veya URL**: İki yöntemle görsel ekleme
+- **CRUD İşlemleri**: Tam yönetim desteği
+- **Önizleme**: Görsel önizleme özelliği
+
+---
 
 ## 🛠️ Kurulum
 
 ### Gereksinimler
-- Node.js 18+ 
-- npm veya yarn
+
+- **Node.js** 18.0.0 veya üzeri
+- **npm** 9.0.0 veya üzeri (veya yarn/pnpm)
+- **Supabase Hesabı** (ücretsiz tier yeterli)
 
 ### Adımlar
 
-1. **Bağımlılıkları yükle:**
+#### 1. Repository'yi Klonlayın
+
+```bash
+git clone git@github.com:mimcemuhder/mimce-web-frontend.git
+cd mimce-web-frontend
+```
+
+#### 2. Bağımlılıkları Yükleyin
+
 ```bash
 npm install
 ```
 
-2. **Geliştirme sunucusunu başlat:**
+#### 3. Environment Variables
+
+Proje kök dizininde `.env.local` dosyası oluşturun:
+
+```env
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=your_anon_key_here
+```
+
+**Not:** Supabase dashboard'dan bu değerleri alabilirsiniz (Settings > API).
+
+#### 4. Supabase Kurulumu
+
+Detaylı kurulum için `SUPABASE_KURULUM.md` dosyasına bakın. Özet:
+
+1. Supabase'de tabloları oluşturun (`events`, `trainings`, `certificates`, `members`)
+2. Row Level Security (RLS) politikalarını ayarlayın
+3. Storage bucket oluşturun (`images`)
+4. Default admin kullanıcısı oluşturun
+
+#### 5. Geliştirme Sunucusunu Başlatın
+
 ```bash
 npm run dev
 ```
 
 Uygulama `http://localhost:3000` adresinde çalışacaktır.
 
-3. **Production build:**
+---
+
+## 📦 Build & Deploy
+
+### Development Build
+
+```bash
+npm run dev
+```
+
+### Production Build
+
 ```bash
 npm run build
 ```
 
-4. **Build önizleme:**
+Build çıktısı `dist/` klasöründe oluşturulur.
+
+### Build Önizleme
+
 ```bash
 npm run preview
 ```
 
+Production build'i local'de test eder.
+
+### Deployment
+
+Proje statik dosyalar ürettiği için herhangi bir static hosting servisine deploy edilebilir:
+
+- **Vercel**: Otomatik CI/CD
+- **Netlify**: Drag & drop veya Git entegrasyonu
+- **GitHub Pages**: `dist/` klasörünü deploy edin
+- **Supabase Hosting**: Supabase'in kendi hosting servisi
+
+---
+
 ## 🎨 Stil ve Tema
 
-Proje Tailwind CSS kullanır. Özel renk paleti:
+### Renk Paleti
 
-- **Primary**: `#13ecc8` (Bright Teal)
-- **Primary Dark**: `#0fbda0`
-- **Navy**: `#0f172a` (Slate 900)
-- **Navy Light**: `#1e293b` (Slate 800)
+Proje özel bir renk paleti kullanır (Tailwind config'de tanımlı):
 
-Font: Inter (Google Fonts)
+```javascript
+colors: {
+  primary: '#13ecc8',        // Bright Teal
+  'primary-dark': '#0fbda0', // Darker Teal
+  navy: '#0f172a',           // Slate 900
+  'navy-light': '#1e293b',   // Slate 800
+}
+```
 
-## 📦 Scripts
+### Typography
 
-- `npm run dev` - Development server başlatır
-- `npm run build` - Production build oluşturur
-- `npm run preview` - Build önizlemesi yapar
+- **Font Family**: Inter (Google Fonts)
+- **Font Weights**: 300, 400, 500, 600, 700
+
+### Responsive Breakpoints
+
+- **sm**: 640px
+- **md**: 768px
+- **lg**: 1024px
+- **xl**: 1280px
+
+---
 
 ## 🔧 Konfigürasyon
 
 ### Vite Config
-- Port: 3000
-- Host: 0.0.0.0
-- Path alias: `@/*` -> `./*`
 
-### TypeScript
-- Target: ES2022
-- Module: ESNext
-- JSX: react-jsx
+```typescript
+{
+  server: {
+    port: 3000,
+    host: '0.0.0.0'
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, '.')
+    }
+  }
+}
+```
+
+### TypeScript Config
+
+- **Target**: ES2022
+- **Module**: ESNext
+- **JSX**: react-jsx
+- **Path Alias**: `@/*` -> `./*`
+
+---
 
 ## 🗺️ Routing
 
 ### Public Routes
-- `/` - Ana sayfa
-- `/egitimler` - Eğitimler listesi
-- `/sertifika-dogrulama` - Sertifika doğrulama
 
-### Admin Routes
-- `/admin` - Dashboard
-- `/admin/sertifikalar` - Sertifika yönetimi
-- `/admin/etkinlikler` - Etkinlik yönetimi
+| Route | Açıklama |
+|-------|----------|
+| `/` | Ana sayfa |
+| `/egitimler` | Eğitimler listesi |
+| `/sertifika-dogrulama` | Sertifika doğrulama |
+| `/hakkimizda` | Hakkımızda (placeholder) |
+| `/etkinlikler` | Etkinlikler (placeholder) |
+| `/blog` | Blog (placeholder) |
+| `/iletisim` | İletişim (placeholder) |
 
-## 📝 Notlar
+### Admin Routes (Protected)
 
-- Proje şu anda mock data kullanmaktadır (`services/mockData.ts`)
-- Backend entegrasyonu için API servisleri eklenecektir
-- Authentication/Authorization henüz implement edilmemiştir
+| Route | Açıklama | Auth Required |
+|-------|----------|---------------|
+| `/admin/login` | Admin giriş | ❌ |
+| `/admin` | Dashboard | ✅ |
+| `/admin/sertifikalar` | Sertifika yönetimi | ✅ |
+| `/admin/etkinlikler` | Etkinlik yönetimi | ✅ |
+| `/admin/egitimler` | Eğitim yönetimi | ✅ |
+| `/admin/uyeler` | Üye yönetimi (placeholder) | ✅ |
+| `/admin/ayarlar` | Sistem ayarları (placeholder) | ✅ |
+
+**Not:** Tüm admin route'ları `ProtectedRoute` component'i ile korunur.
+
+---
+
+## 🔐 Authentication
+
+### Admin Login
+
+- **Email/Password**: Supabase Auth ile giriş
+- **Session Management**: Otomatik session yönetimi
+- **Protected Routes**: Authentication kontrolü
+- **Logout**: Güvenli çıkış işlemi
+
+### Default Admin
+
+Kurulum sonrası default admin kullanıcısı:
+
+- **Email**: `mimce@mimce.com`
+- **Password**: `mimceadmintest123`
+
+**⚠️ Güvenlik:** Production'da mutlaka şifreyi değiştirin!
+
+---
+
+## 📊 Database Schema
+
+### Tablolar
+
+#### `events`
+- `id` (TEXT, PRIMARY KEY)
+- `title` (TEXT, NOT NULL)
+- `date` (TEXT, NOT NULL)
+- `time` (TEXT, NOT NULL)
+- `location` (TEXT, NOT NULL)
+- `description` (TEXT)
+- `status` (TEXT: 'Yayında', 'Taslak', 'İptal')
+- `image` (TEXT)
+- `created_at` (TIMESTAMP)
+
+#### `trainings`
+- `id` (TEXT, PRIMARY KEY)
+- `title` (TEXT, NOT NULL)
+- `description` (TEXT)
+- `date` (TEXT, NOT NULL)
+- `type` (TEXT: 'Öğrenciler', 'Profesyoneller', 'Atölyeler', 'Webinarlar')
+- `image` (TEXT)
+- `created_at` (TIMESTAMP)
+
+#### `certificates`
+- `id` (TEXT, PRIMARY KEY)
+- `certificateNo` (TEXT, UNIQUE, NOT NULL)
+- `recipientName` (TEXT, NOT NULL)
+- `courseName` (TEXT, NOT NULL)
+- `issueDate` (TEXT, NOT NULL)
+- `status` (TEXT: 'Doğrulandı', 'Beklemede')
+- `created_at` (TIMESTAMP)
+
+#### `members`
+- `id` (TEXT, PRIMARY KEY)
+- `name` (TEXT, NOT NULL)
+- `email` (TEXT, UNIQUE, NOT NULL)
+- `created_at` (TIMESTAMP)
+
+### Storage
+
+- **Bucket**: `images`
+- **Kullanım**: Eğitim görselleri yükleme
+- **Public Access**: Evet (görseller herkese açık)
+
+---
+
+## 🧪 Development
+
+### Code Structure
+
+- **Components**: Reusable UI components
+- **Pages**: Route-specific page components
+- **Services**: API calls and business logic
+- **Types**: TypeScript type definitions
+
+### Best Practices
+
+- ✅ TypeScript strict mode aktif
+- ✅ Functional components kullanımı
+- ✅ Hooks (useState, useEffect) ile state management
+- ✅ Responsive design (mobile-first)
+- ✅ Error handling ve loading states
+- ✅ Code splitting ve lazy loading
+
+---
+
+## 📝 Scripts
+
+| Komut | Açıklama |
+|-------|----------|
+| `npm run dev` | Development server başlatır (port 3000) |
+| `npm run build` | Production build oluşturur |
+| `npm run preview` | Build önizlemesi yapar |
+
+---
+
+## 🐛 Sorun Giderme
+
+### "Supabase URL veya Anon Key bulunamadı"
+
+- `.env.local` dosyasının proje kök dizininde olduğundan emin olun
+- Dosya adının tam olarak `.env.local` olduğunu kontrol edin
+- Değerlerin tırnak içinde olmadığından emin olun
+- Sunucuyu yeniden başlatın (`npm run dev`)
+
+### "relation does not exist" hatası
+
+- SQL Editor'da tabloların oluşturulduğunu kontrol edin
+- Tablo isimlerinin doğru olduğundan emin olun (küçük harf)
+
+### "new row violates row-level security policy"
+
+- RLS politikalarının doğru ayarlandığından emin olun
+- Kullanıcının authenticated olduğundan emin olun
+
+### Login çalışmıyor
+
+- Email doğrulama ayarlarını kontrol edin
+- Supabase Dashboard'da kullanıcının oluşturulduğunu kontrol edin
+- Browser console'da hata mesajlarını kontrol edin
+
+---
+
+## 🤝 Katkıda Bulunma
+
+1. Fork edin
+2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
+3. Değişikliklerinizi commit edin (`git commit -m 'feat: add amazing feature'`)
+4. Branch'inizi push edin (`git push origin feature/amazing-feature`)
+5. Pull Request oluşturun
+
+---
 
 ## 📄 Lisans
 
-Bu proje MİMCE için özel olarak geliştirilmiştir.
+Bu proje MİMCE için özel olarak geliştirilmiştir. Tüm hakları saklıdır.
+
+---
+
+## 📞 İletişim
+
+**MİMCE** - Mühendislik Platformu
+
+- Website: [mimce.org](https://mimce.org)
+- Email: info@mimce.org
+
+---
+
+<div align="center">
+  <p>Made with ❤️ by MİMCE Team</p>
+  <p>© 2024 MİMCE. All rights reserved.</p>
+</div>
