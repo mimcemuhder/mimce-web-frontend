@@ -1,11 +1,40 @@
-import React from 'react';
-import { kpiData, recentActivities } from '../../services/mockData';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { supabase } from '../../services/supabase';
+import { Activity } from '../../types';
 import { 
   Users, BookOpen, Calendar, Award, MoreHorizontal, 
   ArrowUpRight, Plus, Mail, ShieldCheck, Clock 
 } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
+  const [kpiData, setKpiData] = useState([
+    { label: 'Toplam Üye', value: '0', icon: 'users', change: '+0%' },
+    { label: 'Aktif Eğitim', value: '0', icon: 'book', change: '+0' },
+    { label: 'Yaklaşan Etkinlik', value: '0', icon: 'calendar' },
+    { label: 'Verilen Sertifika', value: '0', icon: 'award', change: '+0' },
+  ]);
+  const [recentActivities, setRecentActivities] = useState<Activity[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const [members, trainings, events, certificates] = await Promise.all([
+        supabase.from('members').select('*', { count: 'exact', head: true }),
+        supabase.from('trainings').select('*', { count: 'exact', head: true }),
+        supabase.from('events').select('*', { count: 'exact', head: true }),
+        supabase.from('certificates').select('*', { count: 'exact', head: true }),
+      ]);
+
+      setKpiData([
+        { label: 'Toplam Üye', value: String(members.count || 0), icon: 'users', change: '+0%' },
+        { label: 'Aktif Eğitim', value: String(trainings.count || 0), icon: 'book', change: '+0' },
+        { label: 'Yaklaşan Etkinlik', value: String(events.count || 0), icon: 'calendar' },
+        { label: 'Verilen Sertifika', value: String(certificates.count || 0), icon: 'award', change: '+0' },
+      ]);
+    };
+    fetchData();
+  }, []);
+
   // Icon mapping
   const getIcon = (name: string) => {
     switch(name) {
@@ -78,7 +107,7 @@ const Dashboard: React.FC = () => {
            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
              <h3 className="font-bold text-gray-900 text-lg mb-4">Hızlı İşlemler</h3>
              <div className="space-y-3">
-               <button className="w-full flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:border-primary hover:bg-teal-50 transition-colors text-left group">
+               <Link to="/admin/egitimler" className="w-full flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:border-primary hover:bg-teal-50 transition-colors text-left group">
                  <div className="w-10 h-10 rounded bg-navy text-white flex items-center justify-center group-hover:bg-primary group-hover:text-navy transition-colors">
                    <BookOpen size={20} />
                  </div>
@@ -86,7 +115,7 @@ const Dashboard: React.FC = () => {
                    <span className="block text-sm font-bold text-gray-800">Yeni Eğitim Ekle</span>
                    <span className="block text-xs text-gray-500">Müfredat oluştur</span>
                  </div>
-               </button>
+               </Link>
 
                <button className="w-full flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:border-primary hover:bg-teal-50 transition-colors text-left group">
                  <div className="w-10 h-10 rounded bg-navy text-white flex items-center justify-center group-hover:bg-primary group-hover:text-navy transition-colors">
