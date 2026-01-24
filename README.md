@@ -3,7 +3,7 @@
   
   # MİMCE Web Frontend
   
-  **Modern Mühendislik Platformu - React & TypeScript ile Geliştirilmiş**
+  **MİMCE Mühendisler Derneği Web Sitesi - React & TypeScript ile Geliştirilmiş**
   
   [![React](https://img.shields.io/badge/React-19.2.3-61DAFB?logo=react)](https://react.dev/)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.8.2-3178C6?logo=typescript)](https://www.typescriptlang.org/)
@@ -15,7 +15,7 @@
 
 ## 📖 Hakkında
 
-MİMCE (Mühendislik Platformu) için geliştirilmiş modern, responsive ve kullanıcı dostu web uygulaması. Mühendislik öğrencileri ve profesyonelleri için eğitim, etkinlik ve sertifika yönetim sistemi sunar.
+MİMCE Mühendisler Derneği için geliştirilmiş modern, responsive ve kullanıcı dostu web sitesi. Derneğin mühendislik öğrencileri ve profesyonelleri için eğitim, etkinlik ve sertifika yönetim sistemi sunar.
 
 ### ✨ Temel Özellikler
 
@@ -92,7 +92,7 @@ mimce-web-frontend/
 #### Ana Sayfa (`/`)
 - **Hero Section**: Etkileyici başlık ve CTA butonları
 - **İstatistikler**: Eğitilen mühendis, etkinlik ve iş ortağı sayıları
-- **Biz Kimiz**: Platform tanıtımı
+- **Biz Kimiz**: Dernek tanıtımı
 - **Hedef Kitle Kartları**: Öğrenciler ve Profesyoneller için özel bölümler
 - **Yaklaşan Etkinlikler**: Son 3 yayında etkinlik (Supabase'den)
 
@@ -462,7 +462,7 @@ Bu proje MİMCE için özel olarak geliştirilmiştir. Tüm hakları saklıdır.
 
 ## 📞 İletişim
 
-**MİMCE** - Mühendislik Platformu
+**MİMCE Mühendisler Derneği**
 
 - Website: [mimce.org](https://mimce.org)
 - Email: info@mimce.org
