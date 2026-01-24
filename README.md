@@ -1,6 +1,6 @@
-# MIMCE Web Frontend
+# MİMCE Web Frontend
 
-MIMCE (Mühendislik Platformu) için modern ve responsive web uygulaması. React, TypeScript ve Vite ile geliştirilmiştir.
+MİMCE (Mühendislik Platformu) için modern ve responsive web uygulaması. React, TypeScript ve Vite ile geliştirilmiştir.
 
 ## 🚀 Teknolojiler
 
@@ -126,4 +126,4 @@ Font: Inter (Google Fonts)
 
 ## 📄 Lisans
 
-Bu proje MIMCE için özel olarak geliştirilmiştir.
+Bu proje MİMCE için özel olarak geliştirilmiştir.
