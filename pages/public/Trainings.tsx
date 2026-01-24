@@ -1,15 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Calendar } from 'lucide-react';
-import { initialTrainings } from '../../services/mockData';
+import { supabase } from '../../services/supabase';
+import { Training } from '../../types';
 
 const Trainings: React.FC = () => {
   const [filter, setFilter] = useState('Tümü');
+  const [trainings, setTrainings] = useState<Training[]>([]);
   
   const filters = ['Tümü', 'Öğrenciler', 'Profesyoneller', 'Atölyeler', 'Webinarlar'];
 
+  useEffect(() => {
+    const fetchTrainings = async () => {
+      const { data } = await supabase
+        .from('trainings')
+        .select('*')
+        .order('date', { ascending: false });
+      if (data) setTrainings(data);
+    };
+    fetchTrainings();
+  }, []);
+
   const filteredTrainings = filter === 'Tümü' 
-    ? initialTrainings 
-    : initialTrainings.filter(t => t.type === filter);
+    ? trainings 
+    : trainings.filter(t => t.type === filter);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
