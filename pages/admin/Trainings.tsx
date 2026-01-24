@@ -309,7 +309,7 @@ const Trainings: React.FC = () => {
                     onChange={handleInputChange}
                     type="text" 
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none"
-                    placeholder="Örn: 15 Ekim 2024"
+                    placeholder="Örn: 15 Ekim 2026"
                     required
                   />
                 </div>

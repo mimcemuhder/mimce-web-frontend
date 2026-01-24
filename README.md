@@ -471,5 +471,5 @@ Bu proje MİMCE için özel olarak geliştirilmiştir. Tüm hakları saklıdır.
 
 <div align="center">
   <p>Made with ❤️ by MİMCE Team</p>
-  <p>© 2024 MİMCE. All rights reserved.</p>
+  <p>© 2026 MİMCE. All rights reserved.</p>
 </div>

@@ -101,7 +101,7 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 mt-16 pt-8 border-t border-gray-800 text-xs text-center md:text-left">
-          © 2024 MİMCE. Tüm hakları saklıdır.
+          © 2026 MİMCE. Tüm hakları saklıdır.
         </div>
       </footer>
     </div>
