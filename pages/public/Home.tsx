@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar, Users, Briefcase } from 'lucide-react';
-import { initialEvents } from '../../services/mockData';
+import { supabase } from '../../services/supabase';
+import { Event } from '../../types';
 
 const Home: React.FC = () => {
+  const [events, setEvents] = useState<Event[]>([]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const { data } = await supabase
+        .from('events')
+        .select('*')
+        .eq('status', 'Yayında')
+        .order('date', { ascending: true })
+        .limit(3);
+      if (data) setEvents(data);
+    };
+    fetchEvents();
+  }, []);
+
   return (
     <div className="w-full">
       {/* HERO SECTION */}
@@ -65,7 +81,7 @@ const Home: React.FC = () => {
             <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-1 bg-primary rounded-full"></span>
           </h2>
           <p className="mt-8 text-lg text-gray-600 leading-relaxed">
-            MIMCE; mühendislik öğrencileri ve profesyonelleri bir araya getirerek mentorluk, pratik beceri gelişimi ve sektör bağlantıları sunan bir ekosistem oluşturur.
+            MİMCE; mühendislik öğrencileri ve profesyonelleri bir araya getirerek mentorluk, pratik beceri gelişimi ve sektör bağlantıları sunan bir ekosistem oluşturur.
           </p>
         </div>
       </section>
@@ -122,7 +138,7 @@ const Home: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {initialEvents.map((event) => (
+            {events.map((event) => (
               <div key={event.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
                 <div className="h-48 overflow-hidden relative">
                   <img src={event.image} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
