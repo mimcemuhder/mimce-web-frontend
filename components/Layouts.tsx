@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { supabase } from '../services/supabase';
 import { 
   Menu, X, Home, Users, BookOpen, Calendar, Award, Settings, 
   Search, Bell, HelpCircle, LogOut, Facebook, Twitter, Linkedin, Instagram
@@ -15,7 +16,7 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img src="/mimce_logo.png" alt="MIMCE Logo" className="h-10" />
+            <img src="/mimce_logo.svg" alt="MİMCE Logo" className="h-10" />
           </Link>
 
           {/* Desktop Nav */}
@@ -64,10 +65,10 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
           {/* Brand Col */}
           <div className="col-span-1 md:col-span-2 space-y-6">
              <div className="flex items-center">
-                <img src="/mimce_logo.png" alt="MIMCE Logo" className="h-8 brightness-0 invert" />
+                <img src="/mimce_logo.svg" alt="MİMCE Logo" className="h-8 brightness-0 invert" />
              </div>
              <p className="max-w-sm text-sm leading-relaxed">
-               MIMCE, mühendislik öğrencileri ve profesyonelleri eğitimler ve etkinliklerle buluşturur.
+               MİMCE, mühendislik öğrencileri ve profesyonelleri eğitimler ve etkinliklerle buluşturur.
              </p>
              <div className="flex gap-4">
                 <Facebook size={20} className="hover:text-primary cursor-pointer"/>
@@ -100,7 +101,7 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 mt-16 pt-8 border-t border-gray-800 text-xs text-center md:text-left">
-          © 2024 MIMCE. Tüm hakları saklıdır.
+          © 2024 MİMCE. Tüm hakları saklıdır.
         </div>
       </footer>
     </div>
@@ -109,6 +110,21 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/admin/login');
+  };
   
   const menuItems = [
     { path: '/admin', icon: Home, label: 'Gösterge Paneli' },
@@ -123,8 +139,17 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       {/* Sidebar */}
       <aside className="w-64 bg-navy flex flex-col text-gray-300">
-        <div className="h-16 flex items-center px-6 border-b border-gray-800">
-          <img src="/mimce_logo.png" alt="MIMCE Logo" className="h-8 brightness-0 invert" />
+        <div className="h-16 flex items-center px-6 border-b border-gray-800 gap-3">
+          <Link to="/" className="flex items-center gap-3">
+            <img 
+              src="/mimce_admin_logo.svg" 
+              alt="MİMCE Admin Logo" 
+              className="h-8"
+            />
+            <span className="text-white/40 text-xs font-semibold tracking-wider uppercase">
+              ADMIN
+            </span>
+          </Link>
         </div>
 
         <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
@@ -148,13 +173,22 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
         </nav>
 
         <div className="p-4 border-t border-gray-800">
-          <div className="flex items-center gap-3">
-             <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-navy font-bold">SA</div>
-             <div className="overflow-hidden">
-               <p className="text-sm text-white font-medium truncate">Süper Admin</p>
-               <p className="text-xs text-gray-500 truncate">admin@mimce.org</p>
+          <div className="flex items-center gap-3 mb-3">
+             <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-navy font-bold">
+               {user?.email?.charAt(0).toUpperCase() || 'A'}
+             </div>
+             <div className="overflow-hidden flex-1">
+               <p className="text-sm text-white font-medium truncate">Admin</p>
+               <p className="text-xs text-gray-500 truncate">{user?.email || 'Yükleniyor...'}</p>
              </div>
           </div>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-navy-light rounded-md transition-colors"
+          >
+            <LogOut size={16} />
+            Çıkış Yap
+          </button>
         </div>
       </aside>
 
@@ -183,7 +217,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
                <HelpCircle size={20} />
              </button>
              <Link to="/" className="p-2 text-gray-400 hover:text-navy" title="Siteye Dön">
-               <LogOut size={20} />
+               <Home size={20} />
              </Link>
            </div>
         </header>
