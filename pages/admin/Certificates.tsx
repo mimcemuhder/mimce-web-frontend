@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabase';
 import { Certificate } from '../../types';
-import { Search, MoreVertical, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, MoreVertical, ChevronLeft, ChevronRight, Plus, X } from 'lucide-react';
 
 const Certificates: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [data, setData] = useState<Certificate[]>([]);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [editingCertificateId, setEditingCertificateId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCertificates = async () => {
@@ -23,16 +25,138 @@ const Certificates: React.FC = () => {
     c.recipientName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Form State
+  const [formData, setFormData] = useState({
+    certificateNo: '',
+    recipientName: '',
+    courseName: '',
+    issueDate: '',
+    status: 'Beklemede' as Certificate['status']
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const resetForm = () => {
+    setFormData({
+      certificateNo: '',
+      recipientName: '',
+      courseName: '',
+      issueDate: '',
+      status: 'Beklemede'
+    });
+    setEditingCertificateId(null);
+  };
+
+  const handleEdit = (cert: Certificate) => {
+    setFormData({
+      certificateNo: cert.certificateNo,
+      recipientName: cert.recipientName,
+      courseName: cert.courseName,
+      issueDate: cert.issueDate,
+      status: cert.status
+    });
+    setEditingCertificateId(cert.id);
+    setIsSheetOpen(true);
+  };
+
+  const handleDelete = async (certId: string, certNo: string) => {
+    if (!window.confirm(`"${certNo}" sertifikasını silmek istediğinize emin misiniz?`)) {
+      return;
+    }
+
+    const { error } = await supabase
+      .from('certificates')
+      .delete()
+      .eq('id', certId);
+
+    if (!error) {
+      setData(data.filter(c => c.id !== certId));
+    } else {
+      alert('Sertifika silinirken bir hata oluştu: ' + error.message);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Validate
+    if (!formData.certificateNo || !formData.recipientName || !formData.courseName || !formData.issueDate) {
+      alert("Tüm alanlar zorunludur.");
+      return;
+    }
+
+    if (editingCertificateId) {
+      // Güncelleme
+      const updatedCertificate: Partial<Certificate> = {
+        certificateNo: formData.certificateNo.toUpperCase(),
+        recipientName: formData.recipientName,
+        courseName: formData.courseName,
+        issueDate: formData.issueDate,
+        status: formData.status
+      };
+
+      const { error } = await supabase
+        .from('certificates')
+        .update(updatedCertificate)
+        .eq('id', editingCertificateId);
+
+      if (!error) {
+        setData(data.map(c => 
+          c.id === editingCertificateId 
+            ? { ...c, ...updatedCertificate } as Certificate
+            : c
+        ));
+        setIsSheetOpen(false);
+        resetForm();
+      } else {
+        alert('Sertifika güncellenirken bir hata oluştu: ' + error.message);
+      }
+    } else {
+      // Yeni ekleme
+      const newCertificate: Certificate = {
+        id: Date.now().toString(),
+        certificateNo: formData.certificateNo.toUpperCase(),
+        recipientName: formData.recipientName,
+        courseName: formData.courseName,
+        issueDate: formData.issueDate,
+        status: formData.status
+      };
+
+      const { error } = await supabase.from('certificates').insert([newCertificate]);
+      if (!error) {
+        setData([newCertificate, ...data]);
+        setIsSheetOpen(false);
+        resetForm();
+      } else {
+        alert('Sertifika eklenirken bir hata oluştu: ' + error.message);
+      }
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="relative h-full">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Sertifikaları Yönet</h1>
           <p className="text-sm text-gray-500 mt-1">Sertifikaları görüntüleyin, oluşturun ve yönetin.</p>
         </div>
+        <button 
+          onClick={() => {
+            resetForm();
+            setIsSheetOpen(true);
+          }}
+          className="bg-primary text-navy font-bold px-4 py-2.5 rounded-lg flex items-center gap-2 hover:bg-primary-dark transition-colors shadow-sm"
+        >
+          <Plus size={18} />
+          Yeni Sertifika
+        </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="space-y-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         {/* Toolbar */}
         <div className="p-4 border-b border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="relative w-full md:w-96">
@@ -84,9 +208,20 @@ const Certificates: React.FC = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button className="text-gray-400 hover:text-navy">
-                      <MoreVertical size={18} />
-                    </button>
+                    <div className="flex items-center justify-end gap-2">
+                      <button 
+                        onClick={() => handleEdit(cert)}
+                        className="px-3 py-1.5 text-xs font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                      >
+                        Düzenle
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(cert.id, cert.certificateNo)}
+                        className="px-3 py-1.5 text-xs font-medium text-red-600 border border-red-300 rounded hover:bg-red-50 transition-colors"
+                      >
+                        Sil
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -123,6 +258,119 @@ const Certificates: React.FC = () => {
           </div>
         </div>
       </div>
+      </div>
+
+      {/* Side Sheet Overlay */}
+      {isSheetOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-navy/30 backdrop-blur-sm" onClick={() => {
+            setIsSheetOpen(false);
+            resetForm();
+          }}></div>
+          
+          {/* Sheet */}
+          <div className="relative w-full max-w-md bg-white shadow-2xl h-full flex flex-col animate-slide-in">
+             <div className="flex items-center justify-between p-6 border-b border-gray-100">
+                <h2 className="text-xl font-bold text-navy">
+                  {editingCertificateId ? 'Sertifikayı Düzenle' : 'Yeni Sertifika'}
+                </h2>
+                <button onClick={() => {
+                  setIsSheetOpen(false);
+                  resetForm();
+                }} className="text-gray-400 hover:text-gray-600">
+                  <X size={24} />
+                </button>
+             </div>
+             
+             <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">Sertifika Numarası*</label>
+                  <input 
+                    name="certificateNo"
+                    value={formData.certificateNo}
+                    onChange={handleInputChange}
+                    type="text" 
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none uppercase"
+                    placeholder="Örn: MIMCE-2025-X9Y"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">Alıcı Adı*</label>
+                  <input 
+                    name="recipientName"
+                    value={formData.recipientName}
+                    onChange={handleInputChange}
+                    type="text" 
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                    placeholder="Örn: Ahmet Yılmaz"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">Eğitim/Etkinlik Adı*</label>
+                  <input 
+                    name="courseName"
+                    value={formData.courseName}
+                    onChange={handleInputChange}
+                    type="text" 
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                    placeholder="Örn: İleri Seviye Yapısal Analiz"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Veriliş Tarihi*</label>
+                  <input 
+                    name="issueDate"
+                    value={formData.issueDate}
+                    onChange={handleInputChange}
+                    type="text" 
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none"
+                    placeholder="Örn: 15 Ekim 2025"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Durum</label>
+                  <select 
+                    name="status"
+                    value={formData.status}
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none bg-white"
+                  >
+                    <option value="Beklemede">Beklemede</option>
+                    <option value="Doğrulandı">Doğrulandı</option>
+                  </select>
+                </div>
+             </form>
+
+             <div className="p-6 border-t border-gray-100 flex gap-4 bg-gray-50">
+                <button 
+                  type="button"
+                  onClick={() => {
+                    setIsSheetOpen(false);
+                    resetForm();
+                  }}
+                  className="flex-1 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100"
+                >
+                  İptal
+                </button>
+                <button 
+                  onClick={handleSubmit}
+                  className="flex-1 py-2.5 bg-primary text-navy rounded-lg font-bold hover:bg-primary-dark shadow-sm"
+                >
+                  {editingCertificateId ? 'Güncelle' : 'Sertifikayı Kaydet'}
+                </button>
+             </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
