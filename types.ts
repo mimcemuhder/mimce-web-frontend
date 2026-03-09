@@ -40,3 +40,21 @@ export interface Activity {
   timestamp: string;
   type: 'success' | 'warning' | 'info';
 }
+
+export interface UserTraining {
+  id: string;
+  user_id: string;
+  training_id: string;
+  enrolled_at: string;
+  completed: boolean;
+  training?: Training;
+}
+
+export interface UserEvent {
+  id: string;
+  user_id: string;
+  event_id: string;
+  enrolled_at: string;
+  attended: boolean;
+  event?: Event;
+}
