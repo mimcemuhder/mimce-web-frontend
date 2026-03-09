@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { PublicLayout, AdminLayout } from './components/Layouts';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
@@ -7,6 +7,10 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import Home from './pages/public/Home';
 import Trainings from './pages/public/Trainings';
 import CertificateVerify from './pages/public/CertificateVerify';
+import AboutUs from './pages/public/AboutUs';
+import AuthLogin from './pages/public/AuthLogin';
+import AuthRegister from './pages/public/AuthRegister';
+import Profile from './pages/public/Profile';
 
 // Admin Pages
 import Login from './pages/admin/Login';
@@ -24,8 +28,13 @@ const App: React.FC = () => {
         <Route path="/egitimler" element={<PublicLayout><Trainings /></PublicLayout>} />
         <Route path="/sertifika-dogrulama" element={<PublicLayout><CertificateVerify /></PublicLayout>} />
         
+        {/* Auth Routes */}
+        <Route path="/giris" element={<AuthLogin />} />
+        <Route path="/uye-ol" element={<AuthRegister />} />
+        <Route path="/profil" element={<PublicLayout><Profile /></PublicLayout>} />
+
         {/* Placeholder for other public links to not 404 */}
-        <Route path="/hakkimizda" element={<PublicLayout><div className="p-20 text-center">Hakkımızda Sayfası (Yapım Aşamasında)</div></PublicLayout>} />
+        <Route path="/hakkimizda" element={<PublicLayout><AboutUs /></PublicLayout>} />
         <Route path="/etkinlikler" element={<PublicLayout><div className="p-20 text-center">Etkinlikler Listesi (Yapım Aşamasında)</div></PublicLayout>} />
         <Route path="/blog" element={<PublicLayout><div className="p-20 text-center">Blog (Yapım Aşamasında)</div></PublicLayout>} />
         <Route path="/iletisim" element={<PublicLayout><div className="p-20 text-center">İletişim (Yapım Aşamasında)</div></PublicLayout>} />
