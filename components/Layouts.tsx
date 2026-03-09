@@ -1,13 +1,56 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../services/supabase';
+import type { User } from '@supabase/supabase-js';
 import { 
   Menu, X, Home, Users, BookOpen, Calendar, Award, Settings, 
-  Search, Bell, HelpCircle, LogOut, Facebook, Twitter, Linkedin, Instagram
+  Search, Bell, HelpCircle, LogOut, Facebook, Twitter, Linkedin, Instagram,
+  UserCircle, ChevronDown
 } from 'lucide-react';
 
 export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [trainingsDropdownOpen, setTrainingsDropdownOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const profileRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+      setLoading(false);
+    };
+    getSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setProfileMenuOpen(false);
+    navigate('/');
+  };
+
+  const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || '';
+  const avatarUrl = user?.user_metadata?.avatar_url;
+  const initials = displayName.charAt(0).toUpperCase();
 
   return (
     <div className="min-h-screen flex flex-col font-sans text-gray-800">
@@ -23,18 +66,95 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
           <nav className="hidden md:flex items-center gap-8 font-medium text-sm text-gray-600">
             <Link to="/" className="hover:text-primary transition-colors">Ana Sayfa</Link>
             <Link to="/hakkimizda" className="hover:text-primary transition-colors">Hakkımızda</Link>
-            <Link to="/egitimler" className="hover:text-primary transition-colors">Eğitimler</Link>
+            <div 
+              className="relative"
+              onMouseEnter={() => setTrainingsDropdownOpen(true)}
+              onMouseLeave={() => setTrainingsDropdownOpen(false)}
+            >
+              <Link to="/egitimler" className="hover:text-primary transition-colors">Eğitimler</Link>
+              {trainingsDropdownOpen && (
+                <div className="absolute top-full left-0 pt-2 bg-transparent z-50 min-w-[180px]">
+                  <div className="bg-white rounded-lg shadow-xl border border-gray-200 py-2">
+                    <Link 
+                      to="/sertifika-dogrulama"
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors"
+                    >
+                      Sertifika
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
             <Link to="/etkinlikler" className="hover:text-primary transition-colors">Etkinlikler</Link>
             <Link to="/blog" className="hover:text-primary transition-colors">Blog</Link>
             <Link to="/iletisim" className="hover:text-primary transition-colors">İletişim</Link>
           </nav>
 
-          {/* Buttons */}
+          {/* Auth Area */}
           <div className="hidden md:flex items-center gap-4">
-            <Link to="/login" className="text-sm font-semibold text-gray-700 hover:text-navy">Giriş Yap</Link>
-            <Link to="/join" className="px-5 py-2.5 bg-primary text-navy text-sm font-bold rounded hover:bg-primary-dark transition-colors">
-              Katıl
-            </Link>
+            {loading ? (
+              <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
+            ) : user ? (
+              <div className="relative" ref={profileRef}>
+                <button
+                  onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+                  className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt="" className="w-8 h-8 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-navy font-bold text-sm">
+                      {initials}
+                    </div>
+                  )}
+                  <span className="text-sm font-medium text-gray-700 max-w-[120px] truncate">{displayName}</span>
+                  <ChevronDown size={16} className={`text-gray-400 transition-transform ${profileMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {profileMenuOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="text-sm font-semibold text-gray-900 truncate">{displayName}</p>
+                      <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                    </div>
+                    <div className="py-1">
+                      <Link
+                        to="/profil"
+                        onClick={() => setProfileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <UserCircle size={18} className="text-gray-400" />
+                        Profilim
+                      </Link>
+                      <Link
+                        to="/profil"
+                        onClick={() => setProfileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <Settings size={18} className="text-gray-400" />
+                        Hesap Ayarları
+                      </Link>
+                    </div>
+                    <div className="border-t border-gray-100 py-1">
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        <LogOut size={18} />
+                        Çıkış Yap
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Link to="/giris" className="text-sm font-semibold text-gray-700 hover:text-navy">Giriş Yap</Link>
+                <Link to="/uye-ol" className="px-5 py-2.5 bg-primary text-navy text-sm font-bold rounded hover:bg-primary-dark transition-colors">
+                  Üye Ol
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -46,10 +166,42 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden bg-white border-t p-4 flex flex-col gap-4 shadow-lg">
-            <Link to="/" className="text-gray-700 font-medium">Ana Sayfa</Link>
-            <Link to="/egitimler" className="text-gray-700 font-medium">Eğitimler</Link>
-            <Link to="/etkinlikler" className="text-gray-700 font-medium">Etkinlikler</Link>
-            <Link to="/admin" className="text-primary font-bold">Admin Demo</Link>
+            <Link to="/" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium">Ana Sayfa</Link>
+            <Link to="/hakkimizda" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium">Hakkımızda</Link>
+            <Link to="/egitimler" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium">Eğitimler</Link>
+            <Link to="/etkinlikler" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium">Etkinlikler</Link>
+            <Link to="/blog" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium">Blog</Link>
+            <Link to="/iletisim" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium">İletişim</Link>
+            <div className="border-t border-gray-200 pt-4 flex flex-col gap-3">
+              {user ? (
+                <>
+                  <div className="flex items-center gap-3 pb-2">
+                    {avatarUrl ? (
+                      <img src={avatarUrl} alt="" className="w-9 h-9 rounded-full object-cover" />
+                    ) : (
+                      <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-navy font-bold text-sm">
+                        {initials}
+                      </div>
+                    )}
+                    <div className="overflow-hidden">
+                      <p className="text-sm font-semibold text-gray-900 truncate">{displayName}</p>
+                      <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                    </div>
+                  </div>
+                  <Link to="/profil" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 text-gray-700 font-medium">
+                    <UserCircle size={18} /> Profilim
+                  </Link>
+                  <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="flex items-center gap-2 text-red-600 font-medium">
+                    <LogOut size={18} /> Çıkış Yap
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/giris" onClick={() => setMobileMenuOpen(false)} className="text-center py-2 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg">Giriş Yap</Link>
+                  <Link to="/uye-ol" onClick={() => setMobileMenuOpen(false)} className="text-center py-2 text-sm font-bold bg-primary text-navy rounded-lg">Üye Ol</Link>
+                </>
+              )}
+            </div>
           </div>
         )}
       </header>
