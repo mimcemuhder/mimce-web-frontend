@@ -7,8 +7,10 @@ import { universities } from '../../data/universities';
 import {
   UserCircle, Mail, Shield, Calendar, Save, Camera,
   LogOut, Key, CheckCircle, AlertCircle, Github,
-  BookOpen, MapPin, Clock, Award, Upload, X, ChevronDown, Search
+  BookOpen, MapPin, Clock, Award, Upload, X, ChevronDown, Search, Trash2,
 } from 'lucide-react';
+
+const DELETE_CONFIRM_PHRASE = 'HESABIMI SIL';
 
 type Tab = 'profile' | 'trainings' | 'events';
 
@@ -37,6 +39,13 @@ const Profile: React.FC = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [passwordSaving, setPasswordSaving] = useState(false);
+
+  // Hesap silme
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteAccountLoading, setDeleteAccountLoading] = useState(false);
+  const [deleteModalError, setDeleteModalError] = useState<string | null>(null);
 
   // Enrollments
   const [userTrainings, setUserTrainings] = useState<UserTraining[]>([]);
@@ -245,6 +254,66 @@ const Profile: React.FC = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    navigate('/');
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
+    setDeleteConfirmText('');
+    setDeletePassword('');
+    setDeleteModalError(null);
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user?.email) return;
+    setMessage(null);
+    setDeleteModalError(null);
+
+    if (deleteConfirmText.trim() !== DELETE_CONFIRM_PHRASE) {
+      setDeleteModalError(`Onay için tam olarak "${DELETE_CONFIRM_PHRASE}" yazın.`);
+      return;
+    }
+
+    const oauthProvider = user.app_metadata?.provider;
+    const userIsOAuth = oauthProvider === 'google' || oauthProvider === 'github';
+
+    if (!userIsOAuth) {
+      if (!deletePassword) {
+        setDeleteModalError('Hesabınızı silmek için şifrenizi girin.');
+        return;
+      }
+      const { error: reauthErr } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: deletePassword,
+      });
+      if (reauthErr) {
+        setDeleteModalError('Şifre hatalı veya oturum doğrulanamadı.');
+        return;
+      }
+    }
+
+    setDeleteAccountLoading(true);
+    const { data, error: fnError } = await supabase.functions.invoke('delete-account', { method: 'POST' });
+
+    if (fnError) {
+      setDeleteModalError(
+        fnError.message?.includes('Failed to fetch') || fnError.message?.includes('non-2xx')
+          ? 'Hesap silme servisi yanıt vermedi. Supabase’de delete-account edge function ve SUPABASE_SERVICE_ROLE_KEY gizli anahtarını kontrol edin.'
+          : `İşlem başarısız: ${fnError.message}`,
+      );
+      setDeleteAccountLoading(false);
+      return;
+    }
+
+    const payload = data as { ok?: boolean; error?: string } | null;
+    if (payload && 'error' in payload && payload.error) {
+      setDeleteModalError(payload.error);
+      setDeleteAccountLoading(false);
+      return;
+    }
+
+    await supabase.auth.signOut({ scope: 'local' });
+    closeDeleteModal();
     navigate('/');
   };
 
@@ -636,6 +705,21 @@ const Profile: React.FC = () => {
               </div>
             </div>
 
+            <div className="bg-white rounded-xl border border-red-200 shadow-sm p-6 space-y-3">
+              <h3 className="text-sm font-semibold text-red-800 uppercase tracking-wide">Tehlikeli işlemler</h3>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                Hesabınız kalıcı silinir. Verileriniz veritabanındaki silme kurallarına (cascade) göre kaldırılır.
+              </p>
+              <button
+                type="button"
+                onClick={() => { setDeleteModalOpen(true); setMessage(null); setDeleteModalError(null); }}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-red-700 border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
+              >
+                <Trash2 size={16} />
+                Hesabımı sil
+              </button>
+            </div>
+
             {/* Mobile Logout */}
             <button
               onClick={handleLogout}
@@ -776,6 +860,76 @@ const Profile: React.FC = () => {
               linkLabel="Etkinlikleri Keşfet"
             />
           )}
+        </div>
+      )}
+
+      {deleteModalOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-account-title"
+        >
+          <div
+            className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4 border border-gray-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 id="delete-account-title" className="text-lg font-bold text-gray-900 flex items-center gap-2">
+              <Trash2 className="text-red-600" size={22} />
+              Hesabı sil
+            </h2>
+            <p className="text-sm text-gray-600">
+              Bu işlem geri alınamaz. Devam etmek için aşağıya tam olarak <strong className="text-gray-900">{DELETE_CONFIRM_PHRASE}</strong> yazın.
+            </p>
+            {deleteModalError && (
+              <div className="flex items-start gap-2 p-3 rounded-lg text-sm bg-red-50 text-red-800 border border-red-200">
+                <AlertCircle size={18} className="shrink-0 mt-0.5" />
+                <span>{deleteModalError}</span>
+              </div>
+            )}
+            {!isOAuth && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Şifre</label>
+                <input
+                  type="password"
+                  value={deletePassword}
+                  onChange={(e) => setDeletePassword(e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-200 focus:border-red-400 outline-none"
+                  placeholder="Mevcut şifreniz"
+                  autoComplete="current-password"
+                />
+              </div>
+            )}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Onay metni</label>
+              <input
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-200 focus:border-red-400 outline-none font-mono text-sm"
+                placeholder={DELETE_CONFIRM_PHRASE}
+                autoComplete="off"
+              />
+            </div>
+            <div className="flex flex-col-reverse sm:flex-row gap-2 sm:justify-end pt-2">
+              <button
+                type="button"
+                onClick={closeDeleteModal}
+                disabled={deleteAccountLoading}
+                className="px-4 py-2.5 text-sm font-medium text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+              >
+                İptal
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteAccount}
+                disabled={deleteAccountLoading}
+                className="px-4 py-2.5 text-sm font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50"
+              >
+                {deleteAccountLoading ? 'Siliniyor...' : 'Kalıcı olarak sil'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
