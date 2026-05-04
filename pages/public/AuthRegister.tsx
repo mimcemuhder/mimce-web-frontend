@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
-import { UserPlus, Mail, Lock, User, Github } from 'lucide-react';
+import { UserPlus, Mail, Lock, User, Github, Linkedin } from 'lucide-react';
 
 const AuthRegister: React.FC = () => {
   const [fullName, setFullName] = useState('');
@@ -55,7 +55,7 @@ const AuthRegister: React.FC = () => {
     }
   };
 
-  const handleOAuthLogin = async (provider: 'google' | 'github') => {
+  const handleOAuthLogin = async (provider: 'google' | 'github' | 'linkedin_oidc') => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
@@ -137,6 +137,14 @@ const AuthRegister: React.FC = () => {
             >
               <Github size={20} />
               GitHub ile Üye Ol
+            </button>
+
+            <button
+              onClick={() => handleOAuthLogin('linkedin_oidc')}
+              className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
+            >
+              <Linkedin size={20} className="text-[#0A66C2]" />
+              LinkedIn ile Üye Ol
             </button>
           </div>
 
