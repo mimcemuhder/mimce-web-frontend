@@ -152,7 +152,7 @@ CREATE POLICY "Users can delete own event enrollment"
 
 ---
 
-## 4. Authentication: OAuth (Google, GitHub)
+## 4. Authentication: OAuth (Google, GitHub, LinkedIn)
 
 ### 4.1 Site URL ve Redirect URL’ler
 
@@ -188,6 +188,17 @@ CREATE POLICY "Users can delete own event enrollment"
 4. Client ID ve Client Secret’ı Supabase’te **GitHub** alanlarına girin
 5. **Save**
 
+### 4.4 LinkedIn ile giriş (OpenID Connect)
+
+1. **Authentication** → **Providers** → **LinkedIn (OIDC)** (veya benzeri isim)
+2. **Enable** açın
+3. [LinkedIn Developers](https://www.linkedin.com/developers/apps) → uygulama oluşturun → **Auth** sekmesinde OAuth 2.0 ayarları
+4. **Authorized redirect URLs** için Supabase’in gösterdiği callback adresini ekleyin (örn. `https://xxxxx.supabase.co/auth/v1/callback`)
+5. **Client ID** ve **Client Secret** değerlerini Supabase provider alanlarına yapıştırın
+6. **Save**
+
+Frontend `signInWithOAuth` provider değeri: **`linkedin_oidc`** (kayıt/giriş sayfalarında buton mevcut).
+
 ---
 
 ## 5. Mevcut Storage bucket (images)
@@ -200,6 +211,16 @@ Eğitim görselleri için `images` bucket’ı SUPABASE_KURULUM.md’de anlatıl
 ---
 
 ## 6. Kontrol listesi
+
+### 6.0 Yerel doğrulama (isteğe bağlı)
+
+Proje kökünde `.env.local` dolu iken:
+
+```bash
+npm run verify:supabase
+```
+
+Bu komut anon anahtar ile temel tabloların ve `avatars` / `images` bucket’larının varlığını kontrol eder; eksikse çıkış kodu `1` döner.
 
 Supabase tarafında tamamlamanız gerekenler:
 
@@ -217,6 +238,7 @@ Supabase tarafında tamamlamanız gerekenler:
   - [ ] Site URL ve Redirect URLs ayarlandı
   - [ ] İsteniyorsa Google provider açıldı ve credential’lar girildi
   - [ ] İsteniyorsa GitHub provider açıldı ve credential’lar girildi
+  - [ ] İsteniyorsa LinkedIn (OIDC) provider açıldı ve credential’lar girildi
 - [ ] **Mevcut**
   - [ ] `trainings` ve `events` tabloları mevcut (SUPABASE_KURULUM.md)
   - [ ] `images` bucket’ı eğitim görselleri için mevcut
@@ -237,3 +259,9 @@ Supabase tarafında tamamlamanız gerekenler:
 **Storage bucket:** `avatars` – dosya yolu: `{user_id}/avatar.{ext}`
 
 Bu adımları tamamladıktan sonra profil fotoğrafı yükleme ve “Eğitimlerim / Etkinliklerim” özellikleri frontend ile uyumlu çalışır.
+
+---
+
+## 8. E-posta şablonları (isteğe bağlı)
+
+Kayıt doğrulama ve şifre sıfırlama metinleri için: **Authentication** → **Email** — şablonları ve gerekirse özel SMTP’yi buradan yapılandırın.
