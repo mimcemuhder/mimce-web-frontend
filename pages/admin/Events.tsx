@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../../services/supabase';
+import { supabaseAdmin as supabase } from '../../services/supabaseAdmin';
 import { Event } from '../../types';
 import { Plus, X, Calendar, MapPin, Clock } from 'lucide-react';
 

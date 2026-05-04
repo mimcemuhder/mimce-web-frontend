@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { supabase } from '../../services/supabase';
+import { supabaseAdmin as supabase } from '../../services/supabaseAdmin';
 import { Training } from '../../types';
 import { Plus, X, Calendar, BookOpen, Upload, Image as ImageIcon } from 'lucide-react';
 

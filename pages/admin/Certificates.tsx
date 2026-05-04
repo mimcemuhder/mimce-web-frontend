@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../../services/supabase';
+import { supabaseAdmin as supabase } from '../../services/supabaseAdmin';
 import { Certificate } from '../../types';
 import { Search, MoreVertical, ChevronLeft, ChevronRight, Plus, X } from 'lucide-react';
 
