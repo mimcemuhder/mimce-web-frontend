@@ -18,6 +18,7 @@ import Dashboard from './pages/admin/Dashboard';
 import Certificates from './pages/admin/Certificates';
 import Events from './pages/admin/Events';
 import AdminTrainings from './pages/admin/Trainings';
+import Notifications from './pages/admin/Notifications';
 
 const App: React.FC = () => {
   return (
@@ -53,6 +54,7 @@ const App: React.FC = () => {
         {/* Admin Placeholders */}
         <Route path="/admin/uyeler" element={<ProtectedRoute><AdminLayout><div className="p-8 font-bold text-gray-500">Üyeler Yönetimi (Demo)</div></AdminLayout></ProtectedRoute>} />
         <Route path="/admin/ayarlar" element={<ProtectedRoute><AdminLayout><div className="p-8 font-bold text-gray-500">Sistem Ayarları (Demo)</div></AdminLayout></ProtectedRoute>} />
+        <Route path="/admin/bildirimler" element={<ProtectedRoute><AdminLayout><Notifications /></AdminLayout></ProtectedRoute>} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
