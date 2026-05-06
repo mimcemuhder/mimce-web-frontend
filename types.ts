@@ -1,10 +1,12 @@
 export interface Training {
   id: string;
+  code: string;
   title: string;
   description: string;
   date: string;
   type: 'Öğrenciler' | 'Profesyoneller' | 'Atölyeler' | 'Webinarlar';
   image: string;
+  status?: 'Aktif' | 'Tamamlandı';
 }
 
 export interface Event {
@@ -14,8 +16,8 @@ export interface Event {
   time: string;
   location: string;
   description: string;
-  status: 'Yayında' | 'Taslak' | 'İptal';
   image: string;
+  images?: string[];
 }
 
 export interface Certificate {
