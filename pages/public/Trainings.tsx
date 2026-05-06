@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Calendar } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Search, Calendar, ArrowRight } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { Training } from '../../types';
 
@@ -66,25 +67,45 @@ const Trainings: React.FC = () => {
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {filteredTrainings.map(training => (
-            <div key={training.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-gray-100 flex flex-col">
-              <div className="h-40 overflow-hidden relative">
-                <img src={training.image} alt={training.title} className="w-full h-full object-cover" />
+            <Link
+              key={training.id}
+              to={`/egitimler/${training.id}`}
+              className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-gray-100 flex flex-col group"
+            >
+              <div className="aspect-square overflow-hidden relative">
+                <img
+                  src={training.image}
+                  alt={training.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
                 <div className="absolute top-3 right-3 bg-navy/80 text-white text-[10px] font-bold px-2 py-1 rounded">
                   {training.type}
                 </div>
               </div>
               <div className="p-5 flex-1 flex flex-col">
-                <div className="flex items-center gap-2 text-xs text-primary font-bold mb-2">
-                  <Calendar size={12} />
+                <div className="flex items-center justify-between mb-3">
+                  <span className="font-mono text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded tracking-wider">
+                    {training.code}
+                  </span>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    (training.status ?? 'Aktif') === 'Aktif'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-gray-200 text-gray-500'
+                  }`}>
+                    {training.status ?? 'Aktif'}
+                  </span>
+                </div>
+                <h3 className="text-base font-bold text-navy mb-2 leading-tight">{training.title}</h3>
+                <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-3">
+                  <Calendar size={11} className="text-primary" />
                   {training.date}
                 </div>
-                <h3 className="text-lg font-bold text-navy mb-3 leading-tight">{training.title}</h3>
-                <p className="text-sm text-gray-500 mb-4 line-clamp-3 flex-1">{training.description}</p>
-                <button className="w-full py-2 rounded border border-gray-200 text-sm font-bold text-navy hover:bg-navy hover:text-white transition-colors">
-                  Detay
-                </button>
+                <p className="text-sm text-gray-500 mb-4 line-clamp-2 flex-1">{training.description}</p>
+                <div className="flex items-center justify-center gap-1.5 py-2 rounded border border-gray-200 text-sm font-bold text-navy group-hover:bg-navy group-hover:text-white group-hover:border-navy transition-colors">
+                  Detayları Gör <ArrowRight size={13} />
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
