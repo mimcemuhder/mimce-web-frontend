@@ -12,8 +12,7 @@ const Home: React.FC = () => {
       const { data } = await supabase
         .from('events')
         .select('*')
-        .eq('status', 'Yayında')
-        .order('date', { ascending: true })
+        .order('date', { ascending: false })
         .limit(3);
       if (data) setEvents(data);
     };
