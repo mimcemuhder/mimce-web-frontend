@@ -6,11 +6,15 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 // Public Pages
 import Home from './pages/public/Home';
 import Trainings from './pages/public/Trainings';
+import TrainingDetail from './pages/public/TrainingDetail';
+import PublicEvents from './pages/public/Events';
+import EventDetail from './pages/public/EventDetail';
 import CertificateVerify from './pages/public/CertificateVerify';
 import AboutUs from './pages/public/AboutUs';
 import AuthLogin from './pages/public/AuthLogin';
 import AuthRegister from './pages/public/AuthRegister';
 import Profile from './pages/public/Profile';
+import Contact from './pages/public/Contact';
 
 // Admin Pages
 import Login from './pages/admin/Login';
@@ -27,6 +31,7 @@ const App: React.FC = () => {
         {/* Public Routes */}
         <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
         <Route path="/egitimler" element={<PublicLayout><Trainings /></PublicLayout>} />
+        <Route path="/egitimler/:id" element={<PublicLayout><TrainingDetail /></PublicLayout>} />
         <Route path="/sertifika-dogrulama" element={<PublicLayout><CertificateVerify /></PublicLayout>} />
         
         {/* Auth Routes */}
@@ -36,9 +41,10 @@ const App: React.FC = () => {
 
         {/* Placeholder for other public links to not 404 */}
         <Route path="/hakkimizda" element={<PublicLayout><AboutUs /></PublicLayout>} />
-        <Route path="/etkinlikler" element={<PublicLayout><div className="p-20 text-center">Etkinlikler Listesi (Yapım Aşamasında)</div></PublicLayout>} />
+        <Route path="/etkinlikler" element={<PublicLayout><PublicEvents /></PublicLayout>} />
+        <Route path="/etkinlikler/:id" element={<PublicLayout><EventDetail /></PublicLayout>} />
         <Route path="/blog" element={<PublicLayout><div className="p-20 text-center">Blog (Yapım Aşamasında)</div></PublicLayout>} />
-        <Route path="/iletisim" element={<PublicLayout><div className="p-20 text-center">İletişim (Yapım Aşamasında)</div></PublicLayout>} />
+        <Route path="/iletisim" element={<PublicLayout><Contact /></PublicLayout>} />
         <Route path="/gonullu-ol" element={<PublicLayout><div className="p-20 text-center">Gönüllü Ol Formu (Yapım Aşamasında)</div></PublicLayout>} />
         <Route path="/egitmen-ol" element={<PublicLayout><div className="p-20 text-center">Eğitmen Ol Formu (Yapım Aşamasında)</div></PublicLayout>} />
 
