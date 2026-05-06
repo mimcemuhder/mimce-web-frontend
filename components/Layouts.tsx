@@ -252,7 +252,6 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
               <li><Link to="/iletisim" className="hover:text-primary">İletişim</Link></li>
               <li><Link to="#" className="hover:text-primary">Gizlilik Politikası</Link></li>
               <li><Link to="#" className="hover:text-primary">Kullanım Şartları</Link></li>
-              <li><Link to="/admin" className="hover:text-primary text-primary">Admin Portal</Link></li>
             </ul>
           </div>
         </div>
