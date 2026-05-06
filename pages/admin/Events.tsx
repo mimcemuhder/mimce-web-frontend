@@ -41,7 +41,7 @@ const Events: React.FC = () => {
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
+    const files = Array.from(e.target.files ?? []) as File[];
     const valid = files.filter(f => f.type.startsWith('image/') && f.size <= 5 * 1024 * 1024);
     if (valid.length !== files.length) alert('Bazı dosyalar geçersiz ya da 5MB\'dan büyük, atlandı.');
 
