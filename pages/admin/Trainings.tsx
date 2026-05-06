@@ -21,10 +21,12 @@ const Trainings: React.FC = () => {
   
   // Form State
   const [formData, setFormData] = useState({
+    code: '',
     title: '',
     description: '',
     date: '',
     type: 'Öğrenciler' as Training['type'],
+    status: 'Aktif' as NonNullable<Training['status']>,
     image: ''
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -58,10 +60,12 @@ const Trainings: React.FC = () => {
 
   const resetForm = () => {
     setFormData({
+      code: '',
       title: '',
       description: '',
       date: '',
       type: 'Öğrenciler',
+      status: 'Aktif',
       image: ''
     });
     setSelectedFile(null);
@@ -72,12 +76,24 @@ const Trainings: React.FC = () => {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    if (!confirm('Bu eğitimi silmek istediğinize emin misiniz?')) return;
+    const { error } = await supabase.from('trainings').delete().eq('id', id);
+    if (!error) {
+      setTrainings(prev => prev.filter(t => t.id !== id));
+    } else {
+      alert('Silme işlemi başarısız: ' + error.message);
+    }
+  };
+
   const handleEdit = (training: Training) => {
     setFormData({
+      code: training.code ?? '',
       title: training.title,
       description: training.description,
       date: training.date,
       type: training.type,
+      status: training.status ?? 'Aktif',
       image: training.image
     });
     setImagePreview(training.image);
@@ -97,6 +113,12 @@ const Trainings: React.FC = () => {
 
       if (uploadError) {
         console.error('Upload error:', uploadError);
+        alert(
+          'Görsel yüklenemedi: ' + uploadError.message + '\n\n' +
+          'Muhtemel sebep: Supabase Storage\'da "images" bucket\'ı henüz oluşturulmamış.\n' +
+          'Supabase Dashboard → Storage → "images" adında public bucket oluşturun.\n\n' +
+          'Geçici çözüm: Görsel URL\'si alanına direkt bir URL yapıştırın.'
+        );
         return null;
       }
 
@@ -114,8 +136,8 @@ const Trainings: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Validate
-    if (!formData.title || !formData.date || !formData.type) {
-      alert("Başlık, tarih ve tip alanları zorunludur.");
+    if (!formData.code || !formData.title || !formData.date || !formData.type) {
+      alert("Kod, başlık, tarih ve tip alanları zorunludur.");
       return;
     }
 
@@ -140,10 +162,12 @@ const Trainings: React.FC = () => {
     if (editingTrainingId) {
       // Güncelleme
       const updatedTraining: Partial<Training> = {
+        code: formData.code,
         title: formData.title,
         description: formData.description,
         date: formData.date,
         type: formData.type,
+        status: formData.status,
         image: imageUrl || formData.image
       };
 
@@ -168,10 +192,12 @@ const Trainings: React.FC = () => {
       // Yeni ekleme
       const newTraining: Training = {
         id: Date.now().toString(),
+        code: formData.code,
         title: formData.title,
         description: formData.description,
         date: formData.date,
         type: formData.type,
+        status: formData.status,
         image: imageUrl
       };
 
@@ -210,23 +236,39 @@ const Trainings: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {trainings.map(training => (
           <div key={training.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-             <div className="h-40 bg-gray-200 relative">
+             <div className="aspect-square bg-gray-200 relative">
                <img src={training.image} className="w-full h-full object-cover" alt={training.title} />
                <div className="absolute top-3 right-3 bg-navy/80 text-white text-xs font-bold px-2 py-1 rounded">
                  {training.type}
                </div>
+               <div className={`absolute top-3 left-3 text-xs font-bold px-2 py-1 rounded ${
+                 (training.status ?? 'Aktif') === 'Aktif'
+                   ? 'bg-green-500 text-white'
+                   : 'bg-gray-500 text-white'
+               }`}>
+                 {(training.status ?? 'Aktif') === 'Aktif' ? 'Aktif' : 'Tamamlandı'}
+               </div>
              </div>
              <div className="p-5 flex-1 flex flex-col">
-               <h3 className="font-bold text-navy text-lg mb-2">{training.title}</h3>
-               <div className="space-y-2 mb-4 text-sm text-gray-600">
-                 <div className="flex items-center gap-2">
-                   <Calendar size={14} className="text-primary"/> 
-                   {training.date}
-                 </div>
-                 <div className="flex items-center gap-2">
-                   <BookOpen size={14} className="text-primary"/> 
-                   {training.type}
-                 </div>
+               <div className="flex items-center justify-between mb-2">
+                 <span className="font-mono text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">
+                   {training.code}
+                 </span>
+                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                   (training.status ?? 'Aktif') === 'Aktif'
+                     ? 'bg-green-100 text-green-700'
+                     : 'bg-gray-200 text-gray-500'
+                 }`}>
+                   {training.status ?? 'Aktif'}
+                 </span>
+               </div>
+               <h3 className="font-bold text-navy text-base mb-2 leading-snug">{training.title}</h3>
+               <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                 <Calendar size={12} className="text-primary"/>
+                 {training.date}
+                 <span className="mx-1">·</span>
+                 <BookOpen size={12} className="text-primary"/>
+                 {training.type}
                </div>
                <p className="text-sm text-gray-500 mb-4 line-clamp-2 flex-1">{training.description}</p>
                <div className="mt-auto flex gap-2">
@@ -236,7 +278,7 @@ const Trainings: React.FC = () => {
                  >
                    Düzenle
                  </button>
-                 <button className="flex-1 py-2 border border-gray-200 rounded text-sm font-medium text-red-600 hover:bg-red-50">Sil</button>
+                 <button onClick={() => handleDelete(training.id)} className="flex-1 py-2 border border-gray-200 rounded text-sm font-medium text-red-600 hover:bg-red-50">Sil</button>
                </div>
              </div>
           </div>
@@ -273,6 +315,20 @@ const Trainings: React.FC = () => {
              
              <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
                 <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">Eğitim Kodu*</label>
+                  <input
+                    name="code"
+                    value={formData.code}
+                    onChange={handleInputChange}
+                    type="text"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none font-mono uppercase"
+                    placeholder="Örn: MC407"
+                    required
+                  />
+                  <p className="text-xs text-gray-400 mt-1">Eğitime özgü kısa kod. Listede ve detayda gösterilir.</p>
+                </div>
+
+                <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Eğitim Başlığı*</label>
                   <input 
                     name="title"
@@ -299,6 +355,31 @@ const Trainings: React.FC = () => {
                     <option value="Atölyeler">Atölyeler</option>
                     <option value="Webinarlar">Webinarlar</option>
                   </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Eğitim Durumu*</label>
+                  <div className="flex gap-3">
+                    {(['Aktif', 'Tamamlandı'] as const).map(s => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, status: s }))}
+                        className={`flex-1 py-2.5 rounded-lg text-sm font-bold border-2 transition-colors ${
+                          formData.status === s
+                            ? s === 'Aktif'
+                              ? 'border-green-500 bg-green-50 text-green-700'
+                              : 'border-gray-400 bg-gray-100 text-gray-700'
+                            : 'border-gray-200 text-gray-400 hover:border-gray-300'
+                        }`}
+                      >
+                        {s === 'Aktif' ? '🟢 Aktif' : '🏁 Tamamlandı'}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1.5">
+                    Tamamlandı seçilirse detay sayfasında kayıt butonu ve müfredat gizlenir.
+                  </p>
                 </div>
 
                 <div>
