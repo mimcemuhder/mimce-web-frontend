@@ -410,12 +410,17 @@ Kurulum sonrası default admin kullanıcısı:
 
 ### Best Practices
 
-- ✅ TypeScript strict mode aktif
+- ✅ TypeScript strict mode aktif (`strict: true`, `strictNullChecks: true`, `noImplicitAny: true`)
 - ✅ Functional components kullanımı
-- ✅ Hooks (useState, useEffect) ile state management
+- ✅ Hooks (useState, useEffect, custom hooks) ile state management
+- ✅ AuthContext ile merkezi auth state yönetimi
 - ✅ Responsive design (mobile-first)
-- ✅ Error handling ve loading states
-- ✅ Code splitting ve lazy loading
+- ✅ Error handling: ErrorBoundary + form validation (react-hook-form + zod)
+- ✅ Code splitting ve lazy loading (`React.lazy` + `Suspense`) — tüm rotalar
+- ✅ XSS koruması: DOMPurify (blog içerikleri)
+- ✅ SEO: react-helmet-async, robots.txt, sitemap.xml, JSON-LD
+- ✅ Monitoring: Sentry + Web Vitals (CLS, INP, LCP, FCP, TTFB)
+- ✅ Test altyapısı: vitest + @testing-library/react
 
 ---
 
@@ -426,6 +431,11 @@ Kurulum sonrası default admin kullanıcısı:
 | `npm run dev` | Development server başlatır (port 3000) |
 | `npm run build` | Production build oluşturur |
 | `npm run preview` | Build önizlemesi yapar |
+| `npm run typecheck` | TypeScript strict mod kontrolü |
+| `npm test` | Tüm testleri çalıştırır (vitest) |
+| `npm run test:watch` | Test izleme modu |
+| `npm run lint` | ESLint + jsx-a11y kontrolü |
+| `npm run format` | Prettier ile kod formatı |
 
 ---
 

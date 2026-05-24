@@ -95,7 +95,7 @@ const Profile: React.FC = () => {
         .order('enrolled_at', { ascending: false });
 
       if (!error && data) {
-        setUserTrainings(data.map((d: any) => ({ ...d, training: d.training })));
+        setUserTrainings(data.map((d: UserTraining) => ({ ...d, training: d.training })));
       }
     } catch {
       // Table may not exist yet
@@ -114,7 +114,7 @@ const Profile: React.FC = () => {
         .order('enrolled_at', { ascending: false });
 
       if (!error && data) {
-        setUserEvents(data.map((d: any) => ({ ...d, event: d.event })));
+        setUserEvents(data.map((d: UserEvent) => ({ ...d, event: d.event })));
       }
     } catch {
       // Table may not exist yet
