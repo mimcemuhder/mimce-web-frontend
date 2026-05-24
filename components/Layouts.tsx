@@ -4,6 +4,7 @@ import { supabase } from '../services/supabase';
 import { supabaseAdmin } from '../services/supabaseAdmin';
 import { notificationService, type AdminNotification } from '../services/adminNotifications';
 import { adminSession } from '../services/adminSession';
+import { useAuth } from '../contexts/AuthContext';
 import type { User } from '@supabase/supabase-js';
 import { 
   Menu, X, Home, Users, BookOpen, Calendar, Award, Settings, LayoutTemplate,
@@ -16,25 +17,9 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [trainingsDropdownOpen, setTrainingsDropdownOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
   const profileRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-      setLoading(false);
-    };
-    getSession();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+  const { user, loading } = useAuth();
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -56,8 +41,29 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
   const avatarUrl = user?.user_metadata?.avatar_url;
   const initials = displayName.charAt(0).toUpperCase();
 
+  // Escape ile açık dropdown'ları kapat
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setProfileMenuOpen(false);
+        setTrainingsDropdownOpen(false);
+        setMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col font-sans text-gray-800">
+      {/* Skip to main content */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 z-50 px-4 py-2 bg-primary text-navy font-bold rounded-lg text-sm"
+      >
+        Ana içeriğe geç
+      </a>
+
       {/* Header */}
       <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -162,14 +168,20 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
           </div>
 
           {/* Mobile Menu Button */}
-          <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <button
+            className="md:hidden p-2"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-menu"
+            aria-label={mobileMenuOpen ? 'Menüyü kapat' : 'Menüyü aç'}
+          >
             {mobileMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t p-4 flex flex-col gap-4 shadow-lg">
+          <div id="mobile-menu" className="md:hidden bg-white border-t p-4 flex flex-col gap-4 shadow-lg">
             <Link to="/" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium">Ana Sayfa</Link>
             <Link to="/hakkimizda" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium">Hakkımızda</Link>
             <Link to="/egitimler" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium">Eğitimler</Link>
@@ -211,7 +223,7 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow">
+      <main id="main-content" className="flex-grow">
         {children}
       </main>
 
@@ -318,7 +330,7 @@ const NotifIcon: React.FC<{ type: AdminNotification['type']; size?: number }> = 
 export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   // ── Bildirimler ──────────────────────────────────────────────────────────
   const [notifications, setNotifications] = useState<AdminNotification[]>([]);
