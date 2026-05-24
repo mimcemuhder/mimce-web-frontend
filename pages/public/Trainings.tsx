@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Calendar, ArrowRight } from 'lucide-react';
+import { Search, Calendar, ArrowRight, ArrowUpDown } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { Training } from '../../types';
+import { TrainingSort, TRAINING_SORT_OPTIONS, sortTrainings } from '../../utils/listSort';
 
 const Trainings: React.FC = () => {
   const [filter, setFilter] = useState('Tümü');
+  const [sort, setSort] = useState<TrainingSort>('date-desc');
   const [trainings, setTrainings] = useState<Training[]>([]);
   
   const filters = ['Tümü', 'Öğrenciler', 'Profesyoneller', 'Atölyeler', 'Webinarlar'];
@@ -21,9 +23,10 @@ const Trainings: React.FC = () => {
     fetchTrainings();
   }, []);
 
-  const filteredTrainings = filter === 'Tümü' 
-    ? trainings 
-    : trainings.filter(t => t.type === filter);
+  const filteredTrainings = useMemo(() => {
+    const matched = filter === 'Tümü' ? trainings : trainings.filter(t => t.type === filter);
+    return sortTrainings(matched, sort);
+  }, [trainings, filter, sort]);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -47,25 +50,41 @@ const Trainings: React.FC = () => {
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-2 mb-10">
-          {filters.map(f => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                filter === f 
-                  ? 'bg-navy text-white' 
-                  : 'bg-white text-gray-600 border border-gray-200 hover:border-primary hover:text-primary'
-              }`}
+        {/* Filters & Sort */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+          <div className="flex flex-wrap gap-2">
+            {filters.map(f => (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  filter === f 
+                    ? 'bg-navy text-white' 
+                    : 'bg-white text-gray-600 border border-gray-200 hover:border-primary hover:text-primary'
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+          <div className="relative w-full sm:w-auto sm:min-w-[200px]">
+            <ArrowUpDown size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <select
+              value={sort}
+              onChange={e => setSort(e.currentTarget.value as TrainingSort)}
+              className="w-full pl-9 pr-8 py-2.5 rounded-lg bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary text-sm appearance-none cursor-pointer shadow-sm"
             >
-              {f}
-            </button>
-          ))}
+              {TRAINING_SORT_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div key={sort} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {filteredTrainings.map(training => (
             <Link
               key={training.id}

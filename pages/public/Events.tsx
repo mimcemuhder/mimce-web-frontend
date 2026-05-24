@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, MapPin, Search, Images } from 'lucide-react';
+import { Calendar, Clock, MapPin, Search, Images, ArrowUpDown } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { Event } from '../../types';
+import { EventSort, EVENT_SORT_OPTIONS, sortEvents } from '../../utils/listSort';
 
 const Events: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [search, setSearch] = useState('');
+  const [sort, setSort] = useState<EventSort>('date-desc');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,10 +24,17 @@ const Events: React.FC = () => {
     fetchEvents();
   }, []);
 
-  const filtered = events.filter(e =>
-    e.title.toLowerCase().includes(search.toLowerCase()) ||
-    e.location.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    const matched = query
+      ? events.filter(
+          e =>
+            e.title.toLowerCase().includes(query) ||
+            e.location.toLowerCase().includes(query),
+        )
+      : events;
+    return sortEvents(matched, sort);
+  }, [events, search, sort]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -41,9 +50,23 @@ const Events: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* Search */}
-        <div className="mb-8 flex justify-end">
-          <div className="relative w-full max-w-sm">
+        {/* Search & Sort */}
+        <div className="mb-8 flex flex-col sm:flex-row justify-end gap-3">
+          <div className="relative w-full sm:w-auto sm:min-w-[200px]">
+            <ArrowUpDown size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <select
+              value={sort}
+              onChange={e => setSort(e.currentTarget.value as EventSort)}
+              className="w-full pl-9 pr-8 py-2.5 rounded-lg bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary text-sm appearance-none cursor-pointer"
+            >
+              {EVENT_SORT_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="relative w-full sm:max-w-sm">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
@@ -62,7 +85,7 @@ const Events: React.FC = () => {
         ) : filtered.length === 0 ? (
           <div className="text-center py-24 text-gray-400 font-medium">Sonuç bulunamadı.</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+          <div key={sort} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
             {filtered.map(event => {
               const allUrls = [...(event.images ?? []), ...(event.image ? [event.image] : [])];
               const photos = [...new Set(allUrls)].filter(u => u && !u.includes('picsum.photos'));
