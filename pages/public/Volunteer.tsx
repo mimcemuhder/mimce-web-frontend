@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Heart, Users, Calendar, BookOpen, Megaphone, Send, CheckCircle } from 'lucide-react';
+import { supabase } from '../../services/supabase';
 
 const AREAS = [
   { id: 'egitim',     label: 'Eğitim',               icon: BookOpen },
@@ -34,13 +36,46 @@ const Volunteer: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (form.areas.length === 0) return;
     setLoading(true);
-    setTimeout(() => { setLoading(false); setSent(true); }, 900);
+    setError(null);
+    try {
+      const { error: dbError } = await supabase
+        .from('volunteer_applications')
+        .insert([{
+          name: form.name,
+          email: form.email,
+          phone: form.phone || null,
+          institution: form.institution,
+          department: form.department,
+          areas: form.areas,
+          motivation: form.motivation,
+        }]);
+      if (dbError) throw dbError;
+      setSent(true);
+    } catch (err) {
+      setError('Başvurunuz gönderilemedi. Lütfen tekrar deneyin.');
+      console.error('[Volunteer] Supabase insert error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
+    <>
+    <Helmet>
+      <title>Gönüllü Ol | MİMCE</title>
+      <meta name="description" content="MİMCE'ye gönüllü olarak katılın. Eğitim, etkinlik, tanıtım ve topluluk birimlerinde görev alın." />
+      <link rel="canonical" href="https://mimce.org/gonullu-ol" />
+      <meta property="og:title" content="Gönüllü Ol | MİMCE" />
+      <meta property="og:description" content="MİMCE'ye gönüllü olarak katılın." />
+      <meta property="og:url" content="https://mimce.org/gonullu-ol" />
+      <meta property="og:image" content="https://mimce.org/og-default.png" />
+    </Helmet>
     <div className="w-full bg-white">
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
@@ -181,6 +216,9 @@ const Volunteer: React.FC = () => {
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none" />
                 </div>
 
+                {error && (
+                  <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-4 py-3">{error}</p>
+                )}
                 <button type="submit" disabled={loading || form.areas.length === 0}
                   className="w-full py-3 bg-navy text-white font-bold rounded-xl hover:bg-navy-light transition-colors flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed">
                   {loading ? (
@@ -195,6 +233,7 @@ const Volunteer: React.FC = () => {
         </div>
       </section>
     </div>
+    </>
   );
 };
 

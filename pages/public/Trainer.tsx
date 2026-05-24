@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { GraduationCap, Users, Award, Star, Send, CheckCircle, Briefcase, Globe } from 'lucide-react';
+import { supabase } from '../../services/supabase';
 
 const EXPERTISE = [
   'Yazılım & Programlama', 'Elektrik & Elektronik', 'Makine & İmalat',
@@ -21,18 +23,52 @@ const Trainer: React.FC = () => {
   });
   const [sent, setSent]       = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => { setLoading(false); setSent(true); }, 900);
+    setError(null);
+    try {
+      const { error: dbError } = await supabase
+        .from('trainer_applications')
+        .insert([{
+          name: form.name,
+          email: form.email,
+          phone: form.phone || null,
+          company: form.company,
+          title: form.title,
+          expertise: form.expertise,
+          training_title: form.trainingTitle,
+          training_desc: form.trainingDesc,
+          experience: form.experience,
+          bio: form.bio,
+        }]);
+      if (dbError) throw dbError;
+      setSent(true);
+    } catch (err) {
+      setError('Başvurunuz gönderilemedi. Lütfen tekrar deneyin.');
+      console.error('[Trainer] Supabase insert error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
+    <>
+    <Helmet>
+      <title>Eğitmen Ol | MİMCE</title>
+      <meta name="description" content="MİMCE Eğitmen Programı'na katılın. Sektör deneyiminizi ve uzmanlığınızı paylaşarak mühendis adaylarına yol gösterin." />
+      <link rel="canonical" href="https://mimce.org/egitmen-ol" />
+      <meta property="og:title" content="Eğitmen Ol | MİMCE" />
+      <meta property="og:description" content="MİMCE Eğitmen Programı'na katılın." />
+      <meta property="og:url" content="https://mimce.org/egitmen-ol" />
+      <meta property="og:image" content="https://mimce.org/og-default.png" />
+    </Helmet>
     <div className="w-full bg-white">
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
@@ -212,6 +248,9 @@ const Trainer: React.FC = () => {
                   </div>
                 </div>
 
+                {error && (
+                  <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-4 py-3">{error}</p>
+                )}
                 <button type="submit" disabled={loading}
                   className="w-full py-3 bg-navy text-white font-bold rounded-xl hover:bg-navy-light transition-colors flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed">
                   {loading ? (
@@ -246,6 +285,7 @@ const Trainer: React.FC = () => {
         </div>
       </section>
     </div>
+    </>
   );
 };
 

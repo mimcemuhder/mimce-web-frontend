@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { Mail, MapPin, Globe, Send, Instagram, Youtube } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Mail, MapPin, Globe, Send, Instagram, Youtube, CheckCircle } from 'lucide-react';
+import { supabase } from '../../services/supabase';
 
 const XIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15">
@@ -7,18 +12,24 @@ const XIcon = () => (
   </svg>
 );
 
+const contactSchema = z.object({
+  name: z.string().min(2, 'Ad Soyad en az 2 karakter olmalıdır'),
+  email: z.string().email('Geçerli bir e-posta adresi girin'),
+  subject: z.string().min(1, 'Konu seçiniz'),
+  message: z.string().min(10, 'Mesaj en az 10 karakter olmalıdır'),
+});
+
+type ContactForm = z.infer<typeof contactSchema>;
+
 const Contact: React.FC = () => {
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [sent, setSent] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSent(true);
-  };
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<ContactForm>({ resolver: zodResolver(contactSchema) });
 
   const socials = [
     { label: 'Instagram', handle: '@mimcemuhder', icon: Instagram, url: 'https://instagram.com/mimcemuhder' },
@@ -26,7 +37,25 @@ const Contact: React.FC = () => {
     { label: 'YouTube',    handle: '@mimcemuhder', icon: Youtube,    url: 'https://youtube.com/@mimcemuhder' },
   ];
 
+  const onSubmit = async (data: ContactForm) => {
+    const { error } = await supabase
+      .from('contact_submissions')
+      .insert([{ name: data.name, email: data.email, subject: data.subject, message: data.message }]);
+    if (error) throw new Error('Mesajınız gönderilemedi. Lütfen tekrar deneyin.');
+    setSent(true);
+  };
+
   return (
+    <>
+    <Helmet>
+      <title>İletişim | MİMCE</title>
+      <meta name="description" content="MİMCE ile iletişime geçin. Sorularınız, önerileriniz veya iş birliği talepleriniz için bize yazın." />
+      <link rel="canonical" href="https://mimce.org/iletisim" />
+      <meta property="og:title" content="İletişim | MİMCE" />
+      <meta property="og:description" content="MİMCE ile iletişime geçin." />
+      <meta property="og:url" content="https://mimce.org/iletisim" />
+      <meta property="og:image" content="https://mimce.org/og-default.png" />
+    </Helmet>
     <div className="w-full bg-white">
 
       {/* ── SAYFA HERO ───────────────────────────────────────────────────────── */}
@@ -126,14 +155,14 @@ const Contact: React.FC = () => {
                 {sent ? (
                   <div className="flex flex-col items-center justify-center py-16 text-center">
                     <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-5">
-                      <Send size={22} className="text-primary" />
+                      <CheckCircle size={22} className="text-primary" />
                     </div>
                     <h3 className="text-xl font-bold text-navy mb-2">Mesajınız İletildi!</h3>
                     <p className="text-gray-500 text-sm max-w-xs leading-relaxed">
                       En kısa sürede size geri döneceğiz. Teşekkür ederiz.
                     </p>
                     <button
-                      onClick={() => { setSent(false); setForm({ name: '', email: '', subject: '', message: '' }); }}
+                      onClick={() => { setSent(false); reset(); }}
                       className="mt-6 px-5 py-2.5 text-sm font-bold text-navy border border-gray-200 rounded-lg hover:bg-navy hover:text-white hover:border-navy transition-colors"
                     >
                       Yeni Mesaj Gönder
@@ -146,25 +175,27 @@ const Contact: React.FC = () => {
                     </span>
                     <h2 className="text-xl font-extrabold text-navy mb-6">Sizden duymak isteriz</h2>
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Ad Soyad *</label>
-                          <input name="name" value={form.name} onChange={handleChange} required type="text"
+                          <input {...register('name')} type="text"
                             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all bg-gray-50 focus:bg-white"
                             placeholder="Adınız Soyadınız" />
+                          {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
                         </div>
                         <div>
                           <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">E-Posta *</label>
-                          <input name="email" value={form.email} onChange={handleChange} required type="email"
+                          <input {...register('email')} type="email"
                             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all bg-gray-50 focus:bg-white"
                             placeholder="ornek@email.com" />
+                          {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>}
                         </div>
                       </div>
 
                       <div>
                         <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Konu *</label>
-                        <select name="subject" value={form.subject} onChange={handleChange} required
+                        <select {...register('subject')}
                           className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all bg-gray-50 focus:bg-white text-gray-700">
                           <option value="">Konu seçin</option>
                           <option value="Genel Bilgi">Genel Bilgi</option>
@@ -174,18 +205,20 @@ const Contact: React.FC = () => {
                           <option value="İş Birliği">İş Birliği</option>
                           <option value="Diğer">Diğer</option>
                         </select>
+                        {errors.subject && <p className="text-xs text-red-500 mt-1">{errors.subject.message}</p>}
                       </div>
 
                       <div>
                         <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Mesaj *</label>
-                        <textarea name="message" value={form.message} onChange={handleChange} required rows={6}
+                        <textarea {...register('message')} rows={6}
                           className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none bg-gray-50 focus:bg-white"
                           placeholder="Mesajınızı buraya yazın..." />
+                        {errors.message && <p className="text-xs text-red-500 mt-1">{errors.message.message}</p>}
                       </div>
 
-                      <button type="submit"
-                        className="w-full py-3 bg-navy text-white font-bold rounded-xl hover:bg-navy-light transition-colors flex items-center justify-center gap-2 text-sm">
-                        <Send size={15} /> Gönder
+                      <button type="submit" disabled={isSubmitting}
+                        className="w-full py-3 bg-navy text-white font-bold rounded-xl hover:bg-navy-light transition-colors flex items-center justify-center gap-2 text-sm disabled:opacity-50">
+                        {isSubmitting ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <><Send size={15} /> Gönder</>}
                       </button>
                     </form>
                   </>
@@ -196,6 +229,7 @@ const Contact: React.FC = () => {
         </div>
       </section>
     </div>
+    </>
   );
 };
 
