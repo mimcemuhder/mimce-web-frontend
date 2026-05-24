@@ -25,6 +25,7 @@ import AdminTrainings from './pages/admin/Trainings';
 import Notifications from './pages/admin/Notifications';
 import Blogs from './pages/admin/Blogs';
 import BlogEditor from './pages/admin/BlogEditor';
+import HomepageAdmin from './pages/admin/Homepage';
 
 // Public Blog Pages
 import PublicBlog from './pages/public/Blog';
@@ -73,6 +74,7 @@ const App: React.FC = () => {
         <Route path="/admin/uyeler" element={<ProtectedRoute><AdminLayout><div className="p-8 font-bold text-gray-500">Üyeler Yönetimi (Demo)</div></AdminLayout></ProtectedRoute>} />
         <Route path="/admin/ayarlar" element={<ProtectedRoute><AdminLayout><div className="p-8 font-bold text-gray-500">Sistem Ayarları (Demo)</div></AdminLayout></ProtectedRoute>} />
         <Route path="/admin/bildirimler" element={<ProtectedRoute><AdminLayout><Notifications /></AdminLayout></ProtectedRoute>} />
+        <Route path="/admin/ana-sayfa" element={<ProtectedRoute><AdminLayout><HomepageAdmin /></AdminLayout></ProtectedRoute>} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

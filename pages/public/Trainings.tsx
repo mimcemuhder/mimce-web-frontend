@@ -7,6 +7,7 @@ import { TrainingSort, TRAINING_SORT_OPTIONS, sortTrainings } from '../../utils/
 
 const Trainings: React.FC = () => {
   const [filter, setFilter] = useState('Tümü');
+  const [search, setSearch] = useState('');
   const [sort, setSort] = useState<TrainingSort>('date-desc');
   const [trainings, setTrainings] = useState<Training[]>([]);
   
@@ -24,9 +25,19 @@ const Trainings: React.FC = () => {
   }, []);
 
   const filteredTrainings = useMemo(() => {
-    const matched = filter === 'Tümü' ? trainings : trainings.filter(t => t.type === filter);
+    const byType = filter === 'Tümü' ? trainings : trainings.filter(t => t.type === filter);
+    const query = search.trim().toLowerCase();
+    const matched = query
+      ? byType.filter(
+          t =>
+            t.title.toLowerCase().includes(query) ||
+            t.code.toLowerCase().includes(query) ||
+            t.description.toLowerCase().includes(query) ||
+            t.type.toLowerCase().includes(query),
+        )
+      : byType;
     return sortTrainings(matched, sort);
-  }, [trainings, filter, sort]);
+  }, [trainings, filter, search, sort]);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -42,8 +53,10 @@ const Trainings: React.FC = () => {
             <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search size={18} className="text-gray-400" />
             </span>
-            <input 
-              type="text" 
+            <input
+              type="text"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
               className="block w-full pl-10 pr-4 py-2.5 border-none rounded-lg shadow-sm bg-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:outline-none"
               placeholder="Eğitim ara..."
             />

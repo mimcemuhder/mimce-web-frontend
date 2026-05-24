@@ -2,21 +2,54 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar, Users, Briefcase } from 'lucide-react';
 import { supabase } from '../../services/supabase';
+import { fetchHomepageSettings } from '../../services/homepageSettings';
 import { Event } from '../../types';
+
+const HERO_IMAGE_CACHE_KEY = 'mimce_hero_image';
+
+const preloadImage = (src: string): Promise<void> =>
+  new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+    img.src = src;
+  });
 
 const Home: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
+  const [heroImage, setHeroImage] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      const { data } = await supabase
-        .from('events')
-        .select('*')
-        .order('date', { ascending: false })
-        .limit(3);
-      if (data) setEvents(data);
+    let cancelled = false;
+
+    const showHero = async (url: string) => {
+      await preloadImage(url);
+      if (cancelled) return;
+      sessionStorage.setItem(HERO_IMAGE_CACHE_KEY, url);
+      setHeroImage(url);
     };
-    fetchEvents();
+
+    const load = async () => {
+      const cached = sessionStorage.getItem(HERO_IMAGE_CACHE_KEY);
+      if (cached) await showHero(cached);
+
+      const [settings, eventsRes] = await Promise.all([
+        fetchHomepageSettings(),
+        supabase.from('events').select('*').order('date', { ascending: false }).limit(3),
+      ]);
+
+      if (cancelled) return;
+
+      const url = settings.heroImage;
+      if (url !== cached) await showHero(url);
+
+      if (eventsRes.data) setEvents(eventsRes.data);
+    };
+
+    load();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -24,12 +57,14 @@ const Home: React.FC = () => {
       {/* HERO SECTION */}
       <section className="relative w-full h-[600px] flex items-center">
         {/* Background Image & Overlay */}
-        <div className="absolute inset-0 z-0">
-           <img 
-             src="https://picsum.photos/1920/1080?grayscale&blur=2" 
-             alt="Engineering Background" 
-             className="w-full h-full object-cover"
-           />
+        <div className="absolute inset-0 z-0 bg-navy">
+           {heroImage && (
+             <img
+               src={heroImage}
+               alt="Engineering Background"
+               className="w-full h-full object-cover"
+             />
+           )}
            <div className="absolute inset-0 bg-navy/80 mix-blend-multiply"></div>
         </div>
 

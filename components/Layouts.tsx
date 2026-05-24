@@ -6,7 +6,7 @@ import { notificationService, type AdminNotification } from '../services/adminNo
 import { adminSession } from '../services/adminSession';
 import type { User } from '@supabase/supabase-js';
 import { 
-  Menu, X, Home, Users, BookOpen, Calendar, Award, Settings, 
+  Menu, X, Home, Users, BookOpen, Calendar, Award, Settings, LayoutTemplate,
   Search, Bell, HelpCircle, LogOut, Facebook, Twitter, Linkedin, Instagram,
   UserCircle, ChevronDown, CheckCheck, Trash2, Plus, Info, AlertTriangle,
   CheckCircle, XCircle, Keyboard, ExternalLink, Clock, Rss
@@ -408,6 +408,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
     { path: '/admin/etkinlikler', icon: Calendar, label: 'Etkinlikler' },
     { path: '/admin/sertifikalar', icon: Award, label: 'Sertifikalar' },
     { path: '/admin/bloglar', icon: Rss, label: 'Bloglar' },
+    { path: '/admin/ana-sayfa', icon: LayoutTemplate, label: 'Ana Sayfa' },
     { path: '/admin/bildirimler', icon: Bell, label: 'Bildirimler', badge: unreadCount || undefined },
     { path: '/admin/ayarlar', icon: Settings, label: 'Ayarlar' },
   ];

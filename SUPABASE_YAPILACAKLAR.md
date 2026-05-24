@@ -201,7 +201,41 @@ Frontend `signInWithOAuth` provider değeri: **`linkedin_oidc`** (kayıt/giriş 
 
 ---
 
-## 5. Mevcut Storage bucket (images)
+## 5. Ana sayfa görselleri (`site_settings`)
+
+Admin panelindeki **Ana Sayfa** menüsü hero arka planını bu tabloda saklar.
+
+**SQL Editor**’da çalıştırın:
+
+```sql
+CREATE TABLE IF NOT EXISTS site_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read site_settings"
+  ON site_settings FOR SELECT
+  USING (true);
+
+CREATE POLICY "Authenticated can upsert site_settings"
+  ON site_settings FOR INSERT
+  TO authenticated
+  WITH CHECK (true);
+
+CREATE POLICY "Authenticated can update site_settings"
+  ON site_settings FOR UPDATE
+  TO authenticated
+  USING (true);
+```
+
+Görseller `images` bucket’ına `homepage/` altında yüklenir (etkinliklerle aynı bucket).
+
+---
+
+## 6. Mevcut Storage bucket (images)
 
 Eğitim görselleri için `images` bucket’ı SUPABASE_KURULUM.md’de anlatılmıştı. Yoksa:
 
@@ -210,9 +244,9 @@ Eğitim görselleri için `images` bucket’ı SUPABASE_KURULUM.md’de anlatıl
 
 ---
 
-## 6. Kontrol listesi
+## 7. Kontrol listesi
 
-### 6.0 Yerel doğrulama (isteğe bağlı)
+### 7.0 Yerel doğrulama (isteğe bağlı)
 
 Proje kökünde `.env.local` dolu iken:
 
@@ -239,13 +273,15 @@ Supabase tarafında tamamlamanız gerekenler:
   - [ ] İsteniyorsa Google provider açıldı ve credential’lar girildi
   - [ ] İsteniyorsa GitHub provider açıldı ve credential’lar girildi
   - [ ] İsteniyorsa LinkedIn (OIDC) provider açıldı ve credential’lar girildi
+- [ ] **Ana sayfa**
+  - [ ] `site_settings` tablosu ve RLS politikaları eklendi
 - [ ] **Mevcut**
   - [ ] `trainings` ve `events` tabloları mevcut (SUPABASE_KURULUM.md)
   - [ ] `images` bucket’ı eğitim görselleri için mevcut
 
 ---
 
-## 7. Tablo özeti (referans)
+## 8. Tablo özeti (referans)
 
 | Tablo           | Amaç                          |
 |-----------------|-------------------------------|
@@ -262,6 +298,6 @@ Bu adımları tamamladıktan sonra profil fotoğrafı yükleme ve “Eğitimleri
 
 ---
 
-## 8. E-posta şablonları (isteğe bağlı)
+## 9. E-posta şablonları (isteğe bağlı)
 
 Kayıt doğrulama ve şifre sıfırlama metinleri için: **Authentication** → **Email** — şablonları ve gerekirse özel SMTP’yi buradan yapılandırın.
