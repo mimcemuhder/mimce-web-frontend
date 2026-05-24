@@ -1,88 +1,108 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+import { AuthProvider } from './contexts/AuthContext';
 import { PublicLayout, AdminLayout } from './components/Layouts';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ScrollToTop } from './components/ScrollToTop';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { ToastProvider } from './components/ui/Toast';
 
 // Public Pages
-import Home from './pages/public/Home';
-import Trainings from './pages/public/Trainings';
-import TrainingDetail from './pages/public/TrainingDetail';
-import PublicEvents from './pages/public/Events';
-import EventDetail from './pages/public/EventDetail';
-import CertificateVerify from './pages/public/CertificateVerify';
-import AboutUs from './pages/public/AboutUs';
-import AuthLogin from './pages/public/AuthLogin';
-import AuthRegister from './pages/public/AuthRegister';
-import Profile from './pages/public/Profile';
-import Contact from './pages/public/Contact';
-import Volunteer from './pages/public/Volunteer';
-import Trainer from './pages/public/Trainer';
+const Home             = lazy(() => import('./pages/public/Home'));
+const Trainings        = lazy(() => import('./pages/public/Trainings'));
+const TrainingDetail   = lazy(() => import('./pages/public/TrainingDetail'));
+const PublicEvents     = lazy(() => import('./pages/public/Events'));
+const EventDetail      = lazy(() => import('./pages/public/EventDetail'));
+const CertificateVerify = lazy(() => import('./pages/public/CertificateVerify'));
+const AboutUs          = lazy(() => import('./pages/public/AboutUs'));
+const AuthLogin        = lazy(() => import('./pages/public/AuthLogin'));
+const AuthRegister     = lazy(() => import('./pages/public/AuthRegister'));
+const Profile          = lazy(() => import('./pages/public/Profile'));
+const Contact          = lazy(() => import('./pages/public/Contact'));
+const Volunteer        = lazy(() => import('./pages/public/Volunteer'));
+const Trainer          = lazy(() => import('./pages/public/Trainer'));
+const PublicBlog       = lazy(() => import('./pages/public/Blog'));
+const BlogPost         = lazy(() => import('./pages/public/BlogPost'));
+const NotFound         = lazy(() => import('./pages/public/NotFound'));
 
 // Admin Pages
-import Login from './pages/admin/Login';
-import Dashboard from './pages/admin/Dashboard';
-import Certificates from './pages/admin/Certificates';
-import Events from './pages/admin/Events';
-import AdminTrainings from './pages/admin/Trainings';
-import Notifications from './pages/admin/Notifications';
-import Blogs from './pages/admin/Blogs';
-import BlogEditor from './pages/admin/BlogEditor';
-import HomepageAdmin from './pages/admin/Homepage';
+const Login            = lazy(() => import('./pages/admin/Login'));
+const Dashboard        = lazy(() => import('./pages/admin/Dashboard'));
+const Certificates     = lazy(() => import('./pages/admin/Certificates'));
+const Events           = lazy(() => import('./pages/admin/Events'));
+const AdminTrainings   = lazy(() => import('./pages/admin/Trainings'));
+const Notifications    = lazy(() => import('./pages/admin/Notifications'));
+const Blogs            = lazy(() => import('./pages/admin/Blogs'));
+const BlogEditor       = lazy(() => import('./pages/admin/BlogEditor'));
+const HomepageAdmin    = lazy(() => import('./pages/admin/Homepage'));
 
-// Public Blog Pages
-import PublicBlog from './pages/public/Blog';
-import BlogPost from './pages/public/BlogPost';
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+  </div>
+);
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <ScrollToTop />
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
-        <Route path="/egitimler" element={<PublicLayout><Trainings /></PublicLayout>} />
-        <Route path="/egitimler/:id" element={<PublicLayout><TrainingDetail /></PublicLayout>} />
-        <Route path="/sertifika-dogrulama" element={<PublicLayout><CertificateVerify /></PublicLayout>} />
-        
-        {/* Auth Routes */}
-        <Route path="/giris" element={<AuthLogin />} />
-        <Route path="/uye-ol" element={<AuthRegister />} />
-        <Route path="/profil" element={<PublicLayout><Profile /></PublicLayout>} />
+    <HelmetProvider>
+      <AuthProvider>
+        <ToastProvider>
+        <Router>
+          <ErrorBoundary>
+            <ScrollToTop />
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+                <Route path="/egitimler" element={<PublicLayout><Trainings /></PublicLayout>} />
+                <Route path="/egitimler/:id" element={<PublicLayout><TrainingDetail /></PublicLayout>} />
+                <Route path="/sertifika-dogrulama" element={<PublicLayout><CertificateVerify /></PublicLayout>} />
 
-        {/* Placeholder for other public links to not 404 */}
-        <Route path="/hakkimizda" element={<PublicLayout><AboutUs /></PublicLayout>} />
-        <Route path="/etkinlikler" element={<PublicLayout><PublicEvents /></PublicLayout>} />
-        <Route path="/etkinlikler/:id" element={<PublicLayout><EventDetail /></PublicLayout>} />
-        <Route path="/blog" element={<PublicLayout><PublicBlog /></PublicLayout>} />
-        <Route path="/blog/:slug" element={<PublicLayout><BlogPost /></PublicLayout>} />
-        <Route path="/iletisim" element={<PublicLayout><Contact /></PublicLayout>} />
-        <Route path="/gonullu-ol" element={<PublicLayout><Volunteer /></PublicLayout>} />
-        <Route path="/egitmen-ol" element={<PublicLayout><Trainer /></PublicLayout>} />
+                {/* Auth Routes */}
+                <Route path="/giris" element={<AuthLogin />} />
+                <Route path="/uye-ol" element={<AuthRegister />} />
+                <Route path="/profil" element={<PublicLayout><Profile /></PublicLayout>} />
 
-        {/* Admin Login */}
-        <Route path="/admin/login" element={<Login />} />
-        
-        {/* Admin Routes - Protected */}
-        <Route path="/admin" element={<ProtectedRoute><AdminLayout><Dashboard /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/sertifikalar" element={<ProtectedRoute><AdminLayout><Certificates /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/etkinlikler" element={<ProtectedRoute><AdminLayout><Events /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/egitimler" element={<ProtectedRoute><AdminLayout><AdminTrainings /></AdminLayout></ProtectedRoute>} />
-        
-        {/* Admin Blog Routes */}
-        <Route path="/admin/bloglar" element={<ProtectedRoute><AdminLayout><Blogs /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/bloglar/yeni" element={<ProtectedRoute><AdminLayout><BlogEditor /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/bloglar/:id" element={<ProtectedRoute><AdminLayout><BlogEditor /></AdminLayout></ProtectedRoute>} />
+                {/* Other Public Routes */}
+                <Route path="/hakkimizda" element={<PublicLayout><AboutUs /></PublicLayout>} />
+                <Route path="/etkinlikler" element={<PublicLayout><PublicEvents /></PublicLayout>} />
+                <Route path="/etkinlikler/:id" element={<PublicLayout><EventDetail /></PublicLayout>} />
+                <Route path="/blog" element={<PublicLayout><PublicBlog /></PublicLayout>} />
+                <Route path="/blog/:slug" element={<PublicLayout><BlogPost /></PublicLayout>} />
+                <Route path="/iletisim" element={<PublicLayout><Contact /></PublicLayout>} />
+                <Route path="/gonullu-ol" element={<PublicLayout><Volunteer /></PublicLayout>} />
+                <Route path="/egitmen-ol" element={<PublicLayout><Trainer /></PublicLayout>} />
 
-        {/* Admin Placeholders */}
-        <Route path="/admin/uyeler" element={<ProtectedRoute><AdminLayout><div className="p-8 font-bold text-gray-500">Üyeler Yönetimi (Demo)</div></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/ayarlar" element={<ProtectedRoute><AdminLayout><div className="p-8 font-bold text-gray-500">Sistem Ayarları (Demo)</div></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/bildirimler" element={<ProtectedRoute><AdminLayout><Notifications /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/ana-sayfa" element={<ProtectedRoute><AdminLayout><HomepageAdmin /></AdminLayout></ProtectedRoute>} />
+                {/* Admin Login */}
+                <Route path="/admin/login" element={<Login />} />
 
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+                {/* Admin Routes - Protected */}
+                <Route path="/admin" element={<ProtectedRoute><AdminLayout><Dashboard /></AdminLayout></ProtectedRoute>} />
+                <Route path="/admin/sertifikalar" element={<ProtectedRoute><AdminLayout><Certificates /></AdminLayout></ProtectedRoute>} />
+                <Route path="/admin/etkinlikler" element={<ProtectedRoute><AdminLayout><Events /></AdminLayout></ProtectedRoute>} />
+                <Route path="/admin/egitimler" element={<ProtectedRoute><AdminLayout><AdminTrainings /></AdminLayout></ProtectedRoute>} />
+
+                {/* Admin Blog Routes */}
+                <Route path="/admin/bloglar" element={<ProtectedRoute><AdminLayout><Blogs /></AdminLayout></ProtectedRoute>} />
+                <Route path="/admin/bloglar/yeni" element={<ProtectedRoute><AdminLayout><BlogEditor /></AdminLayout></ProtectedRoute>} />
+                <Route path="/admin/bloglar/:id" element={<ProtectedRoute><AdminLayout><BlogEditor /></AdminLayout></ProtectedRoute>} />
+
+                {/* Admin Placeholders */}
+                <Route path="/admin/uyeler" element={<ProtectedRoute><AdminLayout><div className="p-8 font-bold text-gray-500">Üyeler Yönetimi (Demo)</div></AdminLayout></ProtectedRoute>} />
+                <Route path="/admin/ayarlar" element={<ProtectedRoute><AdminLayout><div className="p-8 font-bold text-gray-500">Sistem Ayarları (Demo)</div></AdminLayout></ProtectedRoute>} />
+                <Route path="/admin/bildirimler" element={<ProtectedRoute><AdminLayout><Notifications /></AdminLayout></ProtectedRoute>} />
+                <Route path="/admin/ana-sayfa" element={<ProtectedRoute><AdminLayout><HomepageAdmin /></AdminLayout></ProtectedRoute>} />
+
+                {/* 404 */}
+                <Route path="*" element={<PublicLayout><NotFound /></PublicLayout>} />
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
+        </Router>
+        </ToastProvider>
+      </AuthProvider>
+    </HelmetProvider>
   );
 };
 
