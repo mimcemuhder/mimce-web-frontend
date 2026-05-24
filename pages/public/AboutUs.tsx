@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { ArrowRight, Heart, Shield, Star, Users } from 'lucide-react';
 
 // ─── Takım Verileri ───────────────────────────────────────────────────────────
@@ -83,6 +84,16 @@ const TeamCard: React.FC<{ member: TeamMember }> = ({ member }) => (
 // ─── Sayfa ────────────────────────────────────────────────────────────────────
 const AboutUs: React.FC = () => {
   return (
+    <>
+    <Helmet>
+      <title>Hakkımızda | MİMCE</title>
+      <meta name="description" content="MİMCE (Millî Mühendisler Cemiyeti) hakkında bilgi edinin. Misyonumuz, ekibimiz ve değerlerimiz." />
+      <link rel="canonical" href="https://mimce.org/hakkimizda" />
+      <meta property="og:title" content="Hakkımızda | MİMCE" />
+      <meta property="og:description" content="MİMCE misyonu, ekibi ve değerleri." />
+      <meta property="og:url" content="https://mimce.org/hakkimizda" />
+      <meta property="og:image" content="https://mimce.org/og-default.png" />
+    </Helmet>
     <div className="w-full bg-white">
 
       {/* ── SAYFA HERO ───────────────────────────────────────────────────────── */}
@@ -234,6 +245,7 @@ const AboutUs: React.FC = () => {
       </section>
 
     </div>
+    </>
   );
 };
 

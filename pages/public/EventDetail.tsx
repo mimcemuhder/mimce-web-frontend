@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Calendar, Clock, MapPin, ArrowLeft, ChevronRight, ChevronLeft, X, Images } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { Event } from '../../types';
@@ -64,6 +65,16 @@ const EventDetail: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Helmet>
+        <title>{event.title} | Etkinlikler | MİMCE</title>
+        <meta name="description" content={event.description?.slice(0, 155) || 'MİMCE etkinlik detayları'} />
+        <link rel="canonical" href={`https://mimce.org/etkinlikler/${event.id}`} />
+        <meta property="og:title" content={`${event.title} | MİMCE`} />
+        <meta property="og:description" content={event.description?.slice(0, 155) || ''} />
+        <meta property="og:image" content={event.image || 'https://mimce.org/og-default.png'} />
+        <meta property="og:url" content={`https://mimce.org/etkinlikler/${event.id}`} />
+      </Helmet>
+
       {/* Breadcrumb */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">

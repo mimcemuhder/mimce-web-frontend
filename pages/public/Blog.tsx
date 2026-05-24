@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { supabase } from '../../services/supabase';
 import { Blog } from '../../types';
 import { Calendar, User, Tag, ArrowRight, FileText } from 'lucide-react';
@@ -48,6 +49,16 @@ const PublicBlog: React.FC = () => {
   const [featured, ...rest] = blogs;
 
   return (
+    <>
+    <Helmet>
+      <title>Blog | MİMCE</title>
+      <meta name="description" content="Mühendislik, teknoloji ve kariyer üzerine MİMCE blog yazıları." />
+      <link rel="canonical" href="https://mimce.org/blog" />
+      <meta property="og:title" content="Blog | MİMCE" />
+      <meta property="og:description" content="Mühendislik ve teknoloji üzerine yazılar." />
+      <meta property="og:url" content="https://mimce.org/blog" />
+      <meta property="og:image" content="https://mimce.org/og-default.png" />
+    </Helmet>
     <div className="max-w-5xl mx-auto px-4 py-16">
       <div className="mb-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-2">Blog</h1>
@@ -140,6 +151,7 @@ const PublicBlog: React.FC = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

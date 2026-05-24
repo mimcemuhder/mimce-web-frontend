@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Search, Calendar, ArrowRight, ArrowUpDown } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { Training } from '../../types';
@@ -40,6 +41,15 @@ const Trainings: React.FC = () => {
   }, [trainings, filter, search, sort]);
 
   return (
+    <>
+    <Helmet>
+      <title>Eğitimler | MİMCE</title>
+      <meta name="description" content="MİMCE mühendislik eğitimleri — öğrenciler ve profesyoneller için eğitim programları." />
+      <link rel="canonical" href="https://mimce.org/egitimler" />
+      <meta property="og:title" content="Eğitimler | MİMCE" />
+      <meta property="og:url" content="https://mimce.org/egitimler" />
+      <meta property="og:image" content="https://mimce.org/og-default.png" />
+    </Helmet>
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -149,6 +159,7 @@ const Trainings: React.FC = () => {
 
       </div>
     </div>
+    </>
   );
 };
 

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import DOMPurify from 'dompurify';
 import { generateHTML } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import TiptapLink from '@tiptap/extension-link';
 import { supabase } from '../../services/supabase';
 import { Blog } from '../../types';
-import { Calendar, User, ArrowLeft, Tag, Loader2 } from 'lucide-react';
+import { Calendar, User, ArrowLeft, Loader2 } from 'lucide-react';
 
 const BlogPost: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -32,9 +34,12 @@ const BlogPost: React.FC = () => {
             TiptapLink,
             Image,
           ]);
-          setHtml(rendered);
+          setHtml(DOMPurify.sanitize(rendered, {
+            ALLOWED_TAGS: ['p','h1','h2','h3','ul','ol','li','strong','em','a','img','blockquote','hr','br','code','pre'],
+            ALLOWED_ATTR: ['href','src','alt','target','rel','class'],
+          }));
         } catch {
-          setHtml(data.content);
+          setHtml(DOMPurify.sanitize(data.content));
         }
       }
       setLoading(false);
@@ -51,16 +56,52 @@ const BlogPost: React.FC = () => {
 
   if (!blog) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-32 text-center text-gray-400">
-        <p className="text-lg font-medium">Makale bulunamadı.</p>
-        <Link to="/blog" className="mt-4 inline-flex items-center gap-2 text-primary text-sm">
-          <ArrowLeft size={14} /> Blog'a dön
-        </Link>
-      </div>
+      <>
+        <Helmet>
+          <title>Makale Bulunamadı | MİMCE</title>
+          <meta name="robots" content="noindex" />
+        </Helmet>
+        <div className="max-w-2xl mx-auto px-4 py-32 text-center text-gray-400">
+          <p className="text-lg font-medium">Makale bulunamadı.</p>
+          <Link to="/blog" className="mt-4 inline-flex items-center gap-2 text-primary text-sm">
+            <ArrowLeft size={14} /> Blog'a dön
+          </Link>
+        </div>
+      </>
     );
   }
 
+  const canonicalUrl = `https://mimce.org/blog/${blog.slug}`;
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: blog.title,
+    author: blog.author ? { '@type': 'Person', name: blog.author } : undefined,
+    datePublished: blog.created_at,
+    dateModified: blog.updated_at ?? blog.created_at,
+    image: blog.cover_image ?? undefined,
+    description: blog.excerpt ?? undefined,
+    url: canonicalUrl,
+    publisher: {
+      '@type': 'Organization',
+      name: 'MİMCE',
+      url: 'https://mimce.org',
+    },
+  };
+
   return (
+    <>
+      <Helmet>
+        <title>{blog.title} | MİMCE Blog</title>
+        <meta name="description" content={blog.excerpt ?? blog.title} />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:title" content={blog.title} />
+        <meta property="og:description" content={blog.excerpt ?? blog.title} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={blog.cover_image || 'https://mimce.org/og-default.png'} />
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
     <article className="max-w-2xl mx-auto px-4 py-16">
       {/* Back */}
       <Link
@@ -198,6 +239,7 @@ const BlogPost: React.FC = () => {
         }
       `}</style>
     </article>
+    </>
   );
 };
 

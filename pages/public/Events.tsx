@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Calendar, Clock, MapPin, Search, Images, ArrowUpDown } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { Event } from '../../types';
@@ -37,6 +38,15 @@ const Events: React.FC = () => {
   }, [events, search, sort]);
 
   return (
+    <>
+    <Helmet>
+      <title>Etkinlikler | MİMCE</title>
+      <meta name="description" content="MİMCE mühendislik etkinlikleri — konferanslar, atölyeler ve networking etkinlikleri." />
+      <link rel="canonical" href="https://mimce.org/etkinlikler" />
+      <meta property="og:title" content="Etkinlikler | MİMCE" />
+      <meta property="og:url" content="https://mimce.org/etkinlikler" />
+      <meta property="og:image" content="https://mimce.org/og-default.png" />
+    </Helmet>
     <div className="min-h-screen bg-gray-50">
       {/* Page header */}
       <div className="bg-navy py-16 px-4">
@@ -140,6 +150,7 @@ const Events: React.FC = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

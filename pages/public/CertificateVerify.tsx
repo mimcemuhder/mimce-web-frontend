@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { supabase } from '../../services/supabase';
 import { Certificate } from '../../types';
 import { CheckCircle, XCircle, Search } from 'lucide-react';
@@ -25,6 +26,16 @@ const CertificateVerify: React.FC = () => {
   };
 
   return (
+    <>
+    <Helmet>
+      <title>Sertifika Doğrulama | MİMCE</title>
+      <meta name="description" content="MİMCE sertifikanızın geçerliliğini online olarak doğrulayın. Sertifika numaranızı girin." />
+      <link rel="canonical" href="https://mimce.org/sertifika-dogrulama" />
+      <meta property="og:title" content="Sertifika Doğrulama | MİMCE" />
+      <meta property="og:description" content="MİMCE sertifikanızın geçerliliğini online olarak doğrulayın." />
+      <meta property="og:url" content="https://mimce.org/sertifika-dogrulama" />
+      <meta property="og:image" content="https://mimce.org/og-default.png" />
+    </Helmet>
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="max-w-4xl w-full bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row min-h-[500px]">
         
@@ -93,6 +104,7 @@ const CertificateVerify: React.FC = () => {
 
       </div>
     </div>
+    </>
   );
 };
 

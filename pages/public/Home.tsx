@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import {
   ArrowRight, Calendar, MapPin, ChevronLeft, ChevronRight,
   BookOpen, Users, Award, Zap, Clock, Heart, Shield, Star
@@ -111,6 +112,17 @@ const Home: React.FC = () => {
   }, []);
 
   return (
+    <>
+    <Helmet>
+      <title>MİMCE — Millî Mühendisler Cemiyeti</title>
+      <meta name="description" content="MİMCE, mühendislik öğrencileri ve profesyonellerini eğitim, etkinlik ve toplulukla buluşturan sivil toplum kuruluşudur." />
+      <link rel="canonical" href="https://mimce.org/" />
+      <meta property="og:title" content="MİMCE — Millî Mühendisler Cemiyeti" />
+      <meta property="og:description" content="Eğitim, etkinlik ve toplulukla büyüyen mühendislik platformu." />
+      <meta property="og:url" content="https://mimce.org/" />
+      <meta property="og:image" content="https://mimce.org/og-default.png" />
+      <meta property="og:type" content="website" />
+    </Helmet>
     <div className="w-full bg-white">
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
@@ -425,6 +437,7 @@ const Home: React.FC = () => {
       </section>
 
     </div>
+    </>
   );
 };
 
