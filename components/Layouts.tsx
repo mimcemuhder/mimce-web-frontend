@@ -9,7 +9,7 @@ import {
   Menu, X, Home, Users, BookOpen, Calendar, Award, Settings, 
   Search, Bell, HelpCircle, LogOut, Facebook, Twitter, Linkedin, Instagram,
   UserCircle, ChevronDown, CheckCheck, Trash2, Plus, Info, AlertTriangle,
-  CheckCircle, XCircle, Keyboard, ExternalLink, Clock
+  CheckCircle, XCircle, Keyboard, ExternalLink, Clock, Rss
 } from 'lucide-react';
 
 export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -407,6 +407,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
     { path: '/admin/egitimler', icon: BookOpen, label: 'Eğitimler' },
     { path: '/admin/etkinlikler', icon: Calendar, label: 'Etkinlikler' },
     { path: '/admin/sertifikalar', icon: Award, label: 'Sertifikalar' },
+    { path: '/admin/bloglar', icon: Rss, label: 'Bloglar' },
     { path: '/admin/bildirimler', icon: Bell, label: 'Bildirimler', badge: unreadCount || undefined },
     { path: '/admin/ayarlar', icon: Settings, label: 'Ayarlar' },
   ];

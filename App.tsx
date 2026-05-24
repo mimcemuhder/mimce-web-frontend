@@ -23,6 +23,12 @@ import Certificates from './pages/admin/Certificates';
 import Events from './pages/admin/Events';
 import AdminTrainings from './pages/admin/Trainings';
 import Notifications from './pages/admin/Notifications';
+import Blogs from './pages/admin/Blogs';
+import BlogEditor from './pages/admin/BlogEditor';
+
+// Public Blog Pages
+import PublicBlog from './pages/public/Blog';
+import BlogPost from './pages/public/BlogPost';
 
 const App: React.FC = () => {
   return (
@@ -43,7 +49,8 @@ const App: React.FC = () => {
         <Route path="/hakkimizda" element={<PublicLayout><AboutUs /></PublicLayout>} />
         <Route path="/etkinlikler" element={<PublicLayout><PublicEvents /></PublicLayout>} />
         <Route path="/etkinlikler/:id" element={<PublicLayout><EventDetail /></PublicLayout>} />
-        <Route path="/blog" element={<PublicLayout><div className="p-20 text-center">Blog (Yapım Aşamasında)</div></PublicLayout>} />
+        <Route path="/blog" element={<PublicLayout><PublicBlog /></PublicLayout>} />
+        <Route path="/blog/:slug" element={<PublicLayout><BlogPost /></PublicLayout>} />
         <Route path="/iletisim" element={<PublicLayout><Contact /></PublicLayout>} />
         <Route path="/gonullu-ol" element={<PublicLayout><div className="p-20 text-center">Gönüllü Ol Formu (Yapım Aşamasında)</div></PublicLayout>} />
         <Route path="/egitmen-ol" element={<PublicLayout><div className="p-20 text-center">Eğitmen Ol Formu (Yapım Aşamasında)</div></PublicLayout>} />
@@ -57,6 +64,11 @@ const App: React.FC = () => {
         <Route path="/admin/etkinlikler" element={<ProtectedRoute><AdminLayout><Events /></AdminLayout></ProtectedRoute>} />
         <Route path="/admin/egitimler" element={<ProtectedRoute><AdminLayout><AdminTrainings /></AdminLayout></ProtectedRoute>} />
         
+        {/* Admin Blog Routes */}
+        <Route path="/admin/bloglar" element={<ProtectedRoute><AdminLayout><Blogs /></AdminLayout></ProtectedRoute>} />
+        <Route path="/admin/bloglar/yeni" element={<ProtectedRoute><AdminLayout><BlogEditor /></AdminLayout></ProtectedRoute>} />
+        <Route path="/admin/bloglar/:id" element={<ProtectedRoute><AdminLayout><BlogEditor /></AdminLayout></ProtectedRoute>} />
+
         {/* Admin Placeholders */}
         <Route path="/admin/uyeler" element={<ProtectedRoute><AdminLayout><div className="p-8 font-bold text-gray-500">Üyeler Yönetimi (Demo)</div></AdminLayout></ProtectedRoute>} />
         <Route path="/admin/ayarlar" element={<ProtectedRoute><AdminLayout><div className="p-8 font-bold text-gray-500">Sistem Ayarları (Demo)</div></AdminLayout></ProtectedRoute>} />
