@@ -60,3 +60,18 @@ export interface UserEvent {
   attended: boolean;
   event?: Event;
 }
+
+export interface Blog {
+  id: string;
+  title: string;
+  slug: string;
+  cover_image?: string;
+  cover_alt?: string;
+  excerpt?: string;
+  content: string; // JSON string (Tiptap doc)
+  author?: string;
+  tags?: string[];
+  published: boolean;
+  created_at: string;
+  updated_at?: string;
+}
