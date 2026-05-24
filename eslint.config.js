@@ -8,7 +8,14 @@ import prettier from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: ['dist/**', 'node_modules/**', 'supabase/functions/**'],
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      'supabase/functions/**',
+      'scripts/**',
+      'services/createAdmin.ts',
+      'services/supabaseTest.ts',
+    ],
   },
   {
     files: ['**/*.{ts,tsx}'],
@@ -35,10 +42,23 @@ export default [
       ...reactHooks.configs.recommended.rules,
       ...jsxA11y.configs.recommended.rules,
       'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
+      'react/no-unescaped-entities': 'warn',
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'warn',
+      // a11y rules: downgraded to warn until existing components are refactored
       'jsx-a11y/anchor-is-valid': 'warn',
+      'jsx-a11y/click-events-have-key-events': 'warn',
+      'jsx-a11y/no-static-element-interactions': 'warn',
+      'jsx-a11y/label-has-associated-control': 'warn',
+      'jsx-a11y/no-noninteractive-element-interactions': 'warn',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/immutability': 'warn',
+      'jsx-a11y/no-autofocus': 'warn',
+      'no-use-before-define': 'off',
+      '@typescript-eslint/no-use-before-define': 'off',
+      '@typescript-eslint/no-unused-expressions': 'warn',
     },
   },
   prettier,

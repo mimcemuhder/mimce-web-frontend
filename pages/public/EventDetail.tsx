@@ -33,6 +33,11 @@ const EventDetail: React.FC = () => {
     fetchEvent();
   }, [id, navigate]);
 
+  const getPhotos = (ev: Event) => {
+    const all = [...(ev.images ?? []), ...(ev.image ? [ev.image] : [])];
+    return [...new Set(all)].filter(u => u && !u.includes('picsum.photos'));
+  };
+
   // Keyboard navigation for lightbox
   useEffect(() => {
     if (lightbox === null || !event) return;
@@ -55,11 +60,6 @@ const EventDetail: React.FC = () => {
   }
 
   if (!event) return null;
-
-  const getPhotos = (ev: Event) => {
-    const all = [...(ev.images ?? []), ...(ev.image ? [ev.image] : [])];
-    return [...new Set(all)].filter(u => u && !u.includes('picsum.photos'));
-  };
 
   const photos = getPhotos(event);
 
