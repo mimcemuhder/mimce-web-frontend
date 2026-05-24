@@ -21,225 +21,180 @@ const Contact: React.FC = () => {
   };
 
   const socials = [
-    { label: 'Instagram', handle: '@mimcemuhder', icon: Instagram, url: 'https://instagram.com/mimcemuhder', color: 'hover:text-pink-500' },
-    { label: 'X', handle: '@mimcemuhder', icon: XIcon, url: 'https://x.com/mimcemuhder', color: 'hover:text-gray-900' },
-    { label: 'YouTube', handle: '@mimcemuhder', icon: Youtube, url: 'https://youtube.com/@mimcemuhder', color: 'hover:text-red-500' },
+    { label: 'Instagram', handle: '@mimcemuhder', icon: Instagram, url: 'https://instagram.com/mimcemuhder' },
+    { label: 'X (Twitter)', handle: '@mimcemuhder', icon: XIcon,     url: 'https://x.com/mimcemuhder' },
+    { label: 'YouTube',    handle: '@mimcemuhder', icon: Youtube,    url: 'https://youtube.com/@mimcemuhder' },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-navy py-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-primary text-xs font-bold uppercase tracking-widest mb-2">Bize Ulaşın</p>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-3">İletişim</h1>
-          <p className="text-gray-300 text-lg max-w-xl">
+    <div className="w-full bg-white">
+
+      {/* ── SAYFA HERO ───────────────────────────────────────────────────────── */}
+      <section className="relative bg-navy overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <span className="text-primary font-bold text-[11px] tracking-widest uppercase block mb-3">
+            Bize Ulaşın
+          </span>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-3">İletişim</h1>
+          <p className="text-gray-400 text-base max-w-xl">
             Sorularınız, önerileriniz veya iş birliği talepleriniz için bize yazın.
           </p>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
+      {/* ── İÇERİK ───────────────────────────────────────────────────────────── */}
+      <section className="py-14 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
 
-          {/* Left: Info */}
-          <div className="lg:col-span-2 space-y-6">
+            {/* Sol: Bilgi */}
+            <div className="lg:col-span-2 space-y-5">
 
-            {/* Contact cards */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 divide-y divide-gray-100">
-              {/* Email */}
-              <a
-                href="mailto:iletisim@mimce.org"
-                className="flex items-start gap-4 p-5 hover:bg-gray-50 transition-colors group"
-              >
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                  <Mail size={18} className="text-primary" />
-                </div>
-                <div>
-                  <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">E-Posta</div>
-                  <div className="text-navy font-semibold text-sm">iletisim@mimce.org</div>
-                </div>
-              </a>
-
-              {/* Website */}
-              <a
-                href="https://www.mimce.org"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-start gap-4 p-5 hover:bg-gray-50 transition-colors group"
-              >
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                  <Globe size={18} className="text-primary" />
-                </div>
-                <div>
-                  <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Web Sitesi</div>
-                  <div className="text-navy font-semibold text-sm">www.mimce.org</div>
-                </div>
-              </a>
-
-              {/* Address */}
-              <a
-                href="https://maps.google.com/?q=Hacı+Bayram+Yayık+Sk+No:13+Altındağ+Ankara"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-start gap-4 p-5 hover:bg-gray-50 transition-colors group"
-              >
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                  <MapPin size={18} className="text-primary" />
-                </div>
-                <div>
-                  <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Adres</div>
-                  <div className="text-navy font-semibold text-sm leading-relaxed">
-                    Hacı Bayram, Yayık Sk. No:13<br />
-                    Altındağ / Ankara
+              {/* İletişim kartları */}
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
+                <a href="mailto:iletisim@mimce.org"
+                  className="flex items-center gap-4 p-5 hover:bg-gray-50 transition-colors group">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                    <Mail size={17} className="text-primary" />
                   </div>
-                </div>
-              </a>
-            </div>
+                  <div>
+                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">E-Posta</div>
+                    <div className="text-navy font-semibold text-sm">iletisim@mimce.org</div>
+                  </div>
+                </a>
 
-            {/* Socials */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h3 className="text-sm font-bold text-navy mb-4 flex items-center gap-2">
-                <span className="w-1 h-4 bg-primary rounded-full inline-block" />
-                Sosyal Medya
-              </h3>
-              <div className="space-y-3">
-                {socials.map(s => (
-                  <a
-                    key={s.label}
-                    href={s.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`flex items-center gap-3 text-gray-500 ${s.color} transition-colors group`}
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-gray-200 transition-colors flex items-center justify-center flex-shrink-0">
-                      <s.icon {...(s.label !== 'X' ? { size: 15 } : {})} />
+                <a href="https://www.mimce.org" target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-5 hover:bg-gray-50 transition-colors group">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                    <Globe size={17} className="text-primary" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Web Sitesi</div>
+                    <div className="text-navy font-semibold text-sm">www.mimce.org</div>
+                  </div>
+                </a>
+
+                <a href="https://maps.google.com/?q=Hacı+Bayram+Yayık+Sk+No:13+Altındağ+Ankara"
+                  target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-5 hover:bg-gray-50 transition-colors group">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                    <MapPin size={17} className="text-primary" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Adres</div>
+                    <div className="text-navy font-semibold text-sm leading-relaxed">
+                      Hacı Bayram, Yayık Sk. No:13<br />Altındağ / Ankara
                     </div>
-                    <div>
-                      <div className="text-[10px] text-gray-400 font-medium">{s.label}</div>
-                      <div className="text-sm font-semibold text-navy leading-tight">{s.handle}</div>
-                    </div>
-                  </a>
-                ))}
+                  </div>
+                </a>
+              </div>
+
+              {/* Sosyal medya */}
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                <h3 className="text-xs font-bold text-navy uppercase tracking-widest mb-4">Sosyal Medya</h3>
+                <div className="space-y-3">
+                  {socials.map(s => (
+                    <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-3 group">
+                      <div className="w-9 h-9 rounded-xl bg-gray-50 border border-gray-100 group-hover:bg-primary/10 group-hover:border-primary/20 transition-all flex items-center justify-center shrink-0 text-gray-500 group-hover:text-primary">
+                        <s.icon {...(s.label !== 'X (Twitter)' ? { size: 15 } : {})} />
+                      </div>
+                      <div>
+                        <div className="text-[10px] text-gray-400 font-medium">{s.label}</div>
+                        <div className="text-sm font-semibold text-navy leading-tight">{s.handle}</div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* Harita */}
+              <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm h-48">
+                <iframe
+                  title="MİMCE Konum"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3059.!2d32.863!3d39.943!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14d34f9f9f9f9f9f%3A0x0!2zSGFjxLEgQmF5cmFtLCBZYXnEsWsgU2suIE5vOjEzLCBBbHTEsW5kYcSfL0Fua2FyYQ!5e0!3m2!1str!2str!4v1"
+                  width="100%" height="100%"
+                  style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"
+                />
               </div>
             </div>
 
-            {/* Map embed */}
-            <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100 h-52">
-              <iframe
-                title="MİMCE Konum"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3059.!2d32.863!3d39.943!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14d34f9f9f9f9f9f%3A0x0!2zSGFjxLEgQmF5cmFtLCBZYXnEsWsgU2suIE5vOjEzLCBBbHTEsW5kYcSfL0Fua2FyYQ!5e0!3m2!1str!2str!4v1"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
-          </div>
-
-          {/* Right: Form */}
-          <div className="lg:col-span-3">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-              {sent ? (
-                <div className="flex flex-col items-center justify-center py-16 text-center">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-5">
-                    <Send size={24} className="text-green-600" />
-                  </div>
-                  <h3 className="text-xl font-bold text-navy mb-2">Mesajınız İletildi!</h3>
-                  <p className="text-gray-500 text-sm max-w-xs">
-                    En kısa sürede size geri döneceğiz. Teşekkür ederiz.
-                  </p>
-                  <button
-                    onClick={() => { setSent(false); setForm({ name: '', email: '', subject: '', message: '' }); }}
-                    className="mt-6 px-5 py-2.5 text-sm font-bold text-navy border-2 border-navy rounded-xl hover:bg-navy hover:text-white transition-colors"
-                  >
-                    Yeni Mesaj Gönder
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <h2 className="text-xl font-bold text-navy mb-1 flex items-center gap-2">
-                    <span className="w-1 h-5 bg-primary rounded-full inline-block" />
-                    Mesaj Gönderin
-                  </h2>
-                  <p className="text-sm text-gray-400 mb-7 ml-3"></p>
-
-                  <form onSubmit={handleSubmit} className="space-y-5">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                      <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1.5">Ad Soyad*</label>
-                        <input
-                          name="name"
-                          value={form.name}
-                          onChange={handleChange}
-                          required
-                          type="text"
-                          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-                          placeholder="Adınız Soyadınız"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1.5">E-Posta*</label>
-                        <input
-                          name="email"
-                          value={form.email}
-                          onChange={handleChange}
-                          required
-                          type="email"
-                          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-                          placeholder="ornek@email.com"
-                        />
-                      </div>
+            {/* Sağ: Form */}
+            <div className="lg:col-span-3">
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+                {sent ? (
+                  <div className="flex flex-col items-center justify-center py-16 text-center">
+                    <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-5">
+                      <Send size={22} className="text-primary" />
                     </div>
-
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-1.5">Konu*</label>
-                      <select
-                        name="subject"
-                        value={form.subject}
-                        onChange={handleChange}
-                        required
-                        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all bg-white text-gray-700"
-                      >
-                        <option value="">Konu seçin</option>
-                        <option value="Genel Bilgi">Genel Bilgi</option>
-                        <option value="Eğitim">Eğitimler</option>
-                        <option value="Etkinlik">Etkinlikler</option>
-                        <option value="Gönüllülük">Gönüllülük</option>
-                        <option value="İş Birliği">İş Birliği</option>
-                        <option value="Diğer">Diğer</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-1.5">Mesaj*</label>
-                      <textarea
-                        name="message"
-                        value={form.message}
-                        onChange={handleChange}
-                        required
-                        rows={6}
-                        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none"
-                        placeholder="Mesajınızı buraya yazın..."
-                      />
-                    </div>
-
+                    <h3 className="text-xl font-bold text-navy mb-2">Mesajınız İletildi!</h3>
+                    <p className="text-gray-500 text-sm max-w-xs leading-relaxed">
+                      En kısa sürede size geri döneceğiz. Teşekkür ederiz.
+                    </p>
                     <button
-                      type="submit"
-                      className="w-full py-3.5 bg-navy text-white font-bold rounded-xl hover:bg-navy/90 transition-all shadow-md flex items-center justify-center gap-2 text-sm"
+                      onClick={() => { setSent(false); setForm({ name: '', email: '', subject: '', message: '' }); }}
+                      className="mt-6 px-5 py-2.5 text-sm font-bold text-navy border border-gray-200 rounded-lg hover:bg-navy hover:text-white hover:border-navy transition-colors"
                     >
-                      <Send size={16} />
-                      Gönder
+                      Yeni Mesaj Gönder
                     </button>
-                  </form>
-                </>
-              )}
+                  </div>
+                ) : (
+                  <>
+                    <span className="text-primary font-bold text-[11px] tracking-widest uppercase block mb-1">
+                      Mesaj Gönderin
+                    </span>
+                    <h2 className="text-xl font-extrabold text-navy mb-6">Sizden duymak isteriz</h2>
+
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Ad Soyad *</label>
+                          <input name="name" value={form.name} onChange={handleChange} required type="text"
+                            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all bg-gray-50 focus:bg-white"
+                            placeholder="Adınız Soyadınız" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">E-Posta *</label>
+                          <input name="email" value={form.email} onChange={handleChange} required type="email"
+                            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all bg-gray-50 focus:bg-white"
+                            placeholder="ornek@email.com" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Konu *</label>
+                        <select name="subject" value={form.subject} onChange={handleChange} required
+                          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all bg-gray-50 focus:bg-white text-gray-700">
+                          <option value="">Konu seçin</option>
+                          <option value="Genel Bilgi">Genel Bilgi</option>
+                          <option value="Eğitim">Eğitimler</option>
+                          <option value="Etkinlik">Etkinlikler</option>
+                          <option value="Gönüllülük">Gönüllülük</option>
+                          <option value="İş Birliği">İş Birliği</option>
+                          <option value="Diğer">Diğer</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Mesaj *</label>
+                        <textarea name="message" value={form.message} onChange={handleChange} required rows={6}
+                          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none bg-gray-50 focus:bg-white"
+                          placeholder="Mesajınızı buraya yazın..." />
+                      </div>
+
+                      <button type="submit"
+                        className="w-full py-3 bg-navy text-white font-bold rounded-xl hover:bg-navy-light transition-colors flex items-center justify-center gap-2 text-sm">
+                        <Send size={15} /> Gönder
+                      </button>
+                    </form>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
