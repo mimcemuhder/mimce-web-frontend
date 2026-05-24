@@ -14,10 +14,7 @@ const Events: React.FC = () => {
   }, []);
 
   const fetchEvents = async () => {
-    const { data } = await supabase
-      .from('events')
-      .select('*')
-      .order('date', { ascending: false });
+    const { data } = await supabase.from('events').select('*').order('date', { ascending: false });
     if (data) setEvents(data);
   };
 
@@ -37,30 +34,31 @@ const Events: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []) as File[];
-    const valid = files.filter(f => f.type.startsWith('image/') && f.size <= 5 * 1024 * 1024);
-    if (valid.length !== files.length) alert('Bazı dosyalar geçersiz ya da 5MB\'dan büyük, atlandı.');
+    const valid = files.filter((f) => f.type.startsWith('image/') && f.size <= 5 * 1024 * 1024);
+    if (valid.length !== files.length)
+      alert("Bazı dosyalar geçersiz ya da 5MB'dan büyük, atlandı.");
 
-    setImageFiles(prev => [...prev, ...valid]);
-    valid.forEach(file => {
+    setImageFiles((prev) => [...prev, ...valid]);
+    valid.forEach((file) => {
       const reader = new FileReader();
-      reader.onloadend = () => setImagePreviews(prev => [...prev, reader.result as string]);
+      reader.onloadend = () => setImagePreviews((prev) => [...prev, reader.result as string]);
       reader.readAsDataURL(file);
     });
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const removeNewImage = (idx: number) => {
-    setImageFiles(prev => prev.filter((_, i) => i !== idx));
-    setImagePreviews(prev => prev.filter((_, i) => i !== idx));
+    setImageFiles((prev) => prev.filter((_, i) => i !== idx));
+    setImagePreviews((prev) => prev.filter((_, i) => i !== idx));
   };
 
   const removeExistingImage = (idx: number) => {
-    setExistingImages(prev => prev.filter((_, i) => i !== idx));
+    setExistingImages((prev) => prev.filter((_, i) => i !== idx));
   };
 
   const resetForm = () => {
@@ -82,7 +80,7 @@ const Events: React.FC = () => {
       description: event.description,
     });
     const allUrls = [...(event.images ?? []), ...(event.image ? [event.image] : [])];
-    const realImages = [...new Set(allUrls)].filter(u => u && !u.includes('picsum.photos'));
+    const realImages = [...new Set(allUrls)].filter((u) => u && !u.includes('picsum.photos'));
     setExistingImages(realImages);
     setImageFiles([]);
     setImagePreviews([]);
@@ -124,9 +122,9 @@ const Events: React.FC = () => {
     if (uploadFailed) {
       alert(
         'Bazı görseller yüklenemedi.\n\n' +
-        'Muhtemel sebep: Supabase Storage\'da "images" bucket\'ı henüz oluşturulmamış.\n\n' +
-        'Geçici çözüm: URL alanına görsel bağlantısı yapıştırın.\n\n' +
-        'Kalıcı çözüm: Supabase Dashboard → Storage → "images" adında public bucket oluşturun.'
+          'Muhtemel sebep: Supabase Storage\'da "images" bucket\'ı henüz oluşturulmamış.\n\n' +
+          'Geçici çözüm: URL alanına görsel bağlantısı yapıştırın.\n\n' +
+          'Kalıcı çözüm: Supabase Dashboard → Storage → "images" adında public bucket oluşturun.'
       );
       setSaving(false);
       return;
@@ -146,7 +144,9 @@ const Events: React.FC = () => {
       };
       const { error } = await supabase.from('events').update(updated).eq('id', editingEventId);
       if (!error) {
-        setEvents(events.map(ev => ev.id === editingEventId ? { ...ev, ...updated } as Event : ev));
+        setEvents(
+          events.map((ev) => (ev.id === editingEventId ? ({ ...ev, ...updated } as Event) : ev))
+        );
         setIsSheetOpen(false);
         resetForm();
       } else {
@@ -175,7 +175,7 @@ const Events: React.FC = () => {
   const handleDelete = async (id: string) => {
     if (!confirm('Bu etkinliği silmek istediğinize emin misiniz?')) return;
     const { error } = await supabase.from('events').delete().eq('id', id);
-    if (!error) setEvents(events.filter(ev => ev.id !== id));
+    if (!error) setEvents(events.filter((ev) => ev.id !== id));
   };
 
   const allPreviews = [...existingImages, ...imagePreviews];
@@ -189,7 +189,10 @@ const Events: React.FC = () => {
           <p className="text-sm text-gray-500 mt-1">Geçmiş etkinlikleri ekleyin ve yönetin.</p>
         </div>
         <button
-          onClick={() => { resetForm(); setIsSheetOpen(true); }}
+          onClick={() => {
+            resetForm();
+            setIsSheetOpen(true);
+          }}
           className="bg-primary text-navy font-bold px-4 py-2.5 rounded-lg flex items-center gap-2 hover:bg-primary-dark transition-colors shadow-sm"
         >
           <Plus size={18} />
@@ -199,11 +202,14 @@ const Events: React.FC = () => {
 
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {events.map(event => {
+        {events.map((event) => {
           const allUrls = [...(event.images ?? []), ...(event.image ? [event.image] : [])];
-          const photos = [...new Set(allUrls)].filter(u => u && !u.includes('picsum.photos'));
+          const photos = [...new Set(allUrls)].filter((u) => u && !u.includes('picsum.photos'));
           return (
-            <div key={event.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+            <div
+              key={event.id}
+              className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col"
+            >
               {/* Photo strip */}
               <div className="h-44 bg-gray-100 relative overflow-hidden">
                 {photos.length > 0 ? (
@@ -225,16 +231,33 @@ const Events: React.FC = () => {
               <div className="p-5 flex-1 flex flex-col">
                 <h3 className="font-bold text-navy text-base mb-3 leading-snug">{event.title}</h3>
                 <div className="space-y-1.5 text-xs text-gray-500 mb-4">
-                  <div className="flex items-center gap-2"><Calendar size={12} className="text-primary" />{event.date}</div>
-                  <div className="flex items-center gap-2"><Clock size={12} className="text-primary" />{event.time}</div>
-                  <div className="flex items-center gap-2"><MapPin size={12} className="text-primary" />{event.location}</div>
+                  <div className="flex items-center gap-2">
+                    <Calendar size={12} className="text-primary" />
+                    {event.date}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock size={12} className="text-primary" />
+                    {event.time}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin size={12} className="text-primary" />
+                    {event.location}
+                  </div>
                 </div>
-                <p className="text-xs text-gray-400 line-clamp-2 flex-1 mb-4">{event.description}</p>
+                <p className="text-xs text-gray-400 line-clamp-2 flex-1 mb-4">
+                  {event.description}
+                </p>
                 <div className="flex gap-2 mt-auto">
-                  <button onClick={() => openEdit(event)} className="flex-1 py-2 border border-gray-200 rounded text-sm font-medium hover:bg-gray-50">
+                  <button
+                    onClick={() => openEdit(event)}
+                    className="flex-1 py-2 border border-gray-200 rounded text-sm font-medium hover:bg-gray-50"
+                  >
                     Düzenle
                   </button>
-                  <button onClick={() => handleDelete(event.id)} className="flex-1 py-2 border border-gray-200 rounded text-sm font-medium text-red-600 hover:bg-red-50 flex items-center justify-center gap-1">
+                  <button
+                    onClick={() => handleDelete(event.id)}
+                    className="flex-1 py-2 border border-gray-200 rounded text-sm font-medium text-red-600 hover:bg-red-50 flex items-center justify-center gap-1"
+                  >
                     <Trash2 size={13} /> Sil
                   </button>
                 </div>
@@ -252,14 +275,26 @@ const Events: React.FC = () => {
       {/* Side Sheet */}
       {isSheetOpen && (
         <div className="fixed inset-0 z-50 flex justify-end">
-          <div className="absolute inset-0 bg-navy/30 backdrop-blur-sm" onClick={() => { setIsSheetOpen(false); resetForm(); }} />
+          <div
+            className="absolute inset-0 bg-navy/30 backdrop-blur-sm"
+            onClick={() => {
+              setIsSheetOpen(false);
+              resetForm();
+            }}
+          />
 
           <div className="relative w-full max-w-md bg-white shadow-2xl h-full flex flex-col animate-slide-in">
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <h2 className="text-xl font-bold text-navy">
                 {editingEventId ? 'Etkinliği Düzenle' : 'Yeni Etkinlik'}
               </h2>
-              <button onClick={() => { setIsSheetOpen(false); resetForm(); }} className="text-gray-400 hover:text-gray-600">
+              <button
+                onClick={() => {
+                  setIsSheetOpen(false);
+                  resetForm();
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
                 <X size={24} />
               </button>
             </div>
@@ -267,10 +302,15 @@ const Events: React.FC = () => {
             <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
               {/* Title */}
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">Etkinlik Başlığı*</label>
+                <label className="block text-sm font-bold text-gray-700 mb-1">
+                  Etkinlik Başlığı*
+                </label>
                 <input
-                  name="title" value={formData.title} onChange={handleInputChange}
-                  type="text" required
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  type="text"
+                  required
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none"
                   placeholder="Örn: Mühendislik Zirvesi 2025"
                 />
@@ -281,15 +321,20 @@ const Events: React.FC = () => {
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Tarih*</label>
                   <input
-                    name="date" value={formData.date} onChange={handleInputChange}
-                    type="date" required
+                    name="date"
+                    value={formData.date}
+                    onChange={handleInputChange}
+                    type="date"
+                    required
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Saat (24s)</label>
                   <input
-                    name="time" value={formData.time} onChange={handleInputChange}
+                    name="time"
+                    value={formData.time}
+                    onChange={handleInputChange}
                     type="time"
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none"
                   />
@@ -301,7 +346,9 @@ const Events: React.FC = () => {
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1">Konum</label>
                 <input
-                  name="location" value={formData.location} onChange={handleInputChange}
+                  name="location"
+                  value={formData.location}
+                  onChange={handleInputChange}
                   type="text"
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none"
                   placeholder="Adres veya Çevrimiçi"
@@ -312,7 +359,9 @@ const Events: React.FC = () => {
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1">Açıklama</label>
                 <textarea
-                  name="description" value={formData.description} onChange={handleInputChange}
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
                   rows={4}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none"
                   placeholder="Etkinlik hakkında kısa bilgi..."
@@ -325,8 +374,13 @@ const Events: React.FC = () => {
 
                 {/* Upload area */}
                 <input
-                  ref={fileInputRef} type="file" accept="image/*" multiple
-                  onChange={handleFileSelect} className="hidden" id="event-images"
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleFileSelect}
+                  className="hidden"
+                  id="event-images"
                 />
                 <label
                   htmlFor="event-images"
@@ -340,10 +394,15 @@ const Events: React.FC = () => {
                 {allPreviews.length > 0 && (
                   <div className="mt-3 grid grid-cols-3 gap-2">
                     {existingImages.map((url, i) => (
-                      <div key={`ex-${i}`} className="relative aspect-square rounded-lg overflow-hidden group">
+                      <div
+                        key={`ex-${i}`}
+                        className="relative aspect-square rounded-lg overflow-hidden group"
+                      >
                         <img src={url} alt="" className="w-full h-full object-cover" />
                         {i === 0 && (
-                          <span className="absolute top-1 left-1 bg-primary text-navy text-[9px] font-bold px-1.5 py-0.5 rounded">Kapak</span>
+                          <span className="absolute top-1 left-1 bg-primary text-navy text-[9px] font-bold px-1.5 py-0.5 rounded">
+                            Kapak
+                          </span>
                         )}
                         <button
                           type="button"
@@ -355,10 +414,15 @@ const Events: React.FC = () => {
                       </div>
                     ))}
                     {imagePreviews.map((src, i) => (
-                      <div key={`new-${i}`} className="relative aspect-square rounded-lg overflow-hidden group">
+                      <div
+                        key={`new-${i}`}
+                        className="relative aspect-square rounded-lg overflow-hidden group"
+                      >
                         <img src={src} alt="" className="w-full h-full object-cover" />
                         {existingImages.length === 0 && i === 0 && (
-                          <span className="absolute top-1 left-1 bg-primary text-navy text-[9px] font-bold px-1.5 py-0.5 rounded">Kapak</span>
+                          <span className="absolute top-1 left-1 bg-primary text-navy text-[9px] font-bold px-1.5 py-0.5 rounded">
+                            Kapak
+                          </span>
                         )}
                         <button
                           type="button"
@@ -371,15 +435,19 @@ const Events: React.FC = () => {
                     ))}
                   </div>
                 )}
-                <p className="text-[10px] text-gray-400 mt-1.5">İlk fotoğraf kapak görseli olarak kullanılır. Maks 5MB/fotoğraf.</p>
+                <p className="text-[10px] text-gray-400 mt-1.5">
+                  İlk fotoğraf kapak görseli olarak kullanılır. Maks 5MB/fotoğraf.
+                </p>
 
                 {/* URL fallback */}
                 <div className="mt-3 pt-3 border-t border-gray-100">
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">Ya da görsel URL'si girin</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">
+                    Ya da görsel URL'si girin
+                  </label>
                   <input
                     type="url"
                     value={urlInput}
-                    onChange={e => setUrlInput(e.target.value)}
+                    onChange={(e) => setUrlInput(e.target.value)}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none"
                     placeholder="https://ornek.com/fotograf.jpg"
                   />
@@ -393,7 +461,10 @@ const Events: React.FC = () => {
             <div className="p-6 border-t border-gray-100 flex gap-4 bg-gray-50">
               <button
                 type="button"
-                onClick={() => { setIsSheetOpen(false); resetForm(); }}
+                onClick={() => {
+                  setIsSheetOpen(false);
+                  resetForm();
+                }}
                 className="flex-1 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100"
               >
                 İptal

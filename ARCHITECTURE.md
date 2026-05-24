@@ -85,36 +85,40 @@ Admin login → supabaseAdmin.auth.signIn()
 
 ## Güvenlik Katmanları
 
-| Katman | Uygulama |
-|--------|----------|
-| Admin whitelist | `VITE_ADMIN_EMAILS` env; boşsa erişim reddedilir |
-| MFA | TOTP (aal2 zorunlu) |
-| Session timeout | 60 dk idle + absolut timeout |
-| API key güvenliği | Gemini key sunucu tarafında (Edge Function) |
-| XSS koruması | DOMPurify (blog içerikleri) |
-| CSP | `netlify.toml` — sıkı Content-Security-Policy |
-| HSTS | `max-age=31536000; includeSubDomains; preload` |
+| Katman            | Uygulama                                         |
+| ----------------- | ------------------------------------------------ |
+| Admin whitelist   | `VITE_ADMIN_EMAILS` env; boşsa erişim reddedilir |
+| MFA               | TOTP (aal2 zorunlu)                              |
+| Session timeout   | 60 dk idle + absolut timeout                     |
+| API key güvenliği | Gemini key sunucu tarafında (Edge Function)      |
+| XSS koruması      | DOMPurify (blog içerikleri)                      |
+| CSP               | `netlify.toml` — sıkı Content-Security-Policy    |
+| HSTS              | `max-age=31536000; includeSubDomains; preload`   |
 
 ---
 
 ## Servis Katmanı
 
 ### `supabase.ts` — Public Client
+
 - Kullanıcı kayıt/giriş, profil, eğitim/etkinlik kayıtları
 - Storage: avatar yükleme
 - Auth: `storageKey: 'mimce-public-auth'`
 
 ### `supabaseAdmin.ts` — Admin Client
+
 - Yönetim işlemleri (sertifika, eğitim, etkinlik CRUD)
 - Bildirim sistemi (realtime)
 - `storageKey: 'mimce-admin-auth'`
 
 ### `geminiSummarize.ts`
+
 - Blog özeti için Gemini API proxy çağrısı
 - `supabase/functions/gemini-summarize` Edge Function'ına istek atar
 - Hata/kota durumunda `localSummarize.ts` fallback'i
 
 ### `monitoring.ts`
+
 - `initMonitoring()`: Sentry init (VITE_SENTRY_DSN varsa)
 - `reportWebVitals()`: CLS, INP, LCP, FCP, TTFB izleme
 
@@ -142,6 +146,7 @@ Admin login → supabaseAdmin.auth.signIn()
 ## CI/CD
 
 `.github/workflows/ci.yml`:
+
 1. TypeScript type check
 2. Vitest testleri
 3. `npm audit --audit-level=high`
@@ -153,28 +158,28 @@ Ortam değişkenleri GitHub Secrets'tan inject edilir.
 
 ## Supabase Tabloları (Özet)
 
-| Tablo | Açıklama |
-|-------|----------|
-| `profiles` | Kullanıcı profil bilgileri |
-| `trainings` | Eğitimler |
-| `events` | Etkinlikler |
-| `certificates` | Sertifikalar |
-| `blogs` | Blog yazıları |
-| `user_trainings` | Kullanıcı eğitim kayıtları |
-| `user_events` | Kullanıcı etkinlik kayıtları |
-| `admin_notifications` | Admin bildirimleri (realtime) |
-| `contact_submissions` | İletişim formu başvuruları |
-| `volunteer_applications` | Gönüllü başvuruları |
-| `trainer_applications` | Eğitmen başvuruları |
+| Tablo                    | Açıklama                      |
+| ------------------------ | ----------------------------- |
+| `profiles`               | Kullanıcı profil bilgileri    |
+| `trainings`              | Eğitimler                     |
+| `events`                 | Etkinlikler                   |
+| `certificates`           | Sertifikalar                  |
+| `blogs`                  | Blog yazıları                 |
+| `user_trainings`         | Kullanıcı eğitim kayıtları    |
+| `user_events`            | Kullanıcı etkinlik kayıtları  |
+| `admin_notifications`    | Admin bildirimleri (realtime) |
+| `contact_submissions`    | İletişim formu başvuruları    |
+| `volunteer_applications` | Gönüllü başvuruları           |
+| `trainer_applications`   | Eğitmen başvuruları           |
 
 ---
 
 ## Ortam Değişkenleri
 
-| Değişken | Açıklama | Zorunlu |
-|----------|----------|---------|
-| `VITE_SUPABASE_URL` | Supabase proje URL | ✅ |
-| `VITE_SUPABASE_ANON_KEY` | Supabase anon key | ✅ |
-| `VITE_ADMIN_EMAILS` | Virgülle ayrılmış admin e-postaları | ✅ |
-| `VITE_SENTRY_DSN` | Sentry DSN (monitoring) | ❌ |
-| `GEMINI_API_KEY` | Gemini API key (Edge Function secret) | Edge Fn |
+| Değişken                 | Açıklama                              | Zorunlu |
+| ------------------------ | ------------------------------------- | ------- |
+| `VITE_SUPABASE_URL`      | Supabase proje URL                    | ✅      |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anon key                     | ✅      |
+| `VITE_ADMIN_EMAILS`      | Virgülle ayrılmış admin e-postaları   | ✅      |
+| `VITE_SENTRY_DSN`        | Sentry DSN (monitoring)               | ❌      |
+| `GEMINI_API_KEY`         | Gemini API key (Edge Function secret) | Edge Fn |

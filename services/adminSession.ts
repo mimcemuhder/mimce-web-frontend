@@ -2,8 +2,8 @@
 const ADMIN_SESSION_KEY = 'mimce_admin_session_start';
 const ADMIN_LAST_ACTIVITY_KEY = 'mimce_admin_last_activity';
 
-const SESSION_MAX_MS = 8 * 60 * 60 * 1000;  // 8 saat mutlak limit
-const IDLE_TIMEOUT_MS = 30 * 60 * 1000;     // 30 dakika hareketsizlik
+const SESSION_MAX_MS = 8 * 60 * 60 * 1000; // 8 saat mutlak limit
+const IDLE_TIMEOUT_MS = 30 * 60 * 1000; // 30 dakika hareketsizlik
 
 export const adminSession = {
   start() {

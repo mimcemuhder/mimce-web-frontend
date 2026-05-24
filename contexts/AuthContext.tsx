@@ -19,7 +19,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       setLoading(false);
     });
@@ -27,11 +29,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return () => subscription.unsubscribe();
   }, []);
 
-  return (
-    <AuthContext.Provider value={{ user, loading }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, loading }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = (): AuthContextValue => useContext(AuthContext);

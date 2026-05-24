@@ -21,19 +21,22 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
   const dismiss = useCallback((id: number) => {
-    setToasts(prev => prev.filter(t => t.id !== id));
+    setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  const toast = useCallback((message: string, type: ToastType = 'info') => {
-    const id = ++_id;
-    setToasts(prev => [...prev, { id, message, type }]);
-    setTimeout(() => dismiss(id), 5000);
-  }, [dismiss]);
+  const toast = useCallback(
+    (message: string, type: ToastType = 'info') => {
+      const id = ++_id;
+      setToasts((prev) => [...prev, { id, message, type }]);
+      setTimeout(() => dismiss(id), 5000);
+    },
+    [dismiss]
+  );
 
   const icons: Record<ToastType, React.ReactNode> = {
     success: <CheckCircle size={16} className="text-green-500 shrink-0" />,
-    error:   <XCircle size={16} className="text-red-500 shrink-0" />,
-    info:    <Info size={16} className="text-blue-500 shrink-0" />,
+    error: <XCircle size={16} className="text-red-500 shrink-0" />,
+    info: <Info size={16} className="text-blue-500 shrink-0" />,
     warning: <AlertTriangle size={16} className="text-yellow-500 shrink-0" />,
   };
 
@@ -45,7 +48,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         aria-atomic="false"
         className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"
       >
-        {toasts.map(t => (
+        {toasts.map((t) => (
           <div
             key={t.id}
             role="alert"

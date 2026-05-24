@@ -7,8 +7,8 @@ export function summarizeLocally(title: string, body: string): string {
   const sentences =
     normalized
       .match(/[^.!?…]+[.!?…]+|[^.!?…]+$/g)
-      ?.map(s => s.trim())
-      .filter(s => s.length > 15) ?? [];
+      ?.map((s) => s.trim())
+      .filter((s) => s.length > 15) ?? [];
 
   if (sentences.length === 0) {
     return normalized.length > 220 ? `${normalized.slice(0, 217)}...` : normalized;

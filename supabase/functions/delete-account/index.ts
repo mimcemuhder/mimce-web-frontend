@@ -38,7 +38,10 @@ Deno.serve(async (req) => {
     global: { headers: { Authorization: authHeader } },
   });
 
-  const { data: { user }, error: userErr } = await userClient.auth.getUser();
+  const {
+    data: { user },
+    error: userErr,
+  } = await userClient.auth.getUser();
   if (userErr || !user) {
     return json({ error: 'Oturum geçersiz' }, 401);
   }

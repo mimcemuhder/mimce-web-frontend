@@ -23,6 +23,7 @@ VITE_SUPABASE_ANON_KEY=sb_publishable_your_key_here
 ## 3. Database Tablolarını Oluşturun
 
 Supabase dashboard'da:
+
 1. Sol menüden **SQL Editor**'a gidin
 2. Yeni bir query oluşturun
 3. **ADIM 1:** Aşağıdaki SQL'i kopyalayıp çalıştırın (TABLOLAR):
@@ -140,13 +141,13 @@ Storage bucket oluşturduktan sonra, aşağıdaki SQL'i çalıştırın:
 
 ```sql
 -- Storage bucket için RLS politikası
-CREATE POLICY "Public read access for images" 
-  ON storage.objects FOR SELECT 
+CREATE POLICY "Public read access for images"
+  ON storage.objects FOR SELECT
   USING (bucket_id = 'images');
 
-CREATE POLICY "Authenticated users can upload images" 
-  ON storage.objects FOR INSERT 
-  TO authenticated 
+CREATE POLICY "Authenticated users can upload images"
+  ON storage.objects FOR INSERT
+  TO authenticated
   WITH CHECK (bucket_id = 'images');
 ```
 
@@ -231,20 +232,24 @@ Kurulumu tamamladıktan sonra kontrol edin:
 ## 9. Sorun Giderme
 
 ### "Supabase URL veya Anon Key bulunamadı" hatası
+
 - `.env.local` dosyasının proje kök dizininde olduğundan emin olun
 - Dosya adının tam olarak `.env.local` olduğunu kontrol edin
 - Değerlerin tırnak içinde olmadığından emin olun
 - Sunucuyu yeniden başlatın (`npm run dev`)
 
 ### "relation does not exist" hatası
+
 - SQL Editor'da tabloların oluşturulduğunu kontrol edin
 - Tablo isimlerinin doğru olduğundan emin olun (küçük harf)
 
 ### "new row violates row-level security policy" hatası
+
 - RLS politikalarının doğru ayarlandığından emin olun
 - Kullanıcının authenticated olduğundan emin olun
 
 ### Login çalışmıyor
+
 - Email doğrulama ayarlarını kontrol edin
 - Supabase Dashboard'da kullanıcının oluşturulduğunu kontrol edin
 - Browser console'da hata mesajlarını kontrol edin
@@ -252,6 +257,7 @@ Kurulumu tamamladıktan sonra kontrol edin:
 ## 10. Tablo Yapıları Özeti
 
 ### events
+
 - `id` (TEXT, PRIMARY KEY)
 - `title` (TEXT, NOT NULL)
 - `date` (TEXT, NOT NULL)
@@ -263,6 +269,7 @@ Kurulumu tamamladıktan sonra kontrol edin:
 - `created_at` (TIMESTAMP)
 
 ### trainings
+
 - `id` (TEXT, PRIMARY KEY)
 - `title` (TEXT, NOT NULL)
 - `description` (TEXT)
@@ -272,6 +279,7 @@ Kurulumu tamamladıktan sonra kontrol edin:
 - `created_at` (TIMESTAMP)
 
 ### certificates
+
 - `id` (TEXT, PRIMARY KEY)
 - `certificateNo` (TEXT, UNIQUE, NOT NULL) - **NOT:** camelCase kullanılıyor
 - `recipientName` (TEXT, NOT NULL)
@@ -281,6 +289,7 @@ Kurulumu tamamladıktan sonra kontrol edin:
 - `created_at` (TIMESTAMP)
 
 ### members
+
 - `id` (TEXT, PRIMARY KEY)
 - `name` (TEXT, NOT NULL)
 - `email` (TEXT, UNIQUE, NOT NULL)

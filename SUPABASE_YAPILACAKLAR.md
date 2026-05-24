@@ -283,10 +283,10 @@ Supabase tarafında tamamlamanız gerekenler:
 
 ## 8. Tablo özeti (referans)
 
-| Tablo           | Amaç                          |
-|-----------------|-------------------------------|
-| `user_trainings`| Kullanıcı–eğitim kayıtları    |
-| `user_events`   | Kullanıcı–etkinlik kayıtları  |
+| Tablo            | Amaç                         |
+| ---------------- | ---------------------------- |
+| `user_trainings` | Kullanıcı–eğitim kayıtları   |
+| `user_events`    | Kullanıcı–etkinlik kayıtları |
 
 **user_trainings:** `id`, `user_id` (auth.users), `training_id` (trainings), `enrolled_at`, `completed`
 

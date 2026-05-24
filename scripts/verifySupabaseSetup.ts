@@ -22,7 +22,7 @@ function isMissingTable(error: { code?: string; message?: string } | null): bool
 
 async function checkTable(
   label: string,
-  fn: () => PromiseLike<{ error: { code?: string; message?: string } | null }>,
+  fn: () => PromiseLike<{ error: { code?: string; message?: string } | null }>
 ): Promise<'ok' | 'missing' | 'warn'> {
   const { error } = await Promise.resolve(fn());
   if (error && isMissingTable(error)) {
@@ -50,7 +50,10 @@ async function main(): Promise<void> {
   let missing = 0;
 
   console.log('Tablolar (anon istemci):');
-  const tables: [string, () => PromiseLike<{ error: { code?: string; message?: string } | null }>][] = [
+  const tables: [
+    string,
+    () => PromiseLike<{ error: { code?: string; message?: string } | null }>,
+  ][] = [
     ['events', () => supabase.from('events').select('id').limit(1)],
     ['trainings', () => supabase.from('trainings').select('id').limit(1)],
     ['certificates', () => supabase.from('certificates').select('id').limit(1)],
@@ -77,7 +80,9 @@ async function main(): Promise<void> {
 
   console.log('');
   if (missing > 0) {
-    console.log(`Özet: ${missing} eksik/uyumsuz öğe. SUPABASE_YAPILACAKLAR.md kontrol listesine bakın.`);
+    console.log(
+      `Özet: ${missing} eksik/uyumsuz öğe. SUPABASE_YAPILACAKLAR.md kontrol listesine bakın.`
+    );
     process.exit(1);
   }
   console.log('Özet: temel tablolar ve bucket’lar erişilebilir görünüyor.');

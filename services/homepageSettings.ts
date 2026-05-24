@@ -5,8 +5,7 @@ export const HOMEPAGE_SETTING_KEYS = {
   heroImage: 'home_hero_image',
 } as const;
 
-export const DEFAULT_HERO_IMAGE =
-  'https://picsum.photos/1920/1080?grayscale&blur=2';
+export const DEFAULT_HERO_IMAGE = 'https://picsum.photos/1920/1080?grayscale&blur=2';
 
 export type HomepageSettings = {
   heroImage: string;
@@ -22,10 +21,7 @@ function mapRows(rows: { key: string; value: string }[] | null): HomepageSetting
 }
 
 export async function fetchHomepageSettings(): Promise<HomepageSettings> {
-  const { data, error } = await supabase
-    .from('site_settings')
-    .select('key, value')
-    .in('key', keys);
+  const { data, error } = await supabase.from('site_settings').select('key, value').in('key', keys);
 
   if (error) {
     console.warn('Ana sayfa ayarları okunamadı:', error.message);

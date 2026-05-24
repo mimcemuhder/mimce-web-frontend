@@ -24,8 +24,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     if (ALLOWED_ADMIN_EMAILS.length === 0) {
       console.error(
         '[ProtectedRoute] VITE_ADMIN_EMAILS tanımsız veya boş! ' +
-        'Güvenlik nedeniyle admin erişimi engellendi. ' +
-        '.env.local dosyasında VITE_ADMIN_EMAILS değişkenini ayarlayın.'
+          'Güvenlik nedeniyle admin erişimi engellendi. ' +
+          '.env.local dosyasında VITE_ADMIN_EMAILS değişkenini ayarlayın.'
       );
       return false;
     }
@@ -40,7 +40,9 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session) {
         setAuthenticated(false);
@@ -74,7 +76,9 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
     checkAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (!session) {
         adminSession.clear();
         setAuthenticated(false);
@@ -94,7 +98,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     if (!authenticated) return;
 
     const handleActivity = () => adminSession.touch();
-    ACTIVITY_EVENTS.forEach(ev => window.addEventListener(ev, handleActivity, { passive: true }));
+    ACTIVITY_EVENTS.forEach((ev) => window.addEventListener(ev, handleActivity, { passive: true }));
 
     idleTimerRef.current = setInterval(async () => {
       if (adminSession.isExpired() || adminSession.isIdle()) {
@@ -103,7 +107,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     }, 60_000);
 
     return () => {
-      ACTIVITY_EVENTS.forEach(ev => window.removeEventListener(ev, handleActivity));
+      ACTIVITY_EVENTS.forEach((ev) => window.removeEventListener(ev, handleActivity));
       if (idleTimerRef.current) clearInterval(idleTimerRef.current);
     };
   }, [authenticated, forceSignOut]);

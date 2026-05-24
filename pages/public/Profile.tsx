@@ -5,9 +5,26 @@ import type { User } from '@supabase/supabase-js';
 import type { Training, Event as MimceEvent, UserTraining, UserEvent } from '../../types';
 import { universities } from '../../data/universities';
 import {
-  UserCircle, Mail, Shield, Calendar, Save, Camera,
-  LogOut, Key, CheckCircle, AlertCircle, Github,
-  BookOpen, MapPin, Clock, Award, Upload, X, ChevronDown, Search, Trash2,
+  UserCircle,
+  Mail,
+  Shield,
+  Calendar,
+  Save,
+  Camera,
+  LogOut,
+  Key,
+  CheckCircle,
+  AlertCircle,
+  Github,
+  BookOpen,
+  MapPin,
+  Clock,
+  Award,
+  Upload,
+  X,
+  ChevronDown,
+  Search,
+  Trash2,
 } from 'lucide-react';
 
 const DELETE_CONFIRM_PHRASE = 'HESABIMI SIL';
@@ -54,7 +71,9 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session?.user) {
         navigate('/giris');
         return;
@@ -131,7 +150,7 @@ const Profile: React.FC = () => {
       return;
     }
     if (file.size > 2 * 1024 * 1024) {
-      setMessage({ type: 'error', text: 'Dosya boyutu 2MB\'dan küçük olmalıdır.' });
+      setMessage({ type: 'error', text: "Dosya boyutu 2MB'dan küçük olmalıdır." });
       return;
     }
 
@@ -150,14 +169,15 @@ const Profile: React.FC = () => {
         .upload(filePath, file, { upsert: true });
 
       if (uploadError) {
-        setMessage({ type: 'error', text: 'Fotoğraf yüklenirken hata oluştu: ' + uploadError.message });
+        setMessage({
+          type: 'error',
+          text: 'Fotoğraf yüklenirken hata oluştu: ' + uploadError.message,
+        });
         setAvatarUploading(false);
         return;
       }
 
-      const { data: urlData } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
+      const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(filePath);
 
       const avatarUrl = urlData.publicUrl + '?t=' + Date.now();
 
@@ -169,7 +189,9 @@ const Profile: React.FC = () => {
         setMessage({ type: 'error', text: 'Profil güncellenemedi.' });
       } else {
         setCurrentAvatarUrl(avatarUrl);
-        const { data: { user: updatedUser } } = await supabase.auth.getUser();
+        const {
+          data: { user: updatedUser },
+        } = await supabase.auth.getUser();
         setUser(updatedUser);
         setMessage({ type: 'success', text: 'Profil fotoğrafı güncellendi.' });
       }
@@ -188,7 +210,7 @@ const Profile: React.FC = () => {
 
     try {
       const extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-      const filesToRemove = extensions.map(ext => `${user.id}/avatar.${ext}`);
+      const filesToRemove = extensions.map((ext) => `${user.id}/avatar.${ext}`);
       await supabase.storage.from('avatars').remove(filesToRemove);
 
       await supabase.auth.updateUser({
@@ -196,7 +218,9 @@ const Profile: React.FC = () => {
       });
 
       setCurrentAvatarUrl(null);
-      const { data: { user: updatedUser } } = await supabase.auth.getUser();
+      const {
+        data: { user: updatedUser },
+      } = await supabase.auth.getUser();
       setUser(updatedUser);
       setMessage({ type: 'success', text: 'Profil fotoğrafı kaldırıldı.' });
     } catch {
@@ -219,7 +243,9 @@ const Profile: React.FC = () => {
       setMessage({ type: 'error', text: 'Profil güncellenirken bir hata oluştu.' });
     } else {
       setMessage({ type: 'success', text: 'Profil başarıyla güncellendi.' });
-      const { data: { user: updatedUser } } = await supabase.auth.getUser();
+      const {
+        data: { user: updatedUser },
+      } = await supabase.auth.getUser();
       setUser(updatedUser);
     }
     setSaving(false);
@@ -293,13 +319,15 @@ const Profile: React.FC = () => {
     }
 
     setDeleteAccountLoading(true);
-    const { data, error: fnError } = await supabase.functions.invoke('delete-account', { method: 'POST' });
+    const { data, error: fnError } = await supabase.functions.invoke('delete-account', {
+      method: 'POST',
+    });
 
     if (fnError) {
       setDeleteModalError(
         fnError.message?.includes('Failed to fetch') || fnError.message?.includes('non-2xx')
           ? 'Hesap silme servisi yanıt vermedi. Supabase’de delete-account edge function ve SUPABASE_SERVICE_ROLE_KEY gizli anahtarını kontrol edin.'
-          : `İşlem başarısız: ${fnError.message}`,
+          : `İşlem başarısız: ${fnError.message}`
       );
       setDeleteAccountLoading(false);
       return;
@@ -349,7 +377,9 @@ const Profile: React.FC = () => {
   const provider = user.app_metadata?.provider;
   const isOAuth = provider === 'google' || provider === 'github';
   const createdAt = new Date(user.created_at).toLocaleDateString('tr-TR', {
-    year: 'numeric', month: 'long', day: 'numeric',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   });
   const initials = (fullName || user.email || '?').charAt(0).toUpperCase();
 
@@ -428,10 +458,22 @@ const Profile: React.FC = () => {
                 <span className="flex items-center gap-1 px-2 py-0.5 bg-gray-100 rounded-full text-gray-600">
                   {provider === 'google' ? (
                     <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
-                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
-                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                      <path
+                        fill="#4285F4"
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
+                      />
+                      <path
+                        fill="#34A853"
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                      />
+                      <path
+                        fill="#FBBC05"
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                      />
+                      <path
+                        fill="#EA4335"
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                      />
                     </svg>
                   ) : (
                     <Github size={13} />
@@ -461,9 +503,13 @@ const Profile: React.FC = () => {
 
       {/* Message */}
       {message && (
-        <div className={`flex items-center gap-2 p-4 rounded-lg text-sm ${
-          message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'
-        }`}>
+        <div
+          className={`flex items-center gap-2 p-4 rounded-lg text-sm ${
+            message.type === 'success'
+              ? 'bg-green-50 text-green-800 border border-green-200'
+              : 'bg-red-50 text-red-800 border border-red-200'
+          }`}
+        >
           {message.type === 'success' ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
           {message.text}
         </div>
@@ -472,7 +518,7 @@ const Profile: React.FC = () => {
       {/* Tabs */}
       <div className="border-b border-gray-200">
         <nav className="flex gap-1 -mb-px">
-          {tabs.map(tab => (
+          {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -504,7 +550,9 @@ const Profile: React.FC = () => {
               <form onSubmit={handleSaveProfile} className="p-6 space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Ad Soyad</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                      Ad Soyad
+                    </label>
                     <input
                       type="text"
                       value={fullName}
@@ -514,9 +562,14 @@ const Profile: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">E-posta</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                      E-posta
+                    </label>
                     <div className="relative">
-                      <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <Mail
+                        size={18}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                      />
                       <input
                         type="email"
                         value={user.email || ''}
@@ -529,7 +582,9 @@ const Profile: React.FC = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Üniversite</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                      Üniversite
+                    </label>
                     <UniversitySelect value={university} onChange={setUniversity} />
                   </div>
                   <div>
@@ -549,7 +604,7 @@ const Profile: React.FC = () => {
                   <input
                     type="tel"
                     value={phone}
-                onChange={handlePhoneChange}
+                    onChange={handlePhoneChange}
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
                     placeholder="+90 5XX XXX XX XX"
                   />
@@ -600,7 +655,9 @@ const Profile: React.FC = () => {
                 ) : (
                   <form onSubmit={handleChangePassword} className="p-6 space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Yeni Şifre</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        Yeni Şifre
+                      </label>
                       <input
                         type="password"
                         value={newPassword}
@@ -611,7 +668,9 @@ const Profile: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Yeni Şifre Tekrar</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        Yeni Şifre Tekrar
+                      </label>
                       <input
                         type="password"
                         value={confirmNewPassword}
@@ -632,7 +691,11 @@ const Profile: React.FC = () => {
                       </button>
                       <button
                         type="button"
-                        onClick={() => { setPasswordSection(false); setNewPassword(''); setConfirmNewPassword(''); }}
+                        onClick={() => {
+                          setPasswordSection(false);
+                          setNewPassword('');
+                          setConfirmNewPassword('');
+                        }}
                         className="px-5 py-2.5 text-sm text-gray-600 hover:text-gray-800 font-medium"
                       >
                         İptal
@@ -647,7 +710,9 @@ const Profile: React.FC = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Hesap Bilgileri</h3>
+              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+                Hesap Bilgileri
+              </h3>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-500">Durum</span>
@@ -659,7 +724,11 @@ const Profile: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-gray-500">Giriş Yöntemi</span>
                   <span className="text-gray-900 font-medium">
-                    {provider === 'google' ? 'Google' : provider === 'github' ? 'GitHub' : 'E-posta'}
+                    {provider === 'google'
+                      ? 'Google'
+                      : provider === 'github'
+                        ? 'GitHub'
+                        : 'E-posta'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -680,7 +749,9 @@ const Profile: React.FC = () => {
 
             {/* Stats */}
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">İstatistikler</h3>
+              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+                İstatistikler
+              </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-blue-50 rounded-lg">
                   <div className="text-2xl font-bold text-navy">{userTrainings.length}</div>
@@ -692,13 +763,13 @@ const Profile: React.FC = () => {
                 </div>
                 <div className="text-center p-3 bg-yellow-50 rounded-lg">
                   <div className="text-2xl font-bold text-navy">
-                    {userTrainings.filter(t => t.completed).length}
+                    {userTrainings.filter((t) => t.completed).length}
                   </div>
                   <div className="text-xs text-gray-500 mt-1">Tamamlanan</div>
                 </div>
                 <div className="text-center p-3 bg-purple-50 rounded-lg">
                   <div className="text-2xl font-bold text-navy">
-                    {userEvents.filter(ev => ev.attended).length}
+                    {userEvents.filter((ev) => ev.attended).length}
                   </div>
                   <div className="text-xs text-gray-500 mt-1">Katılım</div>
                 </div>
@@ -706,13 +777,20 @@ const Profile: React.FC = () => {
             </div>
 
             <div className="bg-white rounded-xl border border-red-200 shadow-sm p-6 space-y-3">
-              <h3 className="text-sm font-semibold text-red-800 uppercase tracking-wide">Tehlikeli işlemler</h3>
+              <h3 className="text-sm font-semibold text-red-800 uppercase tracking-wide">
+                Tehlikeli işlemler
+              </h3>
               <p className="text-xs text-gray-600 leading-relaxed">
-                Hesabınız kalıcı silinir. Verileriniz veritabanındaki silme kurallarına (cascade) göre kaldırılır.
+                Hesabınız kalıcı silinir. Verileriniz veritabanındaki silme kurallarına (cascade)
+                göre kaldırılır.
               </p>
               <button
                 type="button"
-                onClick={() => { setDeleteModalOpen(true); setMessage(null); setDeleteModalError(null); }}
+                onClick={() => {
+                  setDeleteModalOpen(true);
+                  setMessage(null);
+                  setDeleteModalError(null);
+                }}
                 className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-red-700 border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
               >
                 <Trash2 size={16} />
@@ -741,11 +819,18 @@ const Profile: React.FC = () => {
             </div>
           ) : userTrainings.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {userTrainings.map(ut => (
-                <div key={ut.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+              {userTrainings.map((ut) => (
+                <div
+                  key={ut.id}
+                  className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col"
+                >
                   {ut.training?.image && (
                     <div className="h-40 overflow-hidden relative">
-                      <img src={ut.training.image} alt={ut.training?.title} className="w-full h-full object-cover" />
+                      <img
+                        src={ut.training.image}
+                        alt={ut.training?.title}
+                        className="w-full h-full object-cover"
+                      />
                       <div className="absolute top-3 right-3">
                         {ut.completed ? (
                           <span className="bg-green-500 text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
@@ -760,13 +845,17 @@ const Profile: React.FC = () => {
                     </div>
                   )}
                   <div className="p-5 flex-1 flex flex-col">
-                    <h3 className="text-lg font-bold text-navy mb-2">{ut.training?.title || 'Eğitim'}</h3>
+                    <h3 className="text-lg font-bold text-navy mb-2">
+                      {ut.training?.title || 'Eğitim'}
+                    </h3>
                     {ut.training?.type && (
                       <span className="inline-block text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded mb-2 w-fit">
                         {ut.training.type}
                       </span>
                     )}
-                    <p className="text-sm text-gray-500 line-clamp-2 mb-3 flex-1">{ut.training?.description}</p>
+                    <p className="text-sm text-gray-500 line-clamp-2 mb-3 flex-1">
+                      {ut.training?.description}
+                    </p>
                     <div className="flex items-center justify-between text-xs text-gray-400 pt-3 border-t border-gray-100">
                       <span className="flex items-center gap-1">
                         <Calendar size={13} />
@@ -802,11 +891,18 @@ const Profile: React.FC = () => {
             </div>
           ) : userEvents.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {userEvents.map(ue => (
-                <div key={ue.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+              {userEvents.map((ue) => (
+                <div
+                  key={ue.id}
+                  className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col"
+                >
                   {ue.event?.image && (
                     <div className="h-40 overflow-hidden relative">
-                      <img src={ue.event.image} alt={ue.event?.title} className="w-full h-full object-cover" />
+                      <img
+                        src={ue.event.image}
+                        alt={ue.event?.title}
+                        className="w-full h-full object-cover"
+                      />
                       <div className="absolute top-3 right-3">
                         {ue.attended ? (
                           <span className="bg-green-500 text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
@@ -821,7 +917,9 @@ const Profile: React.FC = () => {
                     </div>
                   )}
                   <div className="p-5 flex-1 flex flex-col">
-                    <h3 className="text-lg font-bold text-navy mb-2">{ue.event?.title || 'Etkinlik'}</h3>
+                    <h3 className="text-lg font-bold text-navy mb-2">
+                      {ue.event?.title || 'Etkinlik'}
+                    </h3>
                     <div className="space-y-1.5 mb-3 text-sm text-gray-500">
                       {ue.event?.date && (
                         <div className="flex items-center gap-2">
@@ -842,7 +940,9 @@ const Profile: React.FC = () => {
                         </div>
                       )}
                     </div>
-                    <p className="text-sm text-gray-500 line-clamp-2 flex-1">{ue.event?.description}</p>
+                    <p className="text-sm text-gray-500 line-clamp-2 flex-1">
+                      {ue.event?.description}
+                    </p>
                     <div className="text-xs text-gray-400 pt-3 mt-3 border-t border-gray-100 flex items-center gap-1">
                       <Clock size={13} />
                       Kayıt: {new Date(ue.enrolled_at).toLocaleDateString('tr-TR')}
@@ -874,12 +974,16 @@ const Profile: React.FC = () => {
             className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4 border border-gray-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 id="delete-account-title" className="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <h2
+              id="delete-account-title"
+              className="text-lg font-bold text-gray-900 flex items-center gap-2"
+            >
               <Trash2 className="text-red-600" size={22} />
               Hesabı sil
             </h2>
             <p className="text-sm text-gray-600">
-              Bu işlem geri alınamaz. Devam etmek için aşağıya tam olarak <strong className="text-gray-900">{DELETE_CONFIRM_PHRASE}</strong> yazın.
+              Bu işlem geri alınamaz. Devam etmek için aşağıya tam olarak{' '}
+              <strong className="text-gray-900">{DELETE_CONFIRM_PHRASE}</strong> yazın.
             </p>
             {deleteModalError && (
               <div className="flex items-start gap-2 p-3 rounded-lg text-sm bg-red-50 text-red-800 border border-red-200">
@@ -960,7 +1064,10 @@ const EmptyState: React.FC<{
 
 const DIGER = '__diger__';
 
-const UniversitySelect: React.FC<{ value: string; onChange: (v: string) => void }> = ({ value, onChange }) => {
+const UniversitySelect: React.FC<{ value: string; onChange: (v: string) => void }> = ({
+  value,
+  onChange,
+}) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [isCustom, setIsCustom] = useState(false);
@@ -991,7 +1098,7 @@ const UniversitySelect: React.FC<{ value: string; onChange: (v: string) => void 
     }
   }, [open]);
 
-  const filtered = universities.filter(u =>
+  const filtered = universities.filter((u) =>
     u.toLocaleLowerCase('tr').includes(search.toLocaleLowerCase('tr'))
   );
 
@@ -1021,7 +1128,11 @@ const UniversitySelect: React.FC<{ value: string; onChange: (v: string) => void 
         />
         <button
           type="button"
-          onClick={() => { setIsCustom(false); onChange(''); setSearch(''); }}
+          onClick={() => {
+            setIsCustom(false);
+            onChange('');
+            setSearch('');
+          }}
           className="text-xs text-primary font-medium hover:underline"
         >
           Listeden seç
@@ -1036,22 +1147,26 @@ const UniversitySelect: React.FC<{ value: string; onChange: (v: string) => void 
         type="button"
         onClick={() => setOpen(!open)}
         className={`w-full flex items-center justify-between px-4 py-2.5 border rounded-lg text-left transition-colors ${
-          open
-            ? 'border-primary ring-2 ring-primary'
-            : 'border-gray-300 hover:border-gray-400'
+          open ? 'border-primary ring-2 ring-primary' : 'border-gray-300 hover:border-gray-400'
         }`}
       >
         <span className={value ? 'text-gray-900' : 'text-gray-400'}>
           {value || 'Üniversite seçin...'}
         </span>
-        <ChevronDown size={16} className={`text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          size={16}
+          className={`text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`}
+        />
       </button>
 
       {open && (
         <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-xl max-h-72 flex flex-col">
           <div className="p-2 border-b border-gray-100">
             <div className="relative">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              />
               <input
                 ref={searchInputRef}
                 type="text"
@@ -1066,7 +1181,7 @@ const UniversitySelect: React.FC<{ value: string; onChange: (v: string) => void 
             {filtered.length === 0 ? (
               <div className="px-4 py-6 text-center text-sm text-gray-400">Sonuç bulunamadı</div>
             ) : (
-              filtered.map(uni => (
+              filtered.map((uni) => (
                 <button
                   key={uni}
                   type="button"

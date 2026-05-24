@@ -6,11 +6,39 @@ import { notificationService, type AdminNotification } from '../services/adminNo
 import { adminSession } from '../services/adminSession';
 import { useAuth } from '../contexts/AuthContext';
 import type { User } from '@supabase/supabase-js';
-import { 
-  Menu, X, Home, Users, BookOpen, Calendar, Award, Settings, LayoutTemplate,
-  Search, Bell, HelpCircle, LogOut, Facebook, Twitter, Linkedin, Instagram, Youtube, Mail,
-  UserCircle, ChevronDown, CheckCheck, Trash2, Plus, Info, AlertTriangle,
-  CheckCircle, XCircle, Keyboard, ExternalLink, Clock, Rss
+import {
+  Menu,
+  X,
+  Home,
+  Users,
+  BookOpen,
+  Calendar,
+  Award,
+  Settings,
+  LayoutTemplate,
+  Search,
+  Bell,
+  HelpCircle,
+  LogOut,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Instagram,
+  Youtube,
+  Mail,
+  UserCircle,
+  ChevronDown,
+  CheckCheck,
+  Trash2,
+  Plus,
+  Info,
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
+  Keyboard,
+  ExternalLink,
+  Clock,
+  Rss,
 } from 'lucide-react';
 
 export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -37,7 +65,8 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
     navigate('/');
   };
 
-  const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || '';
+  const displayName =
+    user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || '';
   const avatarUrl = user?.user_metadata?.avatar_url;
   const initials = displayName.charAt(0).toUpperCase();
 
@@ -74,18 +103,24 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8 font-medium text-sm text-gray-600">
-            <Link to="/" className="hover:text-primary transition-colors">Ana Sayfa</Link>
-            <Link to="/hakkimizda" className="hover:text-primary transition-colors">Hakkımızda</Link>
-            <div 
+            <Link to="/" className="hover:text-primary transition-colors">
+              Ana Sayfa
+            </Link>
+            <Link to="/hakkimizda" className="hover:text-primary transition-colors">
+              Hakkımızda
+            </Link>
+            <div
               className="relative"
               onMouseEnter={() => setTrainingsDropdownOpen(true)}
               onMouseLeave={() => setTrainingsDropdownOpen(false)}
             >
-              <Link to="/egitimler" className="hover:text-primary transition-colors">Eğitimler</Link>
+              <Link to="/egitimler" className="hover:text-primary transition-colors">
+                Eğitimler
+              </Link>
               {trainingsDropdownOpen && (
                 <div className="absolute top-full left-0 pt-2 bg-transparent z-50 min-w-[180px]">
                   <div className="bg-white rounded-lg shadow-xl border border-gray-200 py-2">
-                    <Link 
+                    <Link
                       to="/sertifika-dogrulama"
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors"
                     >
@@ -95,9 +130,15 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
                 </div>
               )}
             </div>
-            <Link to="/etkinlikler" className="hover:text-primary transition-colors">Etkinlikler</Link>
-            <Link to="/blog" className="hover:text-primary transition-colors">Blog</Link>
-            <Link to="/iletisim" className="hover:text-primary transition-colors">İletişim</Link>
+            <Link to="/etkinlikler" className="hover:text-primary transition-colors">
+              Etkinlikler
+            </Link>
+            <Link to="/blog" className="hover:text-primary transition-colors">
+              Blog
+            </Link>
+            <Link to="/iletisim" className="hover:text-primary transition-colors">
+              İletişim
+            </Link>
           </nav>
 
           {/* Auth Area */}
@@ -117,8 +158,13 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
                       {initials}
                     </div>
                   )}
-                  <span className="text-sm font-medium text-gray-700 max-w-[120px] truncate">{displayName}</span>
-                  <ChevronDown size={16} className={`text-gray-400 transition-transform ${profileMenuOpen ? 'rotate-180' : ''}`} />
+                  <span className="text-sm font-medium text-gray-700 max-w-[120px] truncate">
+                    {displayName}
+                  </span>
+                  <ChevronDown
+                    size={16}
+                    className={`text-gray-400 transition-transform ${profileMenuOpen ? 'rotate-180' : ''}`}
+                  />
                 </button>
 
                 {profileMenuOpen && (
@@ -159,8 +205,13 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
               </div>
             ) : (
               <>
-                <Link to="/giris" className="text-sm font-semibold text-gray-700 hover:text-navy">Giriş Yap</Link>
-                <Link to="/uye-ol" className="px-5 py-2.5 bg-primary text-navy text-sm font-bold rounded hover:bg-primary-dark transition-colors">
+                <Link to="/giris" className="text-sm font-semibold text-gray-700 hover:text-navy">
+                  Giriş Yap
+                </Link>
+                <Link
+                  to="/uye-ol"
+                  className="px-5 py-2.5 bg-primary text-navy text-sm font-bold rounded hover:bg-primary-dark transition-colors"
+                >
                   Üye Ol
                 </Link>
               </>
@@ -181,13 +232,52 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div id="mobile-menu" className="md:hidden bg-white border-t p-4 flex flex-col gap-4 shadow-lg">
-            <Link to="/" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium">Ana Sayfa</Link>
-            <Link to="/hakkimizda" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium">Hakkımızda</Link>
-            <Link to="/egitimler" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium">Eğitimler</Link>
-            <Link to="/etkinlikler" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium">Etkinlikler</Link>
-            <Link to="/blog" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium">Blog</Link>
-            <Link to="/iletisim" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium">İletişim</Link>
+          <div
+            id="mobile-menu"
+            className="md:hidden bg-white border-t p-4 flex flex-col gap-4 shadow-lg"
+          >
+            <Link
+              to="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-gray-700 font-medium"
+            >
+              Ana Sayfa
+            </Link>
+            <Link
+              to="/hakkimizda"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-gray-700 font-medium"
+            >
+              Hakkımızda
+            </Link>
+            <Link
+              to="/egitimler"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-gray-700 font-medium"
+            >
+              Eğitimler
+            </Link>
+            <Link
+              to="/etkinlikler"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-gray-700 font-medium"
+            >
+              Etkinlikler
+            </Link>
+            <Link
+              to="/blog"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-gray-700 font-medium"
+            >
+              Blog
+            </Link>
+            <Link
+              to="/iletisim"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-gray-700 font-medium"
+            >
+              İletişim
+            </Link>
             <div className="border-t border-gray-200 pt-4 flex flex-col gap-3">
               {user ? (
                 <>
@@ -204,17 +294,39 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
                       <p className="text-xs text-gray-500 truncate">{user.email}</p>
                     </div>
                   </div>
-                  <Link to="/profil" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 text-gray-700 font-medium">
+                  <Link
+                    to="/profil"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2 text-gray-700 font-medium"
+                  >
                     <UserCircle size={18} /> Profilim
                   </Link>
-                  <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="flex items-center gap-2 text-red-600 font-medium">
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="flex items-center gap-2 text-red-600 font-medium"
+                  >
                     <LogOut size={18} /> Çıkış Yap
                   </button>
                 </>
               ) : (
                 <>
-                  <Link to="/giris" onClick={() => setMobileMenuOpen(false)} className="text-center py-2 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg">Giriş Yap</Link>
-                  <Link to="/uye-ol" onClick={() => setMobileMenuOpen(false)} className="text-center py-2 text-sm font-bold bg-primary text-navy rounded-lg">Üye Ol</Link>
+                  <Link
+                    to="/giris"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-center py-2 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg"
+                  >
+                    Giriş Yap
+                  </Link>
+                  <Link
+                    to="/uye-ol"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-center py-2 text-sm font-bold bg-primary text-navy rounded-lg"
+                  >
+                    Üye Ol
+                  </Link>
                 </>
               )}
             </div>
@@ -231,31 +343,51 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
       <footer className="bg-navy border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-8">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-12">
-
             {/* Brand */}
             <div className="md:col-span-5 space-y-5">
               <img src="/mimce_logo.svg" alt="MİMCE Logo" className="h-9 brightness-0 invert" />
               <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
-                Millî Mühendisler Cemiyeti — mühendislik öğrencileri ve profesyonellerini eğitim, etkinlik ve toplulukla buluşturan sivil toplum kuruluşu.
+                Millî Mühendisler Cemiyeti — mühendislik öğrencileri ve profesyonellerini eğitim,
+                etkinlik ve toplulukla buluşturan sivil toplum kuruluşu.
               </p>
               <div className="flex items-center gap-1">
-                <a href="mailto:iletisim@mimce.org"
-                  className="flex items-center gap-2 text-xs text-gray-500 hover:text-primary transition-colors">
+                <a
+                  href="mailto:iletisim@mimce.org"
+                  className="flex items-center gap-2 text-xs text-gray-500 hover:text-primary transition-colors"
+                >
                   <Mail size={13} /> iletisim@mimce.org
                 </a>
               </div>
               <div className="flex gap-2">
                 {[
-                  { href: 'https://instagram.com/mimcemuhder', label: 'Instagram', node: <Instagram size={14} /> },
-                  { href: 'https://youtube.com/@mimcemuhder',  label: 'YouTube',   node: <Youtube size={14} /> },
-                  { href: 'https://x.com/mimcemuhder',         label: 'X',         node: (
-                    <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13">
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.261 5.632 5.903-5.632Zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                    </svg>
-                  )},
+                  {
+                    href: 'https://instagram.com/mimcemuhder',
+                    label: 'Instagram',
+                    node: <Instagram size={14} />,
+                  },
+                  {
+                    href: 'https://youtube.com/@mimcemuhder',
+                    label: 'YouTube',
+                    node: <Youtube size={14} />,
+                  },
+                  {
+                    href: 'https://x.com/mimcemuhder',
+                    label: 'X',
+                    node: (
+                      <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.261 5.632 5.903-5.632Zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                      </svg>
+                    ),
+                  },
                 ].map(({ href, label, node }) => (
-                  <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
-                    className="w-8 h-8 rounded-lg bg-white/5 border border-white/8 flex items-center justify-center text-gray-500 hover:text-primary hover:border-primary/30 transition-all">
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="w-8 h-8 rounded-lg bg-white/5 border border-white/8 flex items-center justify-center text-gray-500 hover:text-primary hover:border-primary/30 transition-all"
+                  >
                     {node}
                   </a>
                 ))}
@@ -264,41 +396,57 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
 
             {/* Keşfet */}
             <div className="md:col-span-2">
-              <h4 className="text-white font-bold mb-4 text-xs tracking-widest uppercase">Keşfet</h4>
+              <h4 className="text-white font-bold mb-4 text-xs tracking-widest uppercase">
+                Keşfet
+              </h4>
               <ul className="space-y-2.5 text-sm text-gray-500">
                 {[
-                  { to: '/egitimler',  label: 'Eğitimler' },
+                  { to: '/egitimler', label: 'Eğitimler' },
                   { to: '/etkinlikler', label: 'Etkinlikler' },
-                  { to: '/blog',       label: 'Blog' },
+                  { to: '/blog', label: 'Blog' },
                   { to: '/gonullu-ol', label: 'Gönüllü Ol' },
                 ].map(({ to, label }) => (
-                  <li key={to}><Link to={to} className="hover:text-primary transition-colors">{label}</Link></li>
+                  <li key={to}>
+                    <Link to={to} className="hover:text-primary transition-colors">
+                      {label}
+                    </Link>
+                  </li>
                 ))}
               </ul>
             </div>
 
             {/* Kurumsal */}
             <div className="md:col-span-2">
-              <h4 className="text-white font-bold mb-4 text-xs tracking-widest uppercase">Kurumsal</h4>
+              <h4 className="text-white font-bold mb-4 text-xs tracking-widest uppercase">
+                Kurumsal
+              </h4>
               <ul className="space-y-2.5 text-sm text-gray-500">
                 {[
                   { to: '/hakkimizda', label: 'Hakkımızda' },
-                  { to: '/iletisim',   label: 'İletişim' },
+                  { to: '/iletisim', label: 'İletişim' },
                   { to: '/egitmen-ol', label: 'Eğitmen Ol' },
                 ].map(({ to, label }) => (
-                  <li key={to}><Link to={to} className="hover:text-primary transition-colors">{label}</Link></li>
+                  <li key={to}>
+                    <Link to={to} className="hover:text-primary transition-colors">
+                      {label}
+                    </Link>
+                  </li>
                 ))}
               </ul>
             </div>
 
             {/* Destek */}
             <div className="md:col-span-3">
-              <h4 className="text-white font-bold mb-4 text-xs tracking-widest uppercase">Sertifika</h4>
+              <h4 className="text-white font-bold mb-4 text-xs tracking-widest uppercase">
+                Sertifika
+              </h4>
               <p className="text-gray-500 text-sm leading-relaxed mb-3">
                 Sertifikanızı doğrulamak için doğrulama sayfasını ziyaret edin.
               </p>
-              <Link to="/sertifika-dogrulama"
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-dark transition-colors">
+              <Link
+                to="/sertifika-dogrulama"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-dark transition-colors"
+              >
                 Sertifika Doğrula →
               </Link>
             </div>
@@ -308,8 +456,12 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
           <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600">
             <span>© 2026 MİMCE — Millî Mühendisler Cemiyeti. Tüm hakları saklıdır.</span>
             <div className="flex gap-4">
-              <Link to="#" className="hover:text-gray-400 transition-colors">Gizlilik Politikası</Link>
-              <Link to="#" className="hover:text-gray-400 transition-colors">Kullanım Şartları</Link>
+              <Link to="#" className="hover:text-gray-400 transition-colors">
+                Gizlilik Politikası
+              </Link>
+              <Link to="#" className="hover:text-gray-400 transition-colors">
+                Kullanım Şartları
+              </Link>
             </div>
           </div>
         </div>
@@ -319,10 +471,13 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
 };
 
 // ─── Bildirim tipi ikonları ──────────────────────────────────────────────────
-const NotifIcon: React.FC<{ type: AdminNotification['type']; size?: number }> = ({ type, size = 16 }) => {
+const NotifIcon: React.FC<{ type: AdminNotification['type']; size?: number }> = ({
+  type,
+  size = 16,
+}) => {
   if (type === 'success') return <CheckCircle size={size} className="text-green-500" />;
   if (type === 'warning') return <AlertTriangle size={size} className="text-yellow-500" />;
-  if (type === 'error')   return <XCircle size={size} className="text-red-500" />;
+  if (type === 'error') return <XCircle size={size} className="text-red-500" />;
   return <Info size={size} className="text-blue-500" />;
 };
 
@@ -336,7 +491,11 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
   const [notifications, setNotifications] = useState<AdminNotification[]>([]);
   const [notifOpen, setNotifOpen] = useState(false);
   const [newNotifOpen, setNewNotifOpen] = useState(false);
-  const [notifForm, setNotifForm] = useState({ title: '', message: '', type: 'info' as AdminNotification['type'] });
+  const [notifForm, setNotifForm] = useState({
+    title: '',
+    message: '',
+    type: 'info' as AdminNotification['type'],
+  });
   const [notifLoading, setNotifLoading] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
 
@@ -345,13 +504,15 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // ── Arama ───────────────────────────────────────────────────────────────
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<{ label: string; path: string; type: string }[]>([]);
+  const [searchResults, setSearchResults] = useState<
+    { label: string; path: string; type: string }[]
+  >([]);
   const [searchOpen, setSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mainRef = useRef<HTMLElement>(null);
 
-  const unreadCount = notifications.filter(n => !n.is_read).length;
+  const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   useEffect(() => {
     mainRef.current?.scrollTo(0, 0);
@@ -368,14 +529,18 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabaseAdmin.auth.getUser();
+      const {
+        data: { user },
+      } = await supabaseAdmin.auth.getUser();
       setUser(user);
     };
     getUser();
     loadNotifications();
 
     const channel = notificationService.subscribe(loadNotifications);
-    return () => { channel.unsubscribe(); };
+    return () => {
+      channel.unsubscribe();
+    };
   }, [loadNotifications]);
 
   // Bildirim paneli dışına tıklayınca kapat
@@ -441,20 +606,40 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
     if (searchDebounce.current) clearTimeout(searchDebounce.current);
-    if (!value.trim()) { setSearchResults([]); setSearchOpen(false); return; }
+    if (!value.trim()) {
+      setSearchResults([]);
+      setSearchOpen(false);
+      return;
+    }
 
     searchDebounce.current = setTimeout(async () => {
       const q = value.toLowerCase();
       const [trainings, events, certs] = await Promise.all([
         supabaseAdmin.from('trainings').select('id, title').ilike('title', `%${q}%`).limit(5),
         supabaseAdmin.from('events').select('id, title').ilike('title', `%${q}%`).limit(5),
-        supabaseAdmin.from('certificates').select('id, recipient_name, course_name').or(`recipient_name.ilike.%${q}%,course_name.ilike.%${q}%`).limit(5),
+        supabaseAdmin
+          .from('certificates')
+          .select('id, recipient_name, course_name')
+          .or(`recipient_name.ilike.%${q}%,course_name.ilike.%${q}%`)
+          .limit(5),
       ]);
 
       const results: { label: string; path: string; type: string }[] = [
-        ...(trainings.data || []).map(t => ({ label: t.title, path: '/admin/egitimler', type: 'Eğitim' })),
-        ...(events.data || []).map(ev => ({ label: ev.title, path: '/admin/etkinlikler', type: 'Etkinlik' })),
-        ...(certs.data || []).map(c => ({ label: `${c.recipient_name} – ${c.course_name}`, path: '/admin/sertifikalar', type: 'Sertifika' })),
+        ...(trainings.data || []).map((t) => ({
+          label: t.title,
+          path: '/admin/egitimler',
+          type: 'Eğitim',
+        })),
+        ...(events.data || []).map((ev) => ({
+          label: ev.title,
+          path: '/admin/etkinlikler',
+          type: 'Etkinlik',
+        })),
+        ...(certs.data || []).map((c) => ({
+          label: `${c.recipient_name} – ${c.course_name}`,
+          path: '/admin/sertifikalar',
+          type: 'Sertifika',
+        })),
       ];
       setSearchResults(results);
       setSearchOpen(results.length > 0);
@@ -469,7 +654,12 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
     { path: '/admin/sertifikalar', icon: Award, label: 'Sertifikalar' },
     { path: '/admin/bloglar', icon: Rss, label: 'Bloglar' },
     { path: '/admin/ana-sayfa', icon: LayoutTemplate, label: 'Ana Sayfa' },
-    { path: '/admin/bildirimler', icon: Bell, label: 'Bildirimler', badge: unreadCount || undefined },
+    {
+      path: '/admin/bildirimler',
+      icon: Bell,
+      label: 'Bildirimler',
+      badge: unreadCount || undefined,
+    },
     { path: '/admin/ayarlar', icon: Settings, label: 'Ayarlar' },
   ];
 
@@ -480,13 +670,17 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
         <div className="h-16 flex items-center px-6 border-b border-gray-800 gap-3">
           <Link to="/" className="flex items-center gap-3">
             <img src="/mimce_admin_logo.svg" alt="MİMCE Admin Logo" className="h-8" />
-            <span className="text-white/40 text-xs font-semibold tracking-wider uppercase">ADMIN</span>
+            <span className="text-white/40 text-xs font-semibold tracking-wider uppercase">
+              ADMIN
+            </span>
           </Link>
         </div>
 
         <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
           {menuItems.map((item) => {
-            const isActive = location.pathname === item.path || (item.path !== '/admin' && location.pathname.startsWith(item.path));
+            const isActive =
+              location.pathname === item.path ||
+              (item.path !== '/admin' && location.pathname.startsWith(item.path));
             return (
               <Link
                 key={item.path}
@@ -542,7 +736,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
               <input
                 type="text"
                 value={searchQuery}
-                onChange={e => handleSearch(e.target.value)}
+                onChange={(e) => handleSearch(e.target.value)}
                 onFocus={() => searchResults.length > 0 && setSearchOpen(true)}
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-gray-50 placeholder-gray-500 focus:outline-none focus:bg-white focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm"
                 placeholder="Eğitim, etkinlik, sertifika ara..."
@@ -553,7 +747,10 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
                     <Link
                       key={i}
                       to={r.path}
-                      onClick={() => { setSearchOpen(false); setSearchQuery(''); }}
+                      onClick={() => {
+                        setSearchOpen(false);
+                        setSearchQuery('');
+                      }}
                       className="flex items-center justify-between px-4 py-2.5 hover:bg-gray-50 transition-colors"
                     >
                       <span className="text-sm text-gray-800 truncate">{r.label}</span>
@@ -569,7 +766,10 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
             {/* Bildirim butonu */}
             <div className="relative" ref={notifRef}>
               <button
-                onClick={() => { setNotifOpen(v => !v); setNewNotifOpen(false); }}
+                onClick={() => {
+                  setNotifOpen((v) => !v);
+                  setNewNotifOpen(false);
+                }}
                 className="p-2 text-gray-400 hover:text-gray-700 relative rounded-lg hover:bg-gray-100 transition-colors"
                 title="Bildirimler"
               >
@@ -595,7 +795,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
                         </button>
                       )}
                       <button
-                        onClick={() => setNewNotifOpen(v => !v)}
+                        onClick={() => setNewNotifOpen((v) => !v)}
                         className="flex items-center gap-1 text-xs bg-primary text-navy font-bold px-2 py-1 rounded-md hover:bg-primary-dark transition-colors"
                       >
                         <Plus size={12} /> Yeni
@@ -605,19 +805,22 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
 
                   {/* Yeni bildirim formu */}
                   {newNotifOpen && (
-                    <form onSubmit={handleCreateNotif} className="border-b border-gray-100 p-4 space-y-3 bg-gray-50">
+                    <form
+                      onSubmit={handleCreateNotif}
+                      className="border-b border-gray-100 p-4 space-y-3 bg-gray-50"
+                    >
                       <input
                         type="text"
                         placeholder="Başlık"
                         value={notifForm.title}
-                        onChange={e => setNotifForm(f => ({ ...f, title: e.target.value }))}
+                        onChange={(e) => setNotifForm((f) => ({ ...f, title: e.target.value }))}
                         className="w-full text-sm border border-gray-300 rounded-md px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
                         required
                       />
                       <textarea
                         placeholder="Mesaj..."
                         value={notifForm.message}
-                        onChange={e => setNotifForm(f => ({ ...f, message: e.target.value }))}
+                        onChange={(e) => setNotifForm((f) => ({ ...f, message: e.target.value }))}
                         rows={2}
                         className="w-full text-sm border border-gray-300 rounded-md px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary resize-none"
                         required
@@ -625,7 +828,12 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
                       <div className="flex items-center gap-2">
                         <select
                           value={notifForm.type}
-                          onChange={e => setNotifForm(f => ({ ...f, type: e.target.value as AdminNotification['type'] }))}
+                          onChange={(e) =>
+                            setNotifForm((f) => ({
+                              ...f,
+                              type: e.target.value as AdminNotification['type'],
+                            }))
+                          }
                           className="flex-1 text-sm border border-gray-300 rounded-md px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
                         >
                           <option value="info">Bilgi</option>
@@ -649,7 +857,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
                     {notifications.length === 0 ? (
                       <div className="py-10 text-center text-sm text-gray-400">Bildirim yok</div>
                     ) : (
-                      notifications.map(n => (
+                      notifications.map((n) => (
                         <div
                           key={n.id}
                           onClick={() => handleMarkRead(n.id)}
@@ -659,16 +867,25 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
                             <NotifIcon type={n.type} size={16} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className={`text-sm font-medium text-gray-900 truncate ${!n.is_read ? 'font-bold' : ''}`}>{n.title}</p>
+                            <p
+                              className={`text-sm font-medium text-gray-900 truncate ${!n.is_read ? 'font-bold' : ''}`}
+                            >
+                              {n.title}
+                            </p>
                             <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{n.message}</p>
                             <div className="flex items-center gap-1 mt-1 text-[10px] text-gray-400">
                               <Clock size={10} />
-                              {new Date(n.created_at).toLocaleString('tr-TR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                              {new Date(n.created_at).toLocaleString('tr-TR', {
+                                day: '2-digit',
+                                month: 'short',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
                               {n.created_by && <span className="ml-1">· {n.created_by}</span>}
                             </div>
                           </div>
                           <button
-                            onClick={e => handleDeleteNotif(n.id, e)}
+                            onClick={(e) => handleDeleteNotif(n.id, e)}
                             className="shrink-0 p-1 text-gray-300 hover:text-red-400 transition-colors"
                             title="Sil"
                           >
@@ -691,7 +908,11 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
               <HelpCircle size={20} />
             </button>
 
-            <Link to="/" className="p-2 text-gray-400 hover:text-navy rounded-lg hover:bg-gray-100 transition-colors" title="Siteye Dön">
+            <Link
+              to="/"
+              className="p-2 text-gray-400 hover:text-navy rounded-lg hover:bg-gray-100 transition-colors"
+              title="Siteye Dön"
+            >
               <Home size={20} />
             </Link>
           </div>
@@ -705,20 +926,31 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
 
       {/* Yardım Modali */}
       {helpOpen && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setHelpOpen(false)}>
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg" onClick={e => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4"
+          onClick={() => setHelpOpen(false)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <div className="flex items-center gap-3">
                 <HelpCircle size={22} className="text-primary" />
                 <h2 className="text-lg font-bold text-gray-900">Yardım & Bilgi</h2>
               </div>
-              <button onClick={() => setHelpOpen(false)} className="p-1 text-gray-400 hover:text-gray-600 rounded">
+              <button
+                onClick={() => setHelpOpen(false)}
+                className="p-1 text-gray-400 hover:text-gray-600 rounded"
+              >
                 <X size={20} />
               </button>
             </div>
             <div className="p-6 space-y-6">
               <div>
-                <h3 className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3"><Keyboard size={16} /> Klavye Kısayolları</h3>
+                <h3 className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                  <Keyboard size={16} /> Klavye Kısayolları
+                </h3>
                 <div className="space-y-2 text-sm">
                   {[
                     { key: '/', desc: 'Aramaya odaklan' },
@@ -727,30 +959,47 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
                     { key: 'Alt + E', desc: 'Eğitimler' },
                     { key: 'Alt + V', desc: 'Etkinlikler' },
                     { key: 'Alt + S', desc: 'Sertifikalar' },
-                  ].map(s => (
+                  ].map((s) => (
                     <div key={s.key} className="flex items-center justify-between">
                       <span className="text-gray-600">{s.desc}</span>
-                      <kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs font-mono">{s.key}</kbd>
+                      <kbd className="px-2 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs font-mono">
+                        {s.key}
+                      </kbd>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div>
-                <h3 className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3"><Info size={16} /> Bildirim Sistemi</h3>
+                <h3 className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                  <Info size={16} /> Bildirim Sistemi
+                </h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  Bildirimler Supabase'de saklanır ve tüm admin cihazlarına <strong>gerçek zamanlı</strong> iletilir.
-                  "Yeni" butonuyla bildirim oluşturun — giriş yapmış olan tüm adminler anında görür.
+                  Bildirimler Supabase'de saklanır ve tüm admin cihazlarına{' '}
+                  <strong>gerçek zamanlı</strong> iletilir. "Yeni" butonuyla bildirim oluşturun —
+                  giriş yapmış olan tüm adminler anında görür.
                 </p>
               </div>
 
               <div>
-                <h3 className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3"><ExternalLink size={16} /> Bağlantılar</h3>
+                <h3 className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                  <ExternalLink size={16} /> Bağlantılar
+                </h3>
                 <div className="space-y-2">
-                  <a href="https://supabase.com/dashboard" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm text-primary hover:underline">
+                  <a
+                    href="https://supabase.com/dashboard"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 text-sm text-primary hover:underline"
+                  >
                     <ExternalLink size={14} /> Supabase Dashboard
                   </a>
-                  <a href="https://netlify.com" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm text-primary hover:underline">
+                  <a
+                    href="https://netlify.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 text-sm text-primary hover:underline"
+                  >
                     <ExternalLink size={14} /> Netlify Panel
                   </a>
                 </div>

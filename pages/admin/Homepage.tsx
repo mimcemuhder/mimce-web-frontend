@@ -61,7 +61,7 @@ const HomepageAdmin: React.FC = () => {
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      alert('Dosya boyutu 5MB\'dan küçük olmalıdır.');
+      alert("Dosya boyutu 5MB'dan küçük olmalıdır.");
       return;
     }
     const reader = new FileReader();

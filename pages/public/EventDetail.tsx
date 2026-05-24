@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Calendar, Clock, MapPin, ArrowLeft, ChevronRight, ChevronLeft, X, Images } from 'lucide-react';
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  ArrowLeft,
+  ChevronRight,
+  ChevronLeft,
+  X,
+  Images,
+} from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { Event } from '../../types';
 
@@ -19,11 +28,7 @@ const EventDetail: React.FC = () => {
       const { data } = await supabase.from('events').select('*').eq('id', id).single();
       if (data) {
         setEvent(data);
-        const { data: rel } = await supabase
-          .from('events')
-          .select('*')
-          .neq('id', id)
-          .limit(3);
+        const { data: rel } = await supabase.from('events').select('*').neq('id', id).limit(3);
         if (rel) setRelated(rel);
       } else {
         navigate('/etkinlikler');
@@ -35,7 +40,7 @@ const EventDetail: React.FC = () => {
 
   const getPhotos = (ev: Event) => {
     const all = [...(ev.images ?? []), ...(ev.image ? [ev.image] : [])];
-    return [...new Set(all)].filter(u => u && !u.includes('picsum.photos'));
+    return [...new Set(all)].filter((u) => u && !u.includes('picsum.photos'));
   };
 
   // Keyboard navigation for lightbox
@@ -43,8 +48,8 @@ const EventDetail: React.FC = () => {
     if (lightbox === null || !event) return;
     const photos = getPhotos(event);
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') setLightbox(i => Math.min((i ?? 0) + 1, photos.length - 1));
-      if (e.key === 'ArrowLeft') setLightbox(i => Math.max((i ?? 0) - 1, 0));
+      if (e.key === 'ArrowRight') setLightbox((i) => Math.min((i ?? 0) + 1, photos.length - 1));
+      if (e.key === 'ArrowLeft') setLightbox((i) => Math.max((i ?? 0) - 1, 0));
       if (e.key === 'Escape') setLightbox(null);
     };
     window.addEventListener('keydown', handler);
@@ -67,7 +72,10 @@ const EventDetail: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       <Helmet>
         <title>{event.title} | Etkinlikler | MİMCE</title>
-        <meta name="description" content={event.description?.slice(0, 155) || 'MİMCE etkinlik detayları'} />
+        <meta
+          name="description"
+          content={event.description?.slice(0, 155) || 'MİMCE etkinlik detayları'}
+        />
         <link rel="canonical" href={`https://mimce.org/etkinlikler/${event.id}`} />
         <meta property="og:title" content={`${event.title} | MİMCE`} />
         <meta property="og:description" content={event.description?.slice(0, 155) || ''} />
@@ -107,25 +115,29 @@ const EventDetail: React.FC = () => {
       {/* Main content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-
           {/* Left: info */}
           <div className="lg:col-span-2 space-y-8">
             <div>
-              <h1 className="text-3xl font-extrabold text-navy leading-tight mb-5">{event.title}</h1>
+              <h1 className="text-3xl font-extrabold text-navy leading-tight mb-5">
+                {event.title}
+              </h1>
               <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                 {event.date && (
                   <span className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2">
-                    <Calendar size={14} className="text-primary" />{event.date}
+                    <Calendar size={14} className="text-primary" />
+                    {event.date}
                   </span>
                 )}
                 {event.time && (
                   <span className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2">
-                    <Clock size={14} className="text-primary" />{event.time}
+                    <Clock size={14} className="text-primary" />
+                    {event.time}
                   </span>
                 )}
                 {event.location && (
                   <span className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2">
-                    <MapPin size={14} className="text-primary" />{event.location}
+                    <MapPin size={14} className="text-primary" />
+                    {event.location}
                   </span>
                 )}
               </div>
@@ -138,7 +150,9 @@ const EventDetail: React.FC = () => {
                   <span className="w-1 h-5 bg-primary rounded-full inline-block" />
                   Etkinlik Hakkında
                 </h2>
-                <p className="text-gray-600 leading-relaxed whitespace-pre-line text-sm">{event.description}</p>
+                <p className="text-gray-600 leading-relaxed whitespace-pre-line text-sm">
+                  {event.description}
+                </p>
               </div>
             )}
 
@@ -192,7 +206,9 @@ const EventDetail: React.FC = () => {
                 {event.location && (
                   <div className="flex justify-between">
                     <span className="text-gray-400">Konum</span>
-                    <span className="font-semibold text-navy text-right max-w-[150px]">{event.location}</span>
+                    <span className="font-semibold text-navy text-right max-w-[150px]">
+                      {event.location}
+                    </span>
                   </div>
                 )}
                 {photos.length > 0 && (
@@ -206,8 +222,16 @@ const EventDetail: React.FC = () => {
               {photos.length > 1 && (
                 <div className="mt-5 grid grid-cols-3 gap-1.5">
                   {photos.slice(0, 6).map((url, i) => (
-                    <button key={i} onClick={() => setLightbox(i)} className="aspect-square rounded-lg overflow-hidden">
-                      <img src={url} alt="" className="w-full h-full object-cover hover:scale-110 transition-transform" />
+                    <button
+                      key={i}
+                      onClick={() => setLightbox(i)}
+                      className="aspect-square rounded-lg overflow-hidden"
+                    >
+                      <img
+                        src={url}
+                        alt=""
+                        className="w-full h-full object-cover hover:scale-110 transition-transform"
+                      />
                     </button>
                   ))}
                 </div>
@@ -221,12 +245,15 @@ const EventDetail: React.FC = () => {
           <div className="mt-14">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl font-bold text-navy">Diğer Etkinlikler</h2>
-              <Link to="/etkinlikler" className="text-primary font-semibold text-sm flex items-center gap-1 hover:gap-2 transition-all">
+              <Link
+                to="/etkinlikler"
+                className="text-primary font-semibold text-sm flex items-center gap-1 hover:gap-2 transition-all"
+              >
                 Tümünü Gör <ChevronRight size={15} />
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {related.map(rel => {
+              {related.map((rel) => {
                 const relPhotos = rel.images?.length ? rel.images : rel.image ? [rel.image] : [];
                 return (
                   <Link
@@ -236,16 +263,30 @@ const EventDetail: React.FC = () => {
                   >
                     <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
                       {relPhotos.length > 0 ? (
-                        <img src={relPhotos[0]} alt={rel.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        <img
+                          src={relPhotos[0]}
+                          alt={rel.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-300"><Images size={20} /></div>
+                        <div className="w-full h-full flex items-center justify-center text-gray-300">
+                          <Images size={20} />
+                        </div>
                       )}
                     </div>
                     <div className="min-w-0">
-                      <h3 className="font-bold text-navy text-sm leading-snug line-clamp-2">{rel.title}</h3>
-                      <p className="text-xs text-gray-400 mt-1 flex items-center gap-1"><Calendar size={10} />{rel.date}</p>
+                      <h3 className="font-bold text-navy text-sm leading-snug line-clamp-2">
+                        {rel.title}
+                      </h3>
+                      <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                        <Calendar size={10} />
+                        {rel.date}
+                      </p>
                       {relPhotos.length > 1 && (
-                        <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1"><Images size={10} />{relPhotos.length} fotoğraf</p>
+                        <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
+                          <Images size={10} />
+                          {relPhotos.length} fotoğraf
+                        </p>
                       )}
                     </div>
                   </Link>
@@ -278,7 +319,10 @@ const EventDetail: React.FC = () => {
           {/* Prev */}
           {lightbox > 0 && (
             <button
-              onClick={e => { e.stopPropagation(); setLightbox(i => Math.max((i ?? 1) - 1, 0)); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightbox((i) => Math.max((i ?? 1) - 1, 0));
+              }}
               className="absolute left-4 text-white/70 hover:text-white bg-black/30 rounded-full p-2"
             >
               <ChevronLeft size={28} />
@@ -290,13 +334,16 @@ const EventDetail: React.FC = () => {
             src={photos[lightbox]}
             alt={`${lightbox + 1}`}
             className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg"
-            onClick={e => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
           />
 
           {/* Next */}
           {lightbox < photos.length - 1 && (
             <button
-              onClick={e => { e.stopPropagation(); setLightbox(i => Math.min((i ?? 0) + 1, photos.length - 1)); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightbox((i) => Math.min((i ?? 0) + 1, photos.length - 1));
+              }}
               className="absolute right-4 text-white/70 hover:text-white bg-black/30 rounded-full p-2"
             >
               <ChevronRight size={28} />
@@ -309,9 +356,14 @@ const EventDetail: React.FC = () => {
               {photos.map((url, i) => (
                 <button
                   key={i}
-                  onClick={e => { e.stopPropagation(); setLightbox(i); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLightbox(i);
+                  }}
                   className={`w-12 h-12 flex-shrink-0 rounded-md overflow-hidden border-2 transition-all ${
-                    i === lightbox ? 'border-primary scale-110' : 'border-transparent opacity-60 hover:opacity-100'
+                    i === lightbox
+                      ? 'border-primary scale-110'
+                      : 'border-transparent opacity-60 hover:opacity-100'
                   }`}
                 >
                   <img src={url} alt="" className="w-full h-full object-cover" />

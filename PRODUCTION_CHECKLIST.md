@@ -8,36 +8,38 @@
 
 ## Özet Tablo (Güncel)
 
-| Alan | Önceki | Şimdiki | Değişim |
-|------|--------|---------|---------|
-| Proje Yapısı | 70 | 85 | ✅ +15 |
-| Routing | 75 | 90 | ✅ +15 |
-| Servis Katmanı | 72 | 80 | ✅ +8 |
-| State Yönetimi | 55 | 80 | ✅ +25 |
-| **SEO** | **25** | **65** | ✅ +40 |
-| **Performans** | **45** | **75** | ✅ +30 |
-| Accessibility | 50 | 68 | ✅ +18 |
-| **Güvenlik** | **48** | **80** | ✅ +32 |
-| TypeScript | 58 | 82 | ✅ +24 |
-| Hata Yönetimi | 55 | 80 | ✅ +25 |
-| Form Validasyon | 50 | 72 | ✅ +22 |
-| **Test** | **0** | **25** | ⚠️ +25 |
-| CI/CD | 65 | 75 | ✅ +10 |
-| Dokümantasyon | 78 | 84 | ✅ +6 |
-| Bağımlılıklar | 70 | 88 | ✅ +18 |
-| Analytics | 10 | 45 | ⚠️ +35 |
-| **Genel** | **62** | **76** | ✅ +14 |
+| Alan            | Önceki | Şimdiki | Değişim |
+| --------------- | ------ | ------- | ------- |
+| Proje Yapısı    | 70     | 85      | ✅ +15  |
+| Routing         | 75     | 90      | ✅ +15  |
+| Servis Katmanı  | 72     | 80      | ✅ +8   |
+| State Yönetimi  | 55     | 80      | ✅ +25  |
+| **SEO**         | **25** | **65**  | ✅ +40  |
+| **Performans**  | **45** | **75**  | ✅ +30  |
+| Accessibility   | 50     | 68      | ✅ +18  |
+| **Güvenlik**    | **48** | **80**  | ✅ +32  |
+| TypeScript      | 58     | 82      | ✅ +24  |
+| Hata Yönetimi   | 55     | 80      | ✅ +25  |
+| Form Validasyon | 50     | 72      | ✅ +22  |
+| **Test**        | **0**  | **25**  | ⚠️ +25  |
+| CI/CD           | 65     | 75      | ✅ +10  |
+| Dokümantasyon   | 78     | 84      | ✅ +6   |
+| Bağımlılıklar   | 70     | 88      | ✅ +18  |
+| Analytics       | 10     | 45      | ⚠️ +35  |
+| **Genel**       | **62** | **76**  | ✅ +14  |
 
 ---
 
 ## Kapanan Sorunlar ✅
 
 ### P0 — Kritik (Tümü Kapandı)
+
 - [x] **Admin whitelist boş → false döndürüyor** (`ProtectedRoute.tsx` düzeltildi)
 - [x] **Gemini API key tarayıcıda** → Supabase Edge Function proxy'ye taşındı (`gemini-summarize`)
 - [x] **index.css eksikliği** → `index.html` temizlendi, CDN ve importmap kaldırıldı
 
 ### P1 — Yüksek Öncelik (Tümü Kapandı)
+
 - [x] **Blog XSS** → `DOMPurify.sanitize()` eklendi (`BlogPost.tsx`)
 - [x] **React.lazy code splitting** → Tüm rotalar lazy import edildi (`App.tsx`)
 - [x] **Tailwind CDN** → npm paketi olarak kuruldu
@@ -45,6 +47,7 @@
 - [x] **Contact formu mock** → `react-hook-form` + `zod` + Supabase insert
 
 ### P2 — Orta Öncelik (Büyük Çoğunluğu Kapandı)
+
 - [x] **TypeScript strict** → `strict: true`, `strictNullChecks: true`, `noImplicitAny: true` açıldı
 - [x] **AuthContext** → `contexts/AuthContext.tsx` oluşturuldu, duplicate subscription kaldırıldı
 - [x] **ErrorBoundary** → `components/ErrorBoundary.tsx` oluşturuldu
@@ -58,6 +61,7 @@
 - [x] **Button primitifi** → `components/ui/Button.tsx` oluşturuldu
 
 ### P3 — Uzun Vadeli (Kısmen Kapandı)
+
 - [x] **web-vitals** → kuruldu, `reportWebVitals()` index.tsx'te çağrılıyor
 - [x] **ESLint + Prettier** → kuruldu, `npm run lint` / `npm run format` scriptleri eklendi
 - [x] **eslint-plugin-jsx-a11y** → kuruldu
@@ -87,19 +91,19 @@
 - [x] **Open Graph görseli** → `public/og-default.png` oluşturuldu, tüm sayfalara eklendi
 
 - [ ] **AdminLayout auth state**  
-  `AdminLayout`'ta `useState<User | null>` ile `supabaseAdmin.auth.getUser()` ayrı çağrılıyor  
-  → Admin için `AdminAuthContext` veya prop drilling yerine composable hook
+       `AdminLayout`'ta `useState<User | null>` ile `supabaseAdmin.auth.getUser()` ayrı çağrılıyor  
+       → Admin için `AdminAuthContext` veya prop drilling yerine composable hook
 
-- [x] **vite-env.d.ts** → Tüm VITE_* değişkenleri tanımlı
+- [x] **vite-env.d.ts** → Tüm VITE\_\* değişkenleri tanımlı
 
 - [ ] **Supabase generated types**  
-  `supabase gen types typescript` çalıştırılmamış → Supabase select sonuçları implicit any  
-  → `types/supabase.ts` oluştur ve import et
+       `supabase gen types typescript` çalıştırılmamış → Supabase select sonuçları implicit any  
+       → `types/supabase.ts` oluştur ve import et
 
 ### 🟢 P3 — Uzun Vadeli
 
 - [ ] **Test coverage yetersiz** (şu an: 4 dosya, ~15% tahmini)  
-  Yazılması gereken kritik testler:
+       Yazılması gereken kritik testler:
   - Admin login + MFA akışı
   - Sertifika doğrulama
   - AuthContext + useAuth hook
@@ -108,19 +112,19 @@
 - [x] **CI pipeline** → lint + format:check + test + audit + build adımları mevcut
 
 - [ ] **Gizlilik Politikası / Kullanım Şartları**  
-  Footer'da linkler var ama sayfalar yok (`/gizlilik`, `/kullanim-sartlari`)
+       Footer'da linkler var ama sayfalar yok (`/gizlilik`, `/kullanim-sartlari`)
 
 - [ ] **prefers-reduced-motion**  
-  Animasyonlar (spinner, fade-in) bu media query'ye göre kısıtlanmalı
+       Animasyonlar (spinner, fade-in) bu media query'ye göre kısıtlanmalı
 
 - [ ] **Dropdown klavye navigasyonu**  
-  "Eğitimler" hover dropdown → ok tuşları ve Escape ile navigate edilemiyor
+       "Eğitimler" hover dropdown → ok tuşları ve Escape ile navigate edilemiyor
 
 - [ ] **Renk kontrast denetimi**  
-  `primary` renginin `navy` arka plan üzerinde WCAG AA uyumu sistematik kontrol edilmeli
+       `primary` renginin `navy` arka plan üzerinde WCAG AA uyumu sistematik kontrol edilmeli
 
 - [ ] **Admin demo rotaları kaldırılmalı veya gizlenmeli**  
-  `/admin/uyeler` ve `/admin/ayarlar` inline `<div>Demo</div>` sayfaları production'da görünür
+       `/admin/uyeler` ve `/admin/ayarlar` inline `<div>Demo</div>` sayfaları production'da görünür
 
 ---
 

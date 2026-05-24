@@ -2,7 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabaseAdmin as supabase } from '../../services/supabaseAdmin';
 import { Blog } from '../../types';
-import { Plus, Edit2, Trash2, Eye, EyeOff, Calendar, Search, Loader2, FileText } from 'lucide-react';
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  Eye,
+  EyeOff,
+  Calendar,
+  Search,
+  Loader2,
+  FileText,
+} from 'lucide-react';
 
 const Blogs: React.FC = () => {
   const navigate = useNavigate();
@@ -21,24 +31,27 @@ const Blogs: React.FC = () => {
     setLoading(false);
   };
 
-  useEffect(() => { fetchBlogs(); }, []);
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
 
   const handleDelete = async (blog: Blog) => {
     if (!confirm(`"${blog.title}" silinsin mi?`)) return;
     setDeleting(blog.id);
     await supabase.from('blogs').delete().eq('id', blog.id);
-    setBlogs(prev => prev.filter(b => b.id !== blog.id));
+    setBlogs((prev) => prev.filter((b) => b.id !== blog.id));
     setDeleting(null);
   };
 
   const togglePublish = async (blog: Blog) => {
     await supabase.from('blogs').update({ published: !blog.published }).eq('id', blog.id);
-    setBlogs(prev => prev.map(b => b.id === blog.id ? { ...b, published: !b.published } : b));
+    setBlogs((prev) => prev.map((b) => (b.id === blog.id ? { ...b, published: !b.published } : b)));
   };
 
-  const filtered = blogs.filter(b =>
-    b.title.toLowerCase().includes(search.toLowerCase()) ||
-    (b.author ?? '').toLowerCase().includes(search.toLowerCase())
+  const filtered = blogs.filter(
+    (b) =>
+      b.title.toLowerCase().includes(search.toLowerCase()) ||
+      (b.author ?? '').toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -65,7 +78,7 @@ const Blogs: React.FC = () => {
           type="text"
           placeholder="Başlık veya yazar ara..."
           value={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
           className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-primary bg-white"
         />
       </div>
@@ -88,7 +101,7 @@ const Blogs: React.FC = () => {
         </div>
       ) : (
         <div className="grid gap-4">
-          {filtered.map(blog => (
+          {filtered.map((blog) => (
             <div
               key={blog.id}
               className="bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 hover:shadow-md transition-shadow"
@@ -110,11 +123,13 @@ const Blogs: React.FC = () => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <h2 className="font-semibold text-gray-900 truncate">{blog.title}</h2>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${
-                    blog.published
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-yellow-100 text-yellow-700'
-                  }`}>
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${
+                      blog.published
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-yellow-100 text-yellow-700'
+                    }`}
+                  >
                     {blog.published ? 'Yayında' : 'Taslak'}
                   </span>
                 </div>
@@ -127,9 +142,7 @@ const Blogs: React.FC = () => {
                     {new Date(blog.created_at).toLocaleDateString('tr-TR')}
                   </span>
                   {blog.author && <span>· {blog.author}</span>}
-                  {blog.tags && blog.tags.length > 0 && (
-                    <span>· {blog.tags.join(', ')}</span>
-                  )}
+                  {blog.tags && blog.tags.length > 0 && <span>· {blog.tags.join(', ')}</span>}
                 </div>
               </div>
 
@@ -155,10 +168,11 @@ const Blogs: React.FC = () => {
                   title="Sil"
                   className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-40"
                 >
-                  {deleting === blog.id
-                    ? <Loader2 size={16} className="animate-spin" />
-                    : <Trash2 size={16} />
-                  }
+                  {deleting === blog.id ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <Trash2 size={16} />
+                  )}
                 </button>
               </div>
             </div>

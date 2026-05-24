@@ -18,9 +18,7 @@ export async function checkSystemStatus(): Promise<SystemStatus> {
   // Database
   const dbStart = Date.now();
   try {
-    const { error } = await supabase
-      .from('trainings')
-      .select('id', { count: 'exact', head: true });
+    const { error } = await supabase.from('trainings').select('id', { count: 'exact', head: true });
     services.push({
       name: 'Veritabanı',
       status: error ? 'offline' : 'online',
@@ -56,8 +54,8 @@ export async function checkSystemStatus(): Promise<SystemStatus> {
     services.push({ name: 'Depolama', status: 'offline' });
   }
 
-  const anyOffline = services.some(s => s.status === 'offline');
-  const anyDegraded = services.some(s => s.status === 'degraded');
+  const anyOffline = services.some((s) => s.status === 'offline');
+  const anyDegraded = services.some((s) => s.status === 'degraded');
 
   return {
     services,

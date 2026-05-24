@@ -17,7 +17,7 @@ export const createDefaultAdmin = async () => {
     console.log('✅ Default admin kullanıcısı oluşturuldu!');
     console.log('E-posta: mimce@mimce.com');
     console.log('Şifre: mimceadmintest123');
-    
+
     return { success: true, data };
   } catch (err) {
     console.error('Admin oluşturma hatası:', err);

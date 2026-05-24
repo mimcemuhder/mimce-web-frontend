@@ -82,23 +82,23 @@ export const notificationService = {
   },
 
   async getStats(): Promise<NotificationStats> {
-    const { data, error } = await supabase
-      .from('admin_notifications')
-      .select('type, is_read');
+    const { data, error } = await supabase.from('admin_notifications').select('type, is_read');
     if (error) throw error;
     const rows = data || [];
     return {
-      total:   rows.length,
-      unread:  rows.filter(r => !r.is_read).length,
-      info:    rows.filter(r => r.type === 'info').length,
-      success: rows.filter(r => r.type === 'success').length,
-      warning: rows.filter(r => r.type === 'warning').length,
-      error:   rows.filter(r => r.type === 'error').length,
+      total: rows.length,
+      unread: rows.filter((r) => !r.is_read).length,
+      info: rows.filter((r) => r.type === 'info').length,
+      success: rows.filter((r) => r.type === 'success').length,
+      warning: rows.filter((r) => r.type === 'warning').length,
+      error: rows.filter((r) => r.type === 'error').length,
     };
   },
 
   async create(notification: Pick<AdminNotification, 'title' | 'message' | 'type'>): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     const { error } = await supabase.from('admin_notifications').insert({
       ...notification,
       created_by: user?.email,
@@ -131,37 +131,32 @@ export const notificationService = {
   },
 
   async deleteNotification(id: string): Promise<void> {
-    const { error } = await supabase
-      .from('admin_notifications')
-      .delete()
-      .eq('id', id);
+    const { error } = await supabase.from('admin_notifications').delete().eq('id', id);
     if (error) throw error;
   },
 
   async deleteMany(ids: string[]): Promise<void> {
-    const { error } = await supabase
-      .from('admin_notifications')
-      .delete()
-      .in('id', ids);
+    const { error } = await supabase.from('admin_notifications').delete().in('id', ids);
     if (error) throw error;
   },
 
   async deleteAllRead(): Promise<void> {
-    const { error } = await supabase
-      .from('admin_notifications')
-      .delete()
-      .eq('is_read', true);
+    const { error } = await supabase.from('admin_notifications').delete().eq('is_read', true);
     if (error) throw error;
   },
 
   subscribe(callback: () => void): RealtimeChannel {
     return supabase
       .channel('admin_notifications_realtime')
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'admin_notifications',
-      }, callback)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'admin_notifications',
+        },
+        callback
+      )
       .subscribe();
   },
 };

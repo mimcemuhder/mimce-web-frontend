@@ -8,15 +8,33 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { supabaseAdmin as supabase } from '../../services/supabaseAdmin';
 import { summarizeBlogExcerpt } from '../../services/geminiSummarize';
 import {
-  ArrowLeft, Bold, Italic, Heading1, Heading2, Quote, Image as ImageIcon,
-  Save, Eye, EyeOff, Upload, X, Type, Loader2, Link2, Sparkles
+  ArrowLeft,
+  Bold,
+  Italic,
+  Heading1,
+  Heading2,
+  Quote,
+  Image as ImageIcon,
+  Save,
+  Eye,
+  EyeOff,
+  Upload,
+  X,
+  Type,
+  Loader2,
+  Link2,
+  Sparkles,
 } from 'lucide-react';
 
 const slugify = (text: string) =>
   text
     .toLowerCase()
-    .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
-    .replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
+    .replace(/ğ/g, 'g')
+    .replace(/ü/g, 'u')
+    .replace(/ş/g, 's')
+    .replace(/ı/g, 'i')
+    .replace(/ö/g, 'o')
+    .replace(/ç/g, 'c')
     .replace(/[^a-z0-9\s-]/g, '')
     .trim()
     .replace(/\s+/g, '-')
@@ -69,7 +87,7 @@ const BlogEditor: React.FC = () => {
       Placeholder.configure({
         placeholder: ({ node }) => {
           if (node.type.name === 'heading') return 'Başlık yaz...';
-          return "Hikayeni anlat... (seç ve biçimlendir)";
+          return 'Hikayeni anlat... (seç ve biçimlendir)';
         },
       }),
     ],
@@ -81,12 +99,21 @@ const BlogEditor: React.FC = () => {
     },
     onSelectionUpdate: ({ editor: ed }) => {
       const { from, to } = ed.state.selection;
-      if (from === to) { setBubblePos(null); return; }
+      if (from === to) {
+        setBubblePos(null);
+        return;
+      }
       const sel = window.getSelection();
-      if (!sel || sel.rangeCount === 0) { setBubblePos(null); return; }
+      if (!sel || sel.rangeCount === 0) {
+        setBubblePos(null);
+        return;
+      }
       const range = sel.getRangeAt(0);
       const rect = range.getBoundingClientRect();
-      if (rect.width === 0) { setBubblePos(null); return; }
+      if (rect.width === 0) {
+        setBubblePos(null);
+        return;
+      }
       setBubblePos({
         top: rect.top + window.scrollY - 52,
         left: rect.left + rect.width / 2,
@@ -211,7 +238,7 @@ const BlogEditor: React.FC = () => {
 
   const editorState = useEditorState({
     editor,
-    selector: ctx => ({
+    selector: (ctx) => ({
       isBold: ctx.editor?.isActive('bold') ?? false,
       isItalic: ctx.editor?.isActive('italic') ?? false,
       isLink: ctx.editor?.isActive('link') ?? false,
@@ -258,7 +285,12 @@ const BlogEditor: React.FC = () => {
         cover_alt: coverAlt || null,
         excerpt: excerpt || null,
         author: author || 'MİMCE',
-        tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [],
+        tags: tags
+          ? tags
+              .split(',')
+              .map((t) => t.trim())
+              .filter(Boolean)
+          : [],
         content: JSON.stringify(editor.getJSON()),
         published,
         updated_at: new Date().toISOString(),
@@ -301,7 +333,7 @@ const BlogEditor: React.FC = () => {
 
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setPublished(p => !p)}
+              onClick={() => setPublished((p) => !p)}
               className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all ${
                 published
                   ? 'bg-green-50 text-green-700 border-green-300'
@@ -338,11 +370,7 @@ const BlogEditor: React.FC = () => {
           >
             <Italic size={16} />
           </ToolbarButton>
-          <ToolbarButton
-            onClick={openLinkModal}
-            active={editorState?.isLink}
-            title="Bağlantı"
-          >
+          <ToolbarButton onClick={openLinkModal} active={editorState?.isLink} title="Bağlantı">
             <Link2 size={16} />
           </ToolbarButton>
           <ToolbarButton
@@ -397,7 +425,11 @@ const BlogEditor: React.FC = () => {
                   Değiştir
                 </button>
                 <button
-                  onClick={() => { setCoverPreview(''); setCoverFile(null); setCoverImage(''); }}
+                  onClick={() => {
+                    setCoverPreview('');
+                    setCoverFile(null);
+                    setCoverImage('');
+                  }}
                   className="p-2 bg-white text-red-600 rounded-lg"
                 >
                   <X size={16} />
@@ -413,13 +445,19 @@ const BlogEditor: React.FC = () => {
               <span className="text-sm font-medium">Kapak görseli ekle</span>
             </button>
           )}
-          <input ref={coverFileRef} type="file" accept="image/*" className="hidden" onChange={handleCoverFileSelect} />
+          <input
+            ref={coverFileRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleCoverFileSelect}
+          />
           {coverPreview && (
             <input
               type="text"
               placeholder="Kapak görseli açıklaması (alt text)"
               value={coverAlt}
-              onChange={e => setCoverAlt(e.target.value)}
+              onChange={(e) => setCoverAlt(e.target.value)}
               className="mt-2 w-full text-sm text-gray-500 border-0 border-b border-gray-200 focus:outline-none focus:border-primary py-1 bg-transparent"
             />
           )}
@@ -440,7 +478,10 @@ const BlogEditor: React.FC = () => {
           <input
             type="text"
             value={slug}
-            onChange={e => { setSlug(e.target.value); setSlugManual(true); }}
+            onChange={(e) => {
+              setSlug(e.target.value);
+              setSlugManual(true);
+            }}
             className="text-xs text-gray-400 border-0 focus:outline-none bg-transparent flex-1 font-mono"
             placeholder="url-slug"
           />
@@ -449,9 +490,15 @@ const BlogEditor: React.FC = () => {
         {/* Floating Bubble Menu (seçim üzerinde) */}
         {editor && bubblePos && (
           <div
-            style={{ position: 'fixed', top: bubblePos.top, left: bubblePos.left, transform: 'translateX(-50%)', zIndex: 9999 }}
+            style={{
+              position: 'fixed',
+              top: bubblePos.top,
+              left: bubblePos.left,
+              transform: 'translateX(-50%)',
+              zIndex: 9999,
+            }}
             className="flex items-center gap-1 bg-gray-900 rounded-lg px-2 py-1 shadow-xl"
-            onMouseDown={e => e.preventDefault()}
+            onMouseDown={(e) => e.preventDefault()}
           >
             <BubbleButton
               onClick={() => editor.chain().focus().toggleBold().run()}
@@ -465,10 +512,7 @@ const BlogEditor: React.FC = () => {
             >
               <Italic size={14} />
             </BubbleButton>
-            <BubbleButton
-              onClick={openLinkModal}
-              active={editorState?.isLink}
-            >
+            <BubbleButton onClick={openLinkModal} active={editorState?.isLink}>
               <Link2 size={14} />
             </BubbleButton>
             <BubbleButton
@@ -519,7 +563,7 @@ const BlogEditor: React.FC = () => {
             </div>
             <textarea
               value={excerpt}
-              onChange={e => setExcerpt(e.target.value)}
+              onChange={(e) => setExcerpt(e.target.value)}
               rows={2}
               placeholder="Kısa açıklama..."
               className="mt-1 w-full text-sm border border-gray-200 rounded-lg p-2 focus:outline-none focus:border-primary resize-none"
@@ -536,7 +580,7 @@ const BlogEditor: React.FC = () => {
               <input
                 type="text"
                 value={author}
-                onChange={e => setAuthor(e.target.value)}
+                onChange={(e) => setAuthor(e.target.value)}
                 className="mt-1 w-full text-sm border border-gray-200 rounded-lg p-2 focus:outline-none focus:border-primary"
               />
             </div>
@@ -545,7 +589,7 @@ const BlogEditor: React.FC = () => {
               <input
                 type="text"
                 value={tags}
-                onChange={e => setTags(e.target.value)}
+                onChange={(e) => setTags(e.target.value)}
                 placeholder="mühendislik, eğitim"
                 className="mt-1 w-full text-sm border border-gray-200 rounded-lg p-2 focus:outline-none focus:border-primary"
               />
@@ -562,7 +606,7 @@ const BlogEditor: React.FC = () => {
         >
           <div
             className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl"
-            onClick={e => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-gray-800">Bağlantı Ekle</h3>
@@ -573,8 +617,8 @@ const BlogEditor: React.FC = () => {
             <input
               type="url"
               value={linkUrl}
-              onChange={e => setLinkUrl(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && applyLink()}
+              onChange={(e) => setLinkUrl(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && applyLink()}
               placeholder="https://..."
               className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-primary mb-4"
               autoFocus
@@ -607,7 +651,14 @@ const BlogEditor: React.FC = () => {
           <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-gray-800">Görsel Ekle</h3>
-              <button onClick={() => { setImageModalOpen(false); setInlineImgFile(null); setInlineImgPreview(''); setInlineImgAlt(''); }}>
+              <button
+                onClick={() => {
+                  setImageModalOpen(false);
+                  setInlineImgFile(null);
+                  setInlineImgPreview('');
+                  setInlineImgAlt('');
+                }}
+              >
                 <X size={20} className="text-gray-400" />
               </button>
             </div>
@@ -625,13 +676,19 @@ const BlogEditor: React.FC = () => {
                 </>
               )}
             </div>
-            <input ref={inlineImgFileRef} type="file" accept="image/*" className="hidden" onChange={handleInlineFileSelect} />
+            <input
+              ref={inlineImgFileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleInlineFileSelect}
+            />
 
             <input
               type="text"
               placeholder="Alt metin (açıklama)"
               value={inlineImgAlt}
-              onChange={e => setInlineImgAlt(e.target.value)}
+              onChange={(e) => setInlineImgAlt(e.target.value)}
               className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:outline-none focus:border-primary mb-4"
             />
 
@@ -640,7 +697,11 @@ const BlogEditor: React.FC = () => {
               disabled={!inlineImgPreview || inlineImgUploading}
               className="w-full py-2.5 bg-primary text-white rounded-lg font-medium text-sm disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              {inlineImgUploading ? <Loader2 size={16} className="animate-spin" /> : <ImageIcon size={16} />}
+              {inlineImgUploading ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <ImageIcon size={16} />
+              )}
               {inlineImgUploading ? 'Yükleniyor...' : 'Ekle'}
             </button>
           </div>
@@ -731,7 +792,10 @@ const ToolbarButton: React.FC<{
   children: React.ReactNode;
 }> = ({ onClick, active, title, children }) => (
   <button
-    onMouseDown={e => { e.preventDefault(); onClick(); }}
+    onMouseDown={(e) => {
+      e.preventDefault();
+      onClick();
+    }}
     title={title}
     className={`p-2 rounded-lg transition-all ${
       active ? 'bg-primary text-white' : 'text-gray-600 hover:bg-gray-100'
@@ -747,7 +811,10 @@ const BubbleButton: React.FC<{
   children: React.ReactNode;
 }> = ({ onClick, active, children }) => (
   <button
-    onMouseDown={e => { e.preventDefault(); onClick(); }}
+    onMouseDown={(e) => {
+      e.preventDefault();
+      onClick();
+    }}
     className={`p-1.5 rounded transition-all ${
       active ? 'bg-white text-gray-900' : 'text-gray-300 hover:text-white'
     }`}

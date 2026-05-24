@@ -1,34 +1,23 @@
 {
-  "exclude": [
-    "supabase/functions",
-    "__tests__"
-  ],
+  "exclude": ["supabase/functions", "__tests__"],
   "compilerOptions": {
     "target": "ES2022",
     "experimentalDecorators": true,
     "useDefineForClassFields": false,
     "module": "ESNext",
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
     "strict": true,
     "strictNullChecks": true,
     "noImplicitAny": true,
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "moduleResolution": "bundler",
     "isolatedModules": true,
     "moduleDetection": "force",
     "allowJs": true,
     "jsx": "react-jsx",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
     "allowImportingTsExtensions": true,
     "noEmit": true

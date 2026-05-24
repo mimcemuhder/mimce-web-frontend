@@ -34,10 +34,29 @@ const BlogPost: React.FC = () => {
             TiptapLink,
             Image,
           ]);
-          setHtml(DOMPurify.sanitize(rendered, {
-            ALLOWED_TAGS: ['p','h1','h2','h3','ul','ol','li','strong','em','a','img','blockquote','hr','br','code','pre'],
-            ALLOWED_ATTR: ['href','src','alt','target','rel','class'],
-          }));
+          setHtml(
+            DOMPurify.sanitize(rendered, {
+              ALLOWED_TAGS: [
+                'p',
+                'h1',
+                'h2',
+                'h3',
+                'ul',
+                'ol',
+                'li',
+                'strong',
+                'em',
+                'a',
+                'img',
+                'blockquote',
+                'hr',
+                'br',
+                'code',
+                'pre',
+              ],
+              ALLOWED_ATTR: ['href', 'src', 'alt', 'target', 'rel', 'class'],
+            })
+          );
         } catch {
           setHtml(DOMPurify.sanitize(data.content));
         }
@@ -99,71 +118,76 @@ const BlogPost: React.FC = () => {
         <meta property="og:description" content={blog.excerpt ?? blog.title} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:image" content={blog.cover_image || 'https://mimce.org/og-default.png'} />
+        <meta
+          property="og:image"
+          content={blog.cover_image || 'https://mimce.org/og-default.png'}
+        />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
-    <article className="max-w-2xl mx-auto px-4 py-16">
-      {/* Back */}
-      <Link
-        to="/blog"
-        className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-primary transition-colors mb-10"
-      >
-        <ArrowLeft size={14} /> Blog
-      </Link>
+      <article className="max-w-2xl mx-auto px-4 py-16">
+        {/* Back */}
+        <Link
+          to="/blog"
+          className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-primary transition-colors mb-10"
+        >
+          <ArrowLeft size={14} /> Blog
+        </Link>
 
-      {/* Tags */}
-      {(blog.tags ?? []).length > 0 && (
-        <div className="flex items-center gap-2 mb-4 flex-wrap">
-          {(blog.tags ?? []).map(tag => (
-            <span key={tag} className="text-xs px-3 py-1 bg-primary/10 text-primary rounded-full font-medium">
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {/* Title */}
-      <h1 className="text-4xl font-bold text-gray-900 leading-tight mb-4">{blog.title}</h1>
-
-      {/* Meta */}
-      <div className="flex items-center gap-4 text-sm text-gray-400 mb-8">
-        <span className="flex items-center gap-1.5">
-          <Calendar size={14} />
-          {new Date(blog.created_at).toLocaleDateString('tr-TR', {
-            day: 'numeric', month: 'long', year: 'numeric'
-          })}
-        </span>
-        {blog.author && (
-          <span className="flex items-center gap-1.5">
-            <User size={14} />
-            {blog.author}
-          </span>
+        {/* Tags */}
+        {(blog.tags ?? []).length > 0 && (
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
+            {(blog.tags ?? []).map((tag) => (
+              <span
+                key={tag}
+                className="text-xs px-3 py-1 bg-primary/10 text-primary rounded-full font-medium"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
         )}
-      </div>
 
-      {/* Cover */}
-      {blog.cover_image && (
-        <figure className="mb-10">
-          <img
-            src={blog.cover_image}
-            alt={blog.cover_alt ?? blog.title}
-            className="w-full rounded-2xl object-cover max-h-96"
-          />
-          {blog.cover_alt && (
-            <figcaption className="text-center text-sm text-gray-400 mt-2 italic">
-              {blog.cover_alt}
-            </figcaption>
+        {/* Title */}
+        <h1 className="text-4xl font-bold text-gray-900 leading-tight mb-4">{blog.title}</h1>
+
+        {/* Meta */}
+        <div className="flex items-center gap-4 text-sm text-gray-400 mb-8">
+          <span className="flex items-center gap-1.5">
+            <Calendar size={14} />
+            {new Date(blog.created_at).toLocaleDateString('tr-TR', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            })}
+          </span>
+          {blog.author && (
+            <span className="flex items-center gap-1.5">
+              <User size={14} />
+              {blog.author}
+            </span>
           )}
-        </figure>
-      )}
+        </div>
 
-      {/* Content */}
-      <div
-        className="blog-post-content"
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+        {/* Cover */}
+        {blog.cover_image && (
+          <figure className="mb-10">
+            <img
+              src={blog.cover_image}
+              alt={blog.cover_alt ?? blog.title}
+              className="w-full rounded-2xl object-cover max-h-96"
+            />
+            {blog.cover_alt && (
+              <figcaption className="text-center text-sm text-gray-400 mt-2 italic">
+                {blog.cover_alt}
+              </figcaption>
+            )}
+          </figure>
+        )}
 
-      <style>{`
+        {/* Content */}
+        <div className="blog-post-content" dangerouslySetInnerHTML={{ __html: html }} />
+
+        <style>{`
         .blog-post-content h1 {
           font-size: 2rem;
           font-weight: 700;
@@ -238,7 +262,7 @@ const BlogPost: React.FC = () => {
           margin: 0.35rem 0;
         }
       `}</style>
-    </article>
+      </article>
     </>
   );
 };

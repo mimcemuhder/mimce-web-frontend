@@ -10,7 +10,9 @@ const MODELS = [
 function isRetryableError(status: number, detail: string): boolean {
   if (status === 404 || status === 429) return true;
   const lower = detail.toLowerCase();
-  return lower.includes('quota') || lower.includes('resource_exhausted') || lower.includes('not found');
+  return (
+    lower.includes('quota') || lower.includes('resource_exhausted') || lower.includes('not found')
+  );
 }
 
 function extractSummary(data: unknown): string | null {

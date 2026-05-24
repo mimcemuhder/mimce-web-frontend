@@ -6,9 +6,24 @@ export type EventSort = DateSort | TitleSort;
 export type TrainingSort = DateSort | TitleSort | CodeSort;
 
 const TR_MONTHS: Record<string, number> = {
-  ocak: 0, şubat: 1, subat: 1, mart: 2, nisan: 3, mayıs: 4, mayis: 4,
-  haziran: 5, temmuz: 6, ağustos: 7, agustos: 7, eylül: 8, eylul: 8,
-  ekim: 9, kasım: 10, kasim: 10, aralık: 11, aralik: 11,
+  ocak: 0,
+  şubat: 1,
+  subat: 1,
+  mart: 2,
+  nisan: 3,
+  mayıs: 4,
+  mayis: 4,
+  haziran: 5,
+  temmuz: 6,
+  ağustos: 7,
+  agustos: 7,
+  eylül: 8,
+  eylul: 8,
+  ekim: 9,
+  kasım: 10,
+  kasim: 10,
+  aralık: 11,
+  aralik: 11,
 };
 
 const titleCollator = new Intl.Collator('tr', { numeric: true, sensitivity: 'base' });
@@ -52,7 +67,10 @@ function sortWith<T>(items: T[], compare: (a: T, b: T) => number): T[] {
   return [...items].sort(compare);
 }
 
-export function sortEvents<T extends { date: string; title: string }>(items: T[], sort: EventSort): T[] {
+export function sortEvents<T extends { date: string; title: string }>(
+  items: T[],
+  sort: EventSort
+): T[] {
   switch (sort) {
     case 'date-desc':
       return sortWith(items, (a, b) => compareDates(a.date, b.date, false));
@@ -69,7 +87,7 @@ export function sortEvents<T extends { date: string; title: string }>(items: T[]
 
 export function sortTrainings<T extends { date: string; title: string; code: string }>(
   items: T[],
-  sort: TrainingSort,
+  sort: TrainingSort
 ): T[] {
   switch (sort) {
     case 'date-desc':

@@ -18,7 +18,7 @@ const Trainings: React.FC = () => {
     };
     fetchTrainings();
   }, []);
-  
+
   // Form State
   const [formData, setFormData] = useState({
     code: '',
@@ -27,15 +27,17 @@ const Trainings: React.FC = () => {
     date: '',
     type: 'Öğrenciler' as Training['type'],
     status: 'Aktif' as NonNullable<Training['status']>,
-    image: ''
+    image: '',
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +48,7 @@ const Trainings: React.FC = () => {
         return;
       }
       if (file.size > 5 * 1024 * 1024) {
-        alert('Dosya boyutu 5MB\'dan küçük olmalıdır.');
+        alert("Dosya boyutu 5MB'dan küçük olmalıdır.");
         return;
       }
       setSelectedFile(file);
@@ -66,7 +68,7 @@ const Trainings: React.FC = () => {
       date: '',
       type: 'Öğrenciler',
       status: 'Aktif',
-      image: ''
+      image: '',
     });
     setSelectedFile(null);
     setImagePreview('');
@@ -80,7 +82,7 @@ const Trainings: React.FC = () => {
     if (!confirm('Bu eğitimi silmek istediğinize emin misiniz?')) return;
     const { error } = await supabase.from('trainings').delete().eq('id', id);
     if (!error) {
-      setTrainings(prev => prev.filter(t => t.id !== id));
+      setTrainings((prev) => prev.filter((t) => t.id !== id));
     } else {
       alert('Silme işlemi başarısız: ' + error.message);
     }
@@ -94,7 +96,7 @@ const Trainings: React.FC = () => {
       date: training.date,
       type: training.type,
       status: training.status ?? 'Aktif',
-      image: training.image
+      image: training.image,
     });
     setImagePreview(training.image);
     setEditingTrainingId(training.id);
@@ -107,24 +109,22 @@ const Trainings: React.FC = () => {
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `trainings/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from('images')
-        .upload(filePath, file);
+      const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file);
 
       if (uploadError) {
         console.error('Upload error:', uploadError);
         alert(
-          'Görsel yüklenemedi: ' + uploadError.message + '\n\n' +
-          'Muhtemel sebep: Supabase Storage\'da "images" bucket\'ı henüz oluşturulmamış.\n' +
-          'Supabase Dashboard → Storage → "images" adında public bucket oluşturun.\n\n' +
-          'Geçici çözüm: Görsel URL\'si alanına direkt bir URL yapıştırın.'
+          'Görsel yüklenemedi: ' +
+            uploadError.message +
+            '\n\n' +
+            'Muhtemel sebep: Supabase Storage\'da "images" bucket\'ı henüz oluşturulmamış.\n' +
+            'Supabase Dashboard → Storage → "images" adında public bucket oluşturun.\n\n' +
+            "Geçici çözüm: Görsel URL'si alanına direkt bir URL yapıştırın."
         );
         return null;
       }
 
-      const { data } = supabase.storage
-        .from('images')
-        .getPublicUrl(filePath);
+      const { data } = supabase.storage.from('images').getPublicUrl(filePath);
 
       return data.publicUrl;
     } catch (err) {
@@ -137,7 +137,7 @@ const Trainings: React.FC = () => {
     e.preventDefault();
     // Validate
     if (!formData.code || !formData.title || !formData.date || !formData.type) {
-      alert("Kod, başlık, tarih ve tip alanları zorunludur.");
+      alert('Kod, başlık, tarih ve tip alanları zorunludur.');
       return;
     }
 
@@ -168,7 +168,7 @@ const Trainings: React.FC = () => {
         date: formData.date,
         type: formData.type,
         status: formData.status,
-        image: imageUrl || formData.image
+        image: imageUrl || formData.image,
       };
 
       const { error } = await supabase
@@ -178,11 +178,11 @@ const Trainings: React.FC = () => {
 
       if (!error) {
         // Listeyi güncelle
-        setTrainings(trainings.map(t => 
-          t.id === editingTrainingId 
-            ? { ...t, ...updatedTraining } as Training
-            : t
-        ));
+        setTrainings(
+          trainings.map((t) =>
+            t.id === editingTrainingId ? ({ ...t, ...updatedTraining } as Training) : t
+          )
+        );
         setIsSheetOpen(false);
         resetForm();
       } else {
@@ -198,7 +198,7 @@ const Trainings: React.FC = () => {
         date: formData.date,
         type: formData.type,
         status: formData.status,
-        image: imageUrl
+        image: imageUrl,
       };
 
       const { error } = await supabase.from('trainings').insert([newTraining]);
@@ -220,7 +220,7 @@ const Trainings: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">Eğitimler</h1>
           <p className="text-sm text-gray-500 mt-1">Eğitimleri oluşturun ve yönetin.</p>
         </div>
-        <button 
+        <button
           onClick={() => {
             resetForm();
             setIsSheetOpen(true);
@@ -234,53 +234,71 @@ const Trainings: React.FC = () => {
 
       {/* Trainings Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {trainings.map(training => (
-          <div key={training.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-             <div className="aspect-square bg-gray-200 relative">
-               <img src={training.image} className="w-full h-full object-cover" alt={training.title} />
-               <div className="absolute top-3 right-3 bg-navy/80 text-white text-xs font-bold px-2 py-1 rounded">
-                 {training.type}
-               </div>
-               <div className={`absolute top-3 left-3 text-xs font-bold px-2 py-1 rounded ${
-                 (training.status ?? 'Aktif') === 'Aktif'
-                   ? 'bg-green-500 text-white'
-                   : 'bg-gray-500 text-white'
-               }`}>
-                 {(training.status ?? 'Aktif') === 'Aktif' ? 'Aktif' : 'Tamamlandı'}
-               </div>
-             </div>
-             <div className="p-5 flex-1 flex flex-col">
-               <div className="flex items-center justify-between mb-2">
-                 <span className="font-mono text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">
-                   {training.code}
-                 </span>
-                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                   (training.status ?? 'Aktif') === 'Aktif'
-                     ? 'bg-green-100 text-green-700'
-                     : 'bg-gray-200 text-gray-500'
-                 }`}>
-                   {training.status ?? 'Aktif'}
-                 </span>
-               </div>
-               <h3 className="font-bold text-navy text-base mb-2 leading-snug">{training.title}</h3>
-               <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
-                 <Calendar size={12} className="text-primary"/>
-                 {training.date}
-                 <span className="mx-1">·</span>
-                 <BookOpen size={12} className="text-primary"/>
-                 {training.type}
-               </div>
-               <p className="text-sm text-gray-500 mb-4 line-clamp-2 flex-1">{training.description}</p>
-               <div className="mt-auto flex gap-2">
-                 <button 
-                   onClick={() => handleEdit(training)}
-                   className="flex-1 py-2 border border-gray-200 rounded text-sm font-medium hover:bg-gray-50"
-                 >
-                   Düzenle
-                 </button>
-                 <button onClick={() => handleDelete(training.id)} className="flex-1 py-2 border border-gray-200 rounded text-sm font-medium text-red-600 hover:bg-red-50">Sil</button>
-               </div>
-             </div>
+        {trainings.map((training) => (
+          <div
+            key={training.id}
+            className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col"
+          >
+            <div className="aspect-square bg-gray-200 relative">
+              <img
+                src={training.image}
+                className="w-full h-full object-cover"
+                alt={training.title}
+              />
+              <div className="absolute top-3 right-3 bg-navy/80 text-white text-xs font-bold px-2 py-1 rounded">
+                {training.type}
+              </div>
+              <div
+                className={`absolute top-3 left-3 text-xs font-bold px-2 py-1 rounded ${
+                  (training.status ?? 'Aktif') === 'Aktif'
+                    ? 'bg-green-500 text-white'
+                    : 'bg-gray-500 text-white'
+                }`}
+              >
+                {(training.status ?? 'Aktif') === 'Aktif' ? 'Aktif' : 'Tamamlandı'}
+              </div>
+            </div>
+            <div className="p-5 flex-1 flex flex-col">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-mono text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">
+                  {training.code}
+                </span>
+                <span
+                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    (training.status ?? 'Aktif') === 'Aktif'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-gray-200 text-gray-500'
+                  }`}
+                >
+                  {training.status ?? 'Aktif'}
+                </span>
+              </div>
+              <h3 className="font-bold text-navy text-base mb-2 leading-snug">{training.title}</h3>
+              <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                <Calendar size={12} className="text-primary" />
+                {training.date}
+                <span className="mx-1">·</span>
+                <BookOpen size={12} className="text-primary" />
+                {training.type}
+              </div>
+              <p className="text-sm text-gray-500 mb-4 line-clamp-2 flex-1">
+                {training.description}
+              </p>
+              <div className="mt-auto flex gap-2">
+                <button
+                  onClick={() => handleEdit(training)}
+                  className="flex-1 py-2 border border-gray-200 rounded text-sm font-medium hover:bg-gray-50"
+                >
+                  Düzenle
+                </button>
+                <button
+                  onClick={() => handleDelete(training.id)}
+                  className="flex-1 py-2 border border-gray-200 rounded text-sm font-medium text-red-600 hover:bg-red-50"
+                >
+                  Sil
+                </button>
+              </div>
+            </div>
           </div>
         ))}
         {trainings.length === 0 && (
@@ -294,191 +312,203 @@ const Trainings: React.FC = () => {
       {isSheetOpen && (
         <div className="fixed inset-0 z-50 flex justify-end">
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-navy/30 backdrop-blur-sm" onClick={() => {
-            setIsSheetOpen(false);
-            resetForm();
-          }}></div>
-          
+          <div
+            className="absolute inset-0 bg-navy/30 backdrop-blur-sm"
+            onClick={() => {
+              setIsSheetOpen(false);
+              resetForm();
+            }}
+          ></div>
+
           {/* Sheet */}
           <div className="relative w-full max-w-md bg-white shadow-2xl h-full flex flex-col animate-slide-in">
-             <div className="flex items-center justify-between p-6 border-b border-gray-100">
-                <h2 className="text-xl font-bold text-navy">
-                  {editingTrainingId ? 'Eğitimi Düzenle' : 'Yeni Eğitim'}
-                </h2>
-                <button onClick={() => {
+            <div className="flex items-center justify-between p-6 border-b border-gray-100">
+              <h2 className="text-xl font-bold text-navy">
+                {editingTrainingId ? 'Eğitimi Düzenle' : 'Yeni Eğitim'}
+              </h2>
+              <button
+                onClick={() => {
                   setIsSheetOpen(false);
                   resetForm();
-                }} className="text-gray-400 hover:text-gray-600">
-                  <X size={24} />
-                </button>
-             </div>
-             
-             <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">Eğitim Kodu*</label>
-                  <input
-                    name="code"
-                    value={formData.code}
-                    onChange={handleInputChange}
-                    type="text"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none font-mono uppercase"
-                    placeholder="Örn: MC407"
-                    required
-                  />
-                  <p className="text-xs text-gray-400 mt-1">Eğitime özgü kısa kod. Listede ve detayda gösterilir.</p>
-                </div>
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X size={24} />
+              </button>
+            </div>
 
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">Eğitim Başlığı*</label>
-                  <input 
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    type="text" 
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                    placeholder="Örn: İleri Seviye Yapısal Analiz"
-                    required
-                  />
-                </div>
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">Eğitim Kodu*</label>
+                <input
+                  name="code"
+                  value={formData.code}
+                  onChange={handleInputChange}
+                  type="text"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none font-mono uppercase"
+                  placeholder="Örn: MC407"
+                  required
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  Eğitime özgü kısa kod. Listede ve detayda gösterilir.
+                </p>
+              </div>
 
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">Eğitim Tipi*</label>
-                  <select 
-                    name="type"
-                    value={formData.type}
-                    onChange={handleInputChange}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none bg-white"
-                    required
-                  >
-                    <option value="Öğrenciler">Öğrenciler</option>
-                    <option value="Profesyoneller">Profesyoneller</option>
-                    <option value="Atölyeler">Atölyeler</option>
-                    <option value="Webinarlar">Webinarlar</option>
-                  </select>
-                </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">
+                  Eğitim Başlığı*
+                </label>
+                <input
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  type="text"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                  placeholder="Örn: İleri Seviye Yapısal Analiz"
+                  required
+                />
+              </div>
 
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Eğitim Durumu*</label>
-                  <div className="flex gap-3">
-                    {(['Aktif', 'Tamamlandı'] as const).map(s => (
-                      <button
-                        key={s}
-                        type="button"
-                        onClick={() => setFormData(prev => ({ ...prev, status: s }))}
-                        className={`flex-1 py-2.5 rounded-lg text-sm font-bold border-2 transition-colors ${
-                          formData.status === s
-                            ? s === 'Aktif'
-                              ? 'border-green-500 bg-green-50 text-green-700'
-                              : 'border-gray-400 bg-gray-100 text-gray-700'
-                            : 'border-gray-200 text-gray-400 hover:border-gray-300'
-                        }`}
-                      >
-                        {s === 'Aktif' ? '🟢 Aktif' : '🏁 Tamamlandı'}
-                      </button>
-                    ))}
-                  </div>
-                  <p className="text-xs text-gray-400 mt-1.5">
-                    Tamamlandı seçilirse detay sayfasında kayıt butonu ve müfredat gizlenir.
-                  </p>
-                </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">Eğitim Tipi*</label>
+                <select
+                  name="type"
+                  value={formData.type}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none bg-white"
+                  required
+                >
+                  <option value="Öğrenciler">Öğrenciler</option>
+                  <option value="Profesyoneller">Profesyoneller</option>
+                  <option value="Atölyeler">Atölyeler</option>
+                  <option value="Webinarlar">Webinarlar</option>
+                </select>
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Tarih*</label>
-                  <input 
-                    name="date"
-                    value={formData.date}
-                    onChange={handleInputChange}
-                    type="text" 
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none"
-                    placeholder="Örn: 15 Ekim 2026"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Görsel</label>
-                  
-                  {/* Dosya Seçimi */}
-                  <div className="mb-3">
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileSelect}
-                      className="hidden"
-                      id="image-upload"
-                    />
-                    <label
-                      htmlFor="image-upload"
-                      className="flex items-center justify-center gap-2 w-full border-2 border-dashed border-gray-300 rounded-lg p-4 cursor-pointer hover:border-primary transition-colors"
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Eğitim Durumu*</label>
+                <div className="flex gap-3">
+                  {(['Aktif', 'Tamamlandı'] as const).map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, status: s }))}
+                      className={`flex-1 py-2.5 rounded-lg text-sm font-bold border-2 transition-colors ${
+                        formData.status === s
+                          ? s === 'Aktif'
+                            ? 'border-green-500 bg-green-50 text-green-700'
+                            : 'border-gray-400 bg-gray-100 text-gray-700'
+                          : 'border-gray-200 text-gray-400 hover:border-gray-300'
+                      }`}
                     >
-                      <Upload size={20} className="text-gray-400" />
-                      <span className="text-sm text-gray-600">Dosya seç veya sürükle</span>
-                    </label>
-                    {selectedFile && (
-                      <p className="text-xs text-gray-500 mt-1">{selectedFile.name}</p>
-                    )}
-                  </div>
+                      {s === 'Aktif' ? '🟢 Aktif' : '🏁 Tamamlandı'}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-400 mt-1.5">
+                  Tamamlandı seçilirse detay sayfasında kayıt butonu ve müfredat gizlenir.
+                </p>
+              </div>
 
-                  {/* Preview */}
-                  {(imagePreview || (editingTrainingId && formData.image && !selectedFile)) && (
-                    <div className="mb-3">
-                      <img
-                        src={imagePreview || formData.image}
-                        alt="Preview"
-                        className="w-full h-40 object-cover rounded-lg border border-gray-200"
-                      />
-                    </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tarih*</label>
+                <input
+                  name="date"
+                  value={formData.date}
+                  onChange={handleInputChange}
+                  type="text"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none"
+                  placeholder="Örn: 15 Ekim 2026"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Görsel</label>
+
+                {/* Dosya Seçimi */}
+                <div className="mb-3">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                    id="image-upload"
+                  />
+                  <label
+                    htmlFor="image-upload"
+                    className="flex items-center justify-center gap-2 w-full border-2 border-dashed border-gray-300 rounded-lg p-4 cursor-pointer hover:border-primary transition-colors"
+                  >
+                    <Upload size={20} className="text-gray-400" />
+                    <span className="text-sm text-gray-600">Dosya seç veya sürükle</span>
+                  </label>
+                  {selectedFile && (
+                    <p className="text-xs text-gray-500 mt-1">{selectedFile.name}</p>
                   )}
+                </div>
 
-                  {/* URL Input (Alternatif) */}
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <ImageIcon size={16} className="text-gray-400" />
-                    </div>
-                    <input 
-                      name="image"
-                      value={formData.image}
-                      onChange={handleInputChange}
-                      type="url" 
-                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                      placeholder="veya görsel URL'si girin"
+                {/* Preview */}
+                {(imagePreview || (editingTrainingId && formData.image && !selectedFile)) && (
+                  <div className="mb-3">
+                    <img
+                      src={imagePreview || formData.image}
+                      alt="Preview"
+                      className="w-full h-40 object-cover rounded-lg border border-gray-200"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Dosya seçebilir veya URL girebilirsiniz. İkisi de boşsa otomatik görsel atanır.</p>
-                </div>
+                )}
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Açıklama</label>
-                  <textarea 
-                    name="description"
-                    value={formData.description}
+                {/* URL Input (Alternatif) */}
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <ImageIcon size={16} className="text-gray-400" />
+                  </div>
+                  <input
+                    name="image"
+                    value={formData.image}
                     onChange={handleInputChange}
-                    rows={4}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none"
-                    placeholder="Eğitim detayları ve içeriği..."
-                  ></textarea>
+                    type="url"
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                    placeholder="veya görsel URL'si girin"
+                  />
                 </div>
-             </form>
+                <p className="text-xs text-gray-500 mt-1">
+                  Dosya seçebilir veya URL girebilirsiniz. İkisi de boşsa otomatik görsel atanır.
+                </p>
+              </div>
 
-             <div className="p-6 border-t border-gray-100 flex gap-4 bg-gray-50">
-                <button 
-                  type="button"
-                  onClick={() => {
-                    setIsSheetOpen(false);
-                    resetForm();
-                  }}
-                  className="flex-1 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100"
-                >
-                  İptal
-                </button>
-                <button 
-                  onClick={handleSubmit}
-                  className="flex-1 py-2.5 bg-primary text-navy rounded-lg font-bold hover:bg-primary-dark shadow-sm"
-                >
-                  {editingTrainingId ? 'Güncelle' : 'Eğitimi Kaydet'}
-                </button>
-             </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Açıklama</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  rows={4}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none"
+                  placeholder="Eğitim detayları ve içeriği..."
+                ></textarea>
+              </div>
+            </form>
+
+            <div className="p-6 border-t border-gray-100 flex gap-4 bg-gray-50">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSheetOpen(false);
+                  resetForm();
+                }}
+                className="flex-1 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-100"
+              >
+                İptal
+              </button>
+              <button
+                onClick={handleSubmit}
+                className="flex-1 py-2.5 bg-primary text-navy rounded-lg font-bold hover:bg-primary-dark shadow-sm"
+              >
+                {editingTrainingId ? 'Güncelle' : 'Eğitimi Kaydet'}
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -42,7 +42,9 @@ export class ErrorBoundary extends Component<Props, State> {
         <div className="min-h-screen flex items-center justify-center px-4 bg-white">
           <div className="text-center max-w-md">
             <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-5">
-              <span className="text-3xl" role="img" aria-label="hata">⚠️</span>
+              <span className="text-3xl" role="img" aria-label="hata">
+                ⚠️
+              </span>
             </div>
             <h1 className="text-xl font-extrabold text-navy mb-2">Beklenmeyen Bir Hata Oluştu</h1>
             <p className="text-gray-500 text-sm leading-relaxed mb-6">

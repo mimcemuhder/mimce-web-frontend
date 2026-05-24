@@ -6,12 +6,12 @@ export const testSupabaseConnection = async () => {
   try {
     // Basit bir test sorgusu
     const { data, error } = await supabase.from('certificates').select('count').limit(1);
-    
+
     if (error) {
       console.error('Supabase bağlantı hatası:', error);
       return { success: false, error: error.message };
     }
-    
+
     console.log('✅ Supabase bağlantısı başarılı!');
     return { success: true, data };
   } catch (err) {

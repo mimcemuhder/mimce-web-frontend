@@ -35,14 +35,14 @@ export async function summarizeBlogExcerpt(params: {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${supabaseAnonKey}`,
-        'apikey': supabaseAnonKey,
+        Authorization: `Bearer ${supabaseAnonKey}`,
+        apikey: supabaseAnonKey,
       },
       body: JSON.stringify({ title, body }),
     });
 
     if (res.ok) {
-      const data = await res.json() as { text?: string };
+      const data = (await res.json()) as { text?: string };
       if (data.text) return { text: data.text, source: 'gemini' };
     }
   } catch {
