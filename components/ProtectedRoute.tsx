@@ -21,8 +21,15 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   const isAdminUser = (email: string | undefined | null): boolean => {
     if (!email) return false;
-    if (ALLOWED_ADMIN_EMAILS.length > 0) return ALLOWED_ADMIN_EMAILS.includes(email);
-    return true;
+    if (ALLOWED_ADMIN_EMAILS.length === 0) {
+      console.error(
+        '[ProtectedRoute] VITE_ADMIN_EMAILS tanımsız veya boş! ' +
+        'Güvenlik nedeniyle admin erişimi engellendi. ' +
+        '.env.local dosyasında VITE_ADMIN_EMAILS değişkenini ayarlayın.'
+      );
+      return false;
+    }
+    return ALLOWED_ADMIN_EMAILS.includes(email);
   };
 
   const forceSignOut = useCallback(async () => {
