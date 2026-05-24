@@ -7,7 +7,7 @@ import { adminSession } from '../services/adminSession';
 import type { User } from '@supabase/supabase-js';
 import { 
   Menu, X, Home, Users, BookOpen, Calendar, Award, Settings, LayoutTemplate,
-  Search, Bell, HelpCircle, LogOut, Facebook, Twitter, Linkedin, Instagram,
+  Search, Bell, HelpCircle, LogOut, Facebook, Twitter, Linkedin, Instagram, Youtube, Mail,
   UserCircle, ChevronDown, CheckCheck, Trash2, Plus, Info, AlertTriangle,
   CheckCircle, XCircle, Keyboard, ExternalLink, Clock, Rss
 } from 'lucide-react';
@@ -216,47 +216,90 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
       </main>
 
       {/* Footer */}
-      <footer className="bg-navy text-gray-400 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
-          {/* Brand Col */}
-          <div className="col-span-1 md:col-span-2 space-y-6">
-             <div className="flex items-center">
-                <img src="/mimce_logo.svg" alt="MİMCE Logo" className="h-8 brightness-0 invert" />
-             </div>
-             <p className="max-w-sm text-sm leading-relaxed">
-               MİMCE, mühendislik öğrencileri ve profesyonelleri eğitimler ve etkinliklerle buluşturur.
-             </p>
-             <div className="flex gap-4">
-                <Facebook size={20} className="hover:text-primary cursor-pointer"/>
-                <Twitter size={20} className="hover:text-primary cursor-pointer"/>
-                <Linkedin size={20} className="hover:text-primary cursor-pointer"/>
-                <Instagram size={20} className="hover:text-primary cursor-pointer"/>
-             </div>
+      <footer className="bg-navy border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-8">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-12">
+
+            {/* Brand */}
+            <div className="md:col-span-5 space-y-5">
+              <img src="/mimce_logo.svg" alt="MİMCE Logo" className="h-9 brightness-0 invert" />
+              <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
+                Millî Mühendisler Cemiyeti — mühendislik öğrencileri ve profesyonellerini eğitim, etkinlik ve toplulukla buluşturan sivil toplum kuruluşu.
+              </p>
+              <div className="flex items-center gap-1">
+                <a href="mailto:iletisim@mimce.org"
+                  className="flex items-center gap-2 text-xs text-gray-500 hover:text-primary transition-colors">
+                  <Mail size={13} /> iletisim@mimce.org
+                </a>
+              </div>
+              <div className="flex gap-2">
+                {[
+                  { href: 'https://instagram.com/mimcemuhder', label: 'Instagram', node: <Instagram size={14} /> },
+                  { href: 'https://youtube.com/@mimcemuhder',  label: 'YouTube',   node: <Youtube size={14} /> },
+                  { href: 'https://x.com/mimcemuhder',         label: 'X',         node: (
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.261 5.632 5.903-5.632Zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                  )},
+                ].map(({ href, label, node }) => (
+                  <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
+                    className="w-8 h-8 rounded-lg bg-white/5 border border-white/8 flex items-center justify-center text-gray-500 hover:text-primary hover:border-primary/30 transition-all">
+                    {node}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Keşfet */}
+            <div className="md:col-span-2">
+              <h4 className="text-white font-bold mb-4 text-xs tracking-widest uppercase">Keşfet</h4>
+              <ul className="space-y-2.5 text-sm text-gray-500">
+                {[
+                  { to: '/egitimler',  label: 'Eğitimler' },
+                  { to: '/etkinlikler', label: 'Etkinlikler' },
+                  { to: '/blog',       label: 'Blog' },
+                  { to: '/gonullu-ol', label: 'Gönüllü Ol' },
+                ].map(({ to, label }) => (
+                  <li key={to}><Link to={to} className="hover:text-primary transition-colors">{label}</Link></li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Kurumsal */}
+            <div className="md:col-span-2">
+              <h4 className="text-white font-bold mb-4 text-xs tracking-widest uppercase">Kurumsal</h4>
+              <ul className="space-y-2.5 text-sm text-gray-500">
+                {[
+                  { to: '/hakkimizda', label: 'Hakkımızda' },
+                  { to: '/iletisim',   label: 'İletişim' },
+                  { to: '/egitmen-ol', label: 'Eğitmen Ol' },
+                ].map(({ to, label }) => (
+                  <li key={to}><Link to={to} className="hover:text-primary transition-colors">{label}</Link></li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Destek */}
+            <div className="md:col-span-3">
+              <h4 className="text-white font-bold mb-4 text-xs tracking-widest uppercase">Sertifika</h4>
+              <p className="text-gray-500 text-sm leading-relaxed mb-3">
+                Sertifikanızı doğrulamak için doğrulama sayfasını ziyaret edin.
+              </p>
+              <Link to="/sertifika-dogrulama"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-dark transition-colors">
+                Sertifika Doğrula →
+              </Link>
+            </div>
           </div>
 
-          {/* Links Col 1 */}
-          <div>
-            <h4 className="text-white font-bold mb-6 tracking-wide text-sm">KEŞFET</h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link to="/egitimler" className="hover:text-primary">Eğitimler</Link></li>
-              <li><Link to="/etkinlikler" className="hover:text-primary">Etkinlikler</Link></li>
-              <li><Link to="/blog" className="hover:text-primary">Blog</Link></li>
-              <li><Link to="/gonullu-ol" className="hover:text-primary">Gönüllü Ol</Link></li>
-            </ul>
+          {/* Bottom bar */}
+          <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600">
+            <span>© 2026 MİMCE — Millî Mühendisler Cemiyeti. Tüm hakları saklıdır.</span>
+            <div className="flex gap-4">
+              <Link to="#" className="hover:text-gray-400 transition-colors">Gizlilik Politikası</Link>
+              <Link to="#" className="hover:text-gray-400 transition-colors">Kullanım Şartları</Link>
+            </div>
           </div>
-
-          {/* Links Col 2 */}
-          <div>
-            <h4 className="text-white font-bold mb-6 tracking-wide text-sm">DESTEK</h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link to="/iletisim" className="hover:text-primary">İletişim</Link></li>
-              <li><Link to="#" className="hover:text-primary">Gizlilik Politikası</Link></li>
-              <li><Link to="#" className="hover:text-primary">Kullanım Şartları</Link></li>
-            </ul>
-          </div>
-        </div>
-        <div className="max-w-7xl mx-auto px-4 mt-16 pt-8 border-t border-gray-800 text-xs text-center md:text-left">
-          © 2026 MİMCE. Tüm hakları saklıdır.
         </div>
       </footer>
     </div>
@@ -294,8 +337,13 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
   const [searchOpen, setSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mainRef = useRef<HTMLElement>(null);
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
+
+  useEffect(() => {
+    mainRef.current?.scrollTo(0, 0);
+  }, [location.pathname]);
 
   const loadNotifications = useCallback(async () => {
     try {
@@ -638,7 +686,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto p-6 lg:p-8">
+        <main ref={mainRef} className="flex-1 overflow-auto p-6 lg:p-8">
           {children}
         </main>
       </div>
