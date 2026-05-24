@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { PublicLayout, AdminLayout } from './components/Layouts';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { ScrollToTop } from './components/ScrollToTop';
 
 // Public Pages
 import Home from './pages/public/Home';
@@ -15,6 +16,8 @@ import AuthLogin from './pages/public/AuthLogin';
 import AuthRegister from './pages/public/AuthRegister';
 import Profile from './pages/public/Profile';
 import Contact from './pages/public/Contact';
+import Volunteer from './pages/public/Volunteer';
+import Trainer from './pages/public/Trainer';
 
 // Admin Pages
 import Login from './pages/admin/Login';
@@ -34,6 +37,7 @@ import BlogPost from './pages/public/BlogPost';
 const App: React.FC = () => {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
@@ -53,8 +57,8 @@ const App: React.FC = () => {
         <Route path="/blog" element={<PublicLayout><PublicBlog /></PublicLayout>} />
         <Route path="/blog/:slug" element={<PublicLayout><BlogPost /></PublicLayout>} />
         <Route path="/iletisim" element={<PublicLayout><Contact /></PublicLayout>} />
-        <Route path="/gonullu-ol" element={<PublicLayout><div className="p-20 text-center">Gönüllü Ol Formu (Yapım Aşamasında)</div></PublicLayout>} />
-        <Route path="/egitmen-ol" element={<PublicLayout><div className="p-20 text-center">Eğitmen Ol Formu (Yapım Aşamasında)</div></PublicLayout>} />
+        <Route path="/gonullu-ol" element={<PublicLayout><Volunteer /></PublicLayout>} />
+        <Route path="/egitmen-ol" element={<PublicLayout><Trainer /></PublicLayout>} />
 
         {/* Admin Login */}
         <Route path="/admin/login" element={<Login />} />
