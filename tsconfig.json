@@ -1,6 +1,7 @@
 {
   "exclude": [
-    "supabase/functions"
+    "supabase/functions",
+    "__tests__"
   ],
   "compilerOptions": {
     "target": "ES2022",
@@ -13,6 +14,9 @@
       "DOM.Iterable"
     ],
     "skipLibCheck": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
     "types": [
       "node"
     ],
